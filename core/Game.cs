@@ -7,5 +7,8 @@ namespace Core
 {
     public class Game
     {
+        public string GetString() {
+            return "test text";
+        }
     }
 }
