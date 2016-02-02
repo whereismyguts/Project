@@ -1,0 +1,4 @@
+D:\local\other\Project\test\dll\Core.dll
+D:\local\other\Project\test\dll\Core.pdb
+D:\local\other\Project\test\core\obj\Debug\Core.dll
+D:\local\other\Project\test\core\obj\Debug\Core.pdb
