@@ -2,5 +2,4 @@
 *.exe
 *.cache
 *.suo
-/VisualizeApp/obj/
-/Core/obj/
+*/obj/
