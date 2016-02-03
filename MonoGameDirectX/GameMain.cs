@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
 using Core;
 
 namespace MonoGameDirectX {
@@ -13,7 +12,6 @@ namespace MonoGameDirectX {
         SpriteBatch spriteBatch;
         GameCore GameCore;
         Texture2D dummyTexture;
-
 
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
@@ -31,7 +29,6 @@ namespace MonoGameDirectX {
             GameCore = new GameCore();
             base.Initialize();
         }
-
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -44,7 +41,6 @@ namespace MonoGameDirectX {
             //font =SpriteFont. new System.Drawing.Font("arial", 20).;
             // TODO: use this.Content to load your game content here
         }
-
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
@@ -52,7 +48,6 @@ namespace MonoGameDirectX {
         protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
         }
-
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -63,10 +58,8 @@ namespace MonoGameDirectX {
             //      Exit();
 
             // TODO: Add your update logic here
-
             mousePosition = Mouse.GetState().Position;
             base.Update(gameTime);
-
         }
         SpriteFont font;
         Point mousePosition;
@@ -81,7 +74,6 @@ namespace MonoGameDirectX {
             spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 10, 10), Color.Red);
             spriteBatch.End();
             // TODO: Add your drawing code here
-
             base.Draw(gameTime);
         }
     }
