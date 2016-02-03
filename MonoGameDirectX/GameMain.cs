@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using Core;
 
 namespace MonoGameDirectX {
@@ -11,6 +12,8 @@ namespace MonoGameDirectX {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         GameCore GameCore;
+        Texture2D dummyTexture;
+
 
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
@@ -36,7 +39,9 @@ namespace MonoGameDirectX {
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            dummyTexture = new Texture2D(GraphicsDevice, 1, 1);
+            dummyTexture.SetData(new Color[] { Color.Red });
+            //font =SpriteFont. new System.Drawing.Font("arial", 20).;
             // TODO: use this.Content to load your game content here
         }
 
@@ -54,21 +59,27 @@ namespace MonoGameDirectX {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime) {
-          //  if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-          //      Exit();
+            //  if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //      Exit();
 
             // TODO: Add your update logic here
 
+            mousePosition = Mouse.GetState().Position;
             base.Update(gameTime);
-        }
 
+        }
+        SpriteFont font;
+        Point mousePosition;
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin();
+           // spriteBatch.DrawString(font, "test", mousePosition.ToVector2(), Color.White);
+            spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 10, 10), Color.Red);
+            spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
