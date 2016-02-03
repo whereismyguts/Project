@@ -8,3 +8,4 @@ D:\local\other\Project\Project\core\obj\Debug\Core.dll
 D:\local\other\Project\Project\core\obj\Debug\Core.pdb
 D:\local\other\Project\Project\bin\Core.dll
 D:\local\other\Project\Project\bin\Core.pdb
+D:\local\other\Project\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache

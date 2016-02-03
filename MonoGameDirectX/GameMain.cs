@@ -1,16 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Core;
 
 namespace MonoGameDirectX {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game {
+    public class GameMain : Microsoft.Xna.Framework.Game {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        GameCore GameCore;
 
-        public Game1() {
+        public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -23,7 +25,7 @@ namespace MonoGameDirectX {
         /// </summary>
         protected override void Initialize() {
             // TODO: Add your initialization logic here
-
+            GameCore = new GameCore();
             base.Initialize();
         }
 

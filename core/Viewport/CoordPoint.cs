@@ -6,6 +6,12 @@ namespace Core {
     public class CoordPoint {
         int x;
         int y;
+        public static CoordPoint operator +(CoordPoint p1, CoordPoint p2) {
+            return new CoordPoint(p1.X + p2.X, p1.Y + p2.Y);
+        }
+        public static CoordPoint operator -(CoordPoint p1, CoordPoint p2) {
+            return new CoordPoint(p1.X - p2.X, p1.Y - p2.Y);
+        }
         public int X { get { return x; } }
         public int Y { get { return y; } }
         public CoordPoint(int X, int Y) {

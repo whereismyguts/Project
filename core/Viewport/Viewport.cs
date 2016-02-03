@@ -5,8 +5,6 @@ using System.Linq;
 namespace Core {
     public class Viewport {
         CoordPoint centerpoint;
-        CoordPoint leftTop;
-        CoordPoint rightBottom;
         World world;
         const int defaultHeight = 20;
         const int defaultWidth = 20;
@@ -19,8 +17,8 @@ namespace Core {
             set { SetCenterPoint(value); }
         }
 
-        public CoordPoint RightBottom { get { return rightBottom; } }
-        public CoordPoint LeftTop { get { return leftTop; } }
+        public CoordPoint RightBottom { get { return centerpoint + new CoordPoint(Width / 2, Height / 2); } }
+        public CoordPoint LeftTop { get { return centerpoint - new CoordPoint(Width / 2, Height / 2); } }
 
         public Viewport(CoordPoint center, World world) {
             this.centerpoint = center;
