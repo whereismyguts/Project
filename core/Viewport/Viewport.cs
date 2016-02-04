@@ -38,5 +38,8 @@ namespace Core {
                 return;
             this.centerpoint = center;
         }
+        public override string ToString() {
+            return string.Format("bounds: {0}:{1}|size: {2}x{3}", LeftTop, RightBottom, Width, Height);
+        }
     }
 }
