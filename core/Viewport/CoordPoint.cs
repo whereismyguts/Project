@@ -12,8 +12,14 @@ namespace Core {
         public static CoordPoint operator -(CoordPoint p1, CoordPoint p2) {
             return new CoordPoint(p1.X - p2.X, p1.Y - p2.Y);
         }
-        public int X { get { return x; } }
-        public int Y { get { return y; } }
+        public int X {
+            get { return x; }
+            set { x = value; }
+        }
+        public int Y {
+            get { return y; }
+            set { y = value; }
+        }
         public CoordPoint(int X, int Y) {
             this.x = X;
             this.y = Y;

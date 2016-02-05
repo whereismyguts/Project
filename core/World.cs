@@ -13,6 +13,12 @@ namespace Core {
         public void SetViewport(CoordPoint center) {
             Viewport = new Viewport(center, this);
         }
+        //public int this[int x, int y] {
+        //    get {
+
+        //    }
+        //    set { }
+        //}
         public World(int width, int height) {
             Width = width;
             Height = height;

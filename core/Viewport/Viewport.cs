@@ -6,11 +6,25 @@ namespace Core {
     public class Viewport {
         CoordPoint centerpoint;
         World world;
-        const int defaultHeight = 20;
-        const int defaultWidth = 20;
+        const int defaultHeight = 15;
+        const int defaultWidth = 30;
+        int height;
+        int width;
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int Width {
+            get { return width; }
+            set {
+                width = value;
+                centerpoint.X = LeftTop.X + width / 2;
+            }
+        }
+        public int Height {
+            get { return height; }
+            set {
+                height = value;
+                centerpoint.Y = LeftTop.Y + height / 2;
+            }
+        }
         public CoordPoint Centerpoint
         {
             get { return centerpoint; }
@@ -22,8 +36,8 @@ namespace Core {
 
         public Viewport(CoordPoint center, World world) {
             this.centerpoint = center;
-            this.Width = defaultWidth;
-            this.Height = defaultHeight;
+            this.width = defaultWidth;
+            this.height = defaultHeight;
             this.world = world;
             SetCenterPoint(center);
         }

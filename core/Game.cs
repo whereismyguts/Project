@@ -11,7 +11,11 @@ namespace Core
         GameState state = GameState.Menu;
         public GameState State { get { return state; } }
         Character Character { get; }
-        public World World { get; } = new World(100, 100);
+        World World { get; } = new World(1000, 1000);
         public Viewport Viewport { get { return World.Viewport; } }
+
+        public void SetViewport(Viewport viewport) {
+            World.Viewport = viewport;
+        }
     }
 }
