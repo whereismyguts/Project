@@ -67,11 +67,11 @@ namespace MonoGameDirectX {
                 GameCore.Viewport.Move(0, 1);
 
 
-                
+
 
             // TODO: Add your update logic here
             mousePosition = Mouse.GetState().Position;
-            rotation+=0.1f;
+            rotation += 0.1f;
             base.Update(gameTime);
 
         }
@@ -84,35 +84,19 @@ namespace MonoGameDirectX {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
-
-            //int pxlX = 0;
-            //Color curColor = Color.Gray;
-
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
-            
+            foreach(GameObjectBase obj in GameCore.Objects) 
+                if(GameCore.Viewport.IsIntersect(obj.Bounds)) 
+                    spriteBatch.Draw(planetTexture, new Rectangle((int)obj.Location.X, (int)obj.Location.Y, 150, 150), Color.White);
 
-            //for(int cellX = GameCore.Viewport.LeftTop.X; cellX < GameCore.Viewport.RightBottom.X; cellX++) {
-            //    int pxlY = 0;
-            //    curColor = curColor == Color.LightGray ? Color.Gray : Color.LightGray;
-            //    for(int cellY = GameCore.Viewport.LeftTop.Y; cellY < GameCore.Viewport.RightBottom.Y; cellY++) {
-            //        curColor = curColor == Color.LightGray ? Color.Gray : Color.LightGray;
-            //        spriteBatch.Draw(dummyTexture, new Rectangle(pxlX, pxlY, Helper.TileSize, Helper.TileSize), curColor); //GameCore.World[cellX,cellY].Color
-
-            //        pxlY += Helper.TileSize;
-            //    }
-            //    pxlX += Helper.TileSize;
-            //}
             spriteBatch.DrawString(font, "TEST", new Vector2(100, 100), Color.Red);
             spriteBatch.Draw(planetTexture, new Rectangle(mousePosition.X, mousePosition.Y, 150, 150), Color.White);
-            spriteBatch.Draw(shipTexture, new Vector2(100,100), null, Color.White, rotation, new Vector2(32,40), .2f, SpriteEffects.None, 0f);
-            // spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 10, 10), Color.White);
+            spriteBatch.Draw(shipTexture, new Vector2(100, 100), null, Color.White, rotation, new Vector2(32, 40), .2f, SpriteEffects.None, 0f);
+
             spriteBatch.End();
-            // TODO: Add your drawing code here
             base.Draw(gameTime);
         }
-
-        
     }
 }

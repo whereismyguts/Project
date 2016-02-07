@@ -13,8 +13,8 @@ namespace Core
         List<GameObjectBase> objects;
 
         public GameState State { get { return state; } }
-        Character Character { get; }
-        List<GameObjectBase> Objects { get { return objects; } }
+        public Character Character { get; }
+        public List<GameObjectBase> Objects { get { return objects; } }
         //World World { get; } = new World(1000, 1000);
         public Viewport Viewport { get { return viewport; } }
 
@@ -29,10 +29,9 @@ namespace Core
         }
 
         List<GameObjectBase> LoadGameObjects() {
+            objects = new List<GameObjectBase>();
             //TODO Data Driven Factory
-
             objects.Add(new Planet(new CoordPoint(10,10), 50));
-
             return objects;
         }
     }

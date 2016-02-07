@@ -45,5 +45,9 @@ namespace Core {
         public void Move(int x, int y) {
             centerpoint += new CoordPoint(x, y);
         }
+
+        public bool IsIntersect(Bounds bounds) {
+            throw new NotImplementedException();
+        }
     }
 }
