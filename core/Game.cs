@@ -9,13 +9,31 @@ namespace Core
     public class GameCore
     {
         GameState state = GameState.Menu;
+        Viewport viewport;
+        List<GameObjectBase> objects;
+
         public GameState State { get { return state; } }
         Character Character { get; }
-        World World { get; } = new World(1000, 1000);
-        public Viewport Viewport { get { return World.Viewport; } }
+        List<GameObjectBase> Objects { get { return objects; } }
+        //World World { get; } = new World(1000, 1000);
+        public Viewport Viewport { get { return viewport; } }
+
+
+        public GameCore() {
+            SetViewport(new Viewport(0, 0));
+        }
 
         public void SetViewport(Viewport viewport) {
-            World.Viewport = viewport;
+            this.viewport = viewport;
+            objects = LoadGameObjects(); 
+        }
+
+        List<GameObjectBase> LoadGameObjects() {
+            //TODO Data Driven Factory
+
+            objects.Add(new Planet(new CoordPoint(10,10), 50));
+
+            return objects;
         }
     }
 }

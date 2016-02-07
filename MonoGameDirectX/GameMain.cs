@@ -12,6 +12,9 @@ namespace MonoGameDirectX {
         SpriteBatch spriteBatch;
         GameCore GameCore;
         Texture2D dummyTexture;
+        Texture2D planetTexture;
+        Texture2D shipTexture;
+        SpriteFont font;
 
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
@@ -39,7 +42,9 @@ namespace MonoGameDirectX {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             dummyTexture = new Texture2D(GraphicsDevice, 1, 1);
             dummyTexture.SetData(new Color[] { Color.White });
-            //font =SpriteFont. new System.Drawing.Font("arial", 20).;
+            planetTexture = Content.Load<Texture2D>("planet1");
+            shipTexture = Content.Load<Texture2D>("ship1");
+            font = Content.Load<SpriteFont>("Arial");
             // TODO: use this.Content to load your game content here
         }
         /// <summary>
@@ -58,10 +63,21 @@ namespace MonoGameDirectX {
             //  if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //      Exit();
 
+            if(Keyboard.GetState().IsKeyDown(Keys.Down))
+                GameCore.Viewport.Move(0, 1);
+
+
+                
+
             // TODO: Add your update logic here
             mousePosition = Mouse.GetState().Position;
+            rotation+=0.1f;
             base.Update(gameTime);
+
         }
+        float rotation = 0;
+
+
         Point mousePosition;
         /// <summary>
         /// This is called when the game should draw itself.
@@ -69,30 +85,34 @@ namespace MonoGameDirectX {
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
 
-            int pxlX = 0;
-            Color curColor = Color.Gray;
+            //int pxlX = 0;
+            //Color curColor = Color.Gray;
 
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
-            for(int cellX = GameCore.Viewport.LeftTop.X; cellX < GameCore.Viewport.RightBottom.X; cellX++) {
-                int pxlY = 0;
-                curColor = curColor == Color.LightGray ? Color.Gray : Color.LightGray;
-                for(int cellY = GameCore.Viewport.LeftTop.Y; cellY < GameCore.Viewport.RightBottom.Y; cellY++) {
-                    curColor = curColor == Color.LightGray ? Color.Gray : Color.LightGray;
-                    spriteBatch.Draw(dummyTexture, new Rectangle(pxlX, pxlY, Helper.TileSize, Helper.TileSize), curColor); //GameCore.World[cellX,cellY].Color
-
-                    pxlY += Helper.TileSize;
-                }
-                pxlX += Helper.TileSize;
-            }
-
             
-            // spriteBatch.DrawString(font, "test", mousePosition.ToVector2(), Color.White);
-            spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 10, 10), Color.Red);
+
+            //for(int cellX = GameCore.Viewport.LeftTop.X; cellX < GameCore.Viewport.RightBottom.X; cellX++) {
+            //    int pxlY = 0;
+            //    curColor = curColor == Color.LightGray ? Color.Gray : Color.LightGray;
+            //    for(int cellY = GameCore.Viewport.LeftTop.Y; cellY < GameCore.Viewport.RightBottom.Y; cellY++) {
+            //        curColor = curColor == Color.LightGray ? Color.Gray : Color.LightGray;
+            //        spriteBatch.Draw(dummyTexture, new Rectangle(pxlX, pxlY, Helper.TileSize, Helper.TileSize), curColor); //GameCore.World[cellX,cellY].Color
+
+            //        pxlY += Helper.TileSize;
+            //    }
+            //    pxlX += Helper.TileSize;
+            //}
+            spriteBatch.DrawString(font, "TEST", new Vector2(100, 100), Color.Red);
+            spriteBatch.Draw(planetTexture, new Rectangle(mousePosition.X, mousePosition.Y, 150, 150), Color.White);
+            spriteBatch.Draw(shipTexture, new Vector2(100,100), null, Color.White, rotation, new Vector2(32,40), .2f, SpriteEffects.None, 0f);
+            // spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 10, 10), Color.White);
             spriteBatch.End();
             // TODO: Add your drawing code here
             base.Draw(gameTime);
         }
+
+        
     }
 }

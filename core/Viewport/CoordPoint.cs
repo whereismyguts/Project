@@ -4,23 +4,23 @@ using System.Linq;
 
 namespace Core {
     public class CoordPoint {
-        int x;
-        int y;
+        float x;
+        float y;
         public static CoordPoint operator +(CoordPoint p1, CoordPoint p2) {
             return new CoordPoint(p1.X + p2.X, p1.Y + p2.Y);
         }
         public static CoordPoint operator -(CoordPoint p1, CoordPoint p2) {
             return new CoordPoint(p1.X - p2.X, p1.Y - p2.Y);
         }
-        public int X {
+        public float X {
             get { return x; }
             set { x = value; }
         }
-        public int Y {
+        public float Y {
             get { return y; }
             set { y = value; }
         }
-        public CoordPoint(int X, int Y) {
+        public CoordPoint(float X, float Y) {
             this.x = X;
             this.y = Y;
         }
