@@ -65,17 +65,22 @@ namespace MonoGameDirectX {
 
             if(Keyboard.GetState().IsKeyDown(Keys.Down))
                 GameCore.Viewport.Move(0, 1);
+            if(Keyboard.GetState().IsKeyDown(Keys.Up))
+                GameCore.Viewport.Move(0, -1);
+            if(Keyboard.GetState().IsKeyDown(Keys.Left))
+                GameCore.Viewport.Move(-1, 0);
+            if(Keyboard.GetState().IsKeyDown(Keys.Right))
+                GameCore.Viewport.Move(1, 0);
 
 
 
 
             // TODO: Add your update logic here
             mousePosition = Mouse.GetState().Position;
-            rotation += 0.1f;
             base.Update(gameTime);
 
         }
-        float rotation = 0;
+        
 
 
         Point mousePosition;
@@ -87,13 +92,15 @@ namespace MonoGameDirectX {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
-            foreach(GameObjectBase obj in GameCore.Objects) 
-                if(GameCore.Viewport.IsIntersect(obj.Bounds)) 
-                    spriteBatch.Draw(planetTexture, new Rectangle((int)obj.Location.X, (int)obj.Location.Y, 150, 150), Color.White);
+            foreach(GameObjectBase obj in GameCore.Objects)
+                if(GameCore.Viewport.IsIntersect(obj.Bounds)) {
+                    var location = obj.GetLocation();
+                    spriteBatch.Draw(planetTexture, new Rectangle((int)location.X, (int)location.Y, 150, 150), Color.White);
+                }
 
-            spriteBatch.DrawString(font, "TEST", new Vector2(100, 100), Color.Red);
-            spriteBatch.Draw(planetTexture, new Rectangle(mousePosition.X, mousePosition.Y, 150, 150), Color.White);
-            spriteBatch.Draw(shipTexture, new Vector2(100, 100), null, Color.White, rotation, new Vector2(32, 40), .2f, SpriteEffects.None, 0f);
+            spriteBatch.DrawString(font, "debug text:", new Vector2(0, 0), Color.Red);
+            //spriteBatch.Draw(planetTexture, new Rectangle(mousePosition.X, mousePosition.Y, 150, 150), Color.White);
+            //spriteBatch.Draw(shipTexture, new Vector2(100, 100), null, Color.White, rotation, new Vector2(32, 40), .2f, SpriteEffects.None, 0f);
 
             spriteBatch.End();
             base.Draw(gameTime);

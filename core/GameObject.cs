@@ -5,6 +5,16 @@ namespace Core {
         public CoordPoint Location { get; set; }
         public string Image { get; set; }
         public abstract Bounds Bounds { get; }
+
+        protected Viewport Viewport { get; }
+
+        public GameObjectBase(Viewport viewport) {
+            Viewport = viewport;
+        }
+
+        public CoordPoint GetLocation() {
+            return new CoordPoint(Location.X - Viewport.LeftTop.X, Location.Y - Viewport.LeftTop.Y);
+        }
     }
 
     public class Planet : GameObjectBase {
@@ -17,10 +27,12 @@ namespace Core {
             }
         }
 
-        public Planet(CoordPoint location, float diameter) {
+        public Planet(CoordPoint location, float diameter, Viewport viewport)
+            : base(viewport) {
             this.Location = location;
             this.diameter = diameter;
             this.radius = diameter / 2.0f;
         }
+
     }
 }

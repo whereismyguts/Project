@@ -10,7 +10,7 @@ namespace Core
     {
         GameState state = GameState.Menu;
         Viewport viewport;
-        List<GameObjectBase> objects;
+         List<GameObjectBase> objects;
 
         public GameState State { get { return state; } }
         public Character Character { get; }
@@ -31,7 +31,7 @@ namespace Core
         List<GameObjectBase> LoadGameObjects() {
             objects = new List<GameObjectBase>();
             //TODO Data Driven Factory
-            objects.Add(new Planet(new CoordPoint(10,10), 50));
+            objects.Add(new Planet(new CoordPoint(10, 10), 50, viewport)); 
             return objects;
         }
     }

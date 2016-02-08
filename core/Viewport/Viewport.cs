@@ -42,12 +42,12 @@ namespace Core {
             return string.Format("bounds: {0}:{1}|size: {2}x{3}", LeftTop, RightBottom, Width, Height);
         }
 
-        public void Move(int x, int y) {
+        public void Move(float x, float y) {
             centerpoint += new CoordPoint(x, y);
         }
 
         public bool IsIntersect(Bounds bounds) {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }
