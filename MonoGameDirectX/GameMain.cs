@@ -15,28 +15,17 @@ namespace MonoGameDirectX {
         Texture2D planetTexture;
         Texture2D shipTexture;
         SpriteFont font;
-
+        Point mousePosition;
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
-
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize() {
             // TODO: Add your initialization logic here
             GameCore = new GameCore();
             Helper.CalculateTileSize(GraphicsDevice.Viewport.Bounds, GameCore.Viewport);
             base.Initialize();
         }
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -47,22 +36,12 @@ namespace MonoGameDirectX {
             font = Content.Load<SpriteFont>("Arial");
             // TODO: use this.Content to load your game content here
         }
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
         protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
         }
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime) {
             //  if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //      Exit();
-
             if(Keyboard.GetState().IsKeyDown(Keys.Down))
                 GameCore.Viewport.Move(0, 1);
             if(Keyboard.GetState().IsKeyDown(Keys.Up))
@@ -71,23 +50,12 @@ namespace MonoGameDirectX {
                 GameCore.Viewport.Move(-1, 0);
             if(Keyboard.GetState().IsKeyDown(Keys.Right))
                 GameCore.Viewport.Move(1, 0);
-
-
-
-
-            // TODO: Add your update logic here
+            foreach(GameObjectBase obj in GameCore.Objects)
+                obj.Move();
             mousePosition = Mouse.GetState().Position;
+
             base.Update(gameTime);
-
         }
-        
-
-
-        Point mousePosition;
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
@@ -95,11 +63,11 @@ namespace MonoGameDirectX {
             foreach(GameObjectBase obj in GameCore.Objects)
                 if(GameCore.Viewport.IsIntersect(obj.Bounds)) {
                     var location = obj.GetLocation();
-                    spriteBatch.Draw(planetTexture, new Rectangle((int)location.X, (int)location.Y, 150, 150), Color.White);
+                    spriteBatch.Draw(planetTexture, new Rectangle((int)location.X, (int)location.Y, (int)obj.Size, (int)obj.Size), Color.White);
                 }
 
             spriteBatch.DrawString(font, "debug text:", new Vector2(0, 0), Color.Red);
-            //spriteBatch.Draw(planetTexture, new Rectangle(mousePosition.X, mousePosition.Y, 150, 150), Color.White);
+            spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 10, 10), Color.White);
             //spriteBatch.Draw(shipTexture, new Vector2(100, 100), null, Color.White, rotation, new Vector2(32, 40), .2f, SpriteEffects.None, 0f);
 
             spriteBatch.End();

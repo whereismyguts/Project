@@ -37,9 +37,9 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bounds.cs" />
-    <Compile Include="Character.cs" />
-    <Compile Include="GameObject.cs" />
+    <Compile Include="Viewport\Bounds.cs" />
+    <Compile Include="Objects\Character.cs" />
+    <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Viewport\CoordPoint.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
