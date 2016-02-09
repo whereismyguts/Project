@@ -16,6 +16,8 @@ namespace MonoGameDirectX {
         Texture2D shipTexture;
         SpriteFont font;
         Point mousePosition;
+        Character ship;
+        string debugText = "";
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -24,6 +26,7 @@ namespace MonoGameDirectX {
             // TODO: Add your initialization logic here
             GameCore = new GameCore();
             Helper.CalculateTileSize(GraphicsDevice.Viewport.Bounds, GameCore.Viewport);
+            ship = GameCore.Character;
             base.Initialize();
         }
         protected override void LoadContent() {
@@ -52,7 +55,10 @@ namespace MonoGameDirectX {
                 GameCore.Viewport.Move(1, 0);
             foreach(GameObjectBase obj in GameCore.Objects)
                 obj.Move();
+            GameCore.Character.Move();
             mousePosition = Mouse.GetState().Position;
+
+            debugText = ship.GetLocation().ToString();
 
             base.Update(gameTime);
         }
@@ -61,14 +67,15 @@ namespace MonoGameDirectX {
             spriteBatch.Begin();
 
             foreach(GameObjectBase obj in GameCore.Objects)
-                if(GameCore.Viewport.IsIntersect(obj.Bounds)) {
+              //  if(obj.IsVisible) 
+              {
                     var location = obj.GetLocation();
                     spriteBatch.Draw(planetTexture, new Rectangle((int)location.X, (int)location.Y, (int)obj.Size, (int)obj.Size), Color.White);
                 }
 
-            spriteBatch.DrawString(font, "debug text:", new Vector2(0, 0), Color.Red);
+            spriteBatch.DrawString(font, debugText, new Vector2(0, 0), Color.Red);
             spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 10, 10), Color.White);
-            //spriteBatch.Draw(shipTexture, new Vector2(100, 100), null, Color.White, rotation, new Vector2(32, 40), .2f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(shipTexture, Helper.ToVector2(ship.GetLocation()), null, Color.White, 0f, new Vector2(), .2f, SpriteEffects.None, 0f);
 
             spriteBatch.End();
             base.Draw(gameTime);

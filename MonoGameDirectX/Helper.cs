@@ -23,5 +23,9 @@ namespace MonoGameDirectX {
             double pxlSizeY = windowRect.Height * 1.0 / viewport.Height;
             pxlTileSize = (int)Math.Min(pxlSizeX, pxlSizeY);
         }
+
+        internal static Vector2 ToVector2(CoordPoint location) {
+            return new Vector2(location.X, location.Y);
+        }
     }
 }

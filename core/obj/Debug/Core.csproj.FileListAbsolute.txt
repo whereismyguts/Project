@@ -13,3 +13,8 @@ E:\coding\Home repository\Project\bin\Core.pdb
 E:\coding\Home repository\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
 E:\coding\Home repository\Project\core\obj\Debug\Core.dll
 E:\coding\Home repository\Project\core\obj\Debug\Core.pdb
+D:\local\other\default repository\Project\bin\Core.dll
+D:\local\other\default repository\Project\bin\Core.pdb
+D:\local\other\default repository\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
+D:\local\other\default repository\Project\core\obj\Debug\Core.dll
+D:\local\other\default repository\Project\core\obj\Debug\Core.pdb

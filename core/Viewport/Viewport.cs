@@ -20,8 +20,13 @@ namespace Core {
             get { return centerpoint; }
             set { centerpoint = value; }
         }
-        public CoordPoint RightBottom { get { return centerpoint + new CoordPoint(Width / 2, Height / 2); } }
-        public CoordPoint LeftTop { get { return centerpoint - new CoordPoint(Width / 2, Height / 2); } }
+        public Bounds Bounds {
+            get {
+                return new Bounds(centerpoint - new CoordPoint(Width / 2, Height / 2), centerpoint + new CoordPoint(Width / 2, Height / 2));
+            }
+        }
+        //public CoordPoint RightBottom { get { return centerpoint + new CoordPoint(Width / 2, Height / 2); } }
+        //public CoordPoint LeftTop { get { return centerpoint - new CoordPoint(Width / 2, Height / 2); } }
         public Viewport(float x, float y) {
             this.centerpoint = new CoordPoint(x, y);
             this.width = defaultWidth;
@@ -30,11 +35,8 @@ namespace Core {
         public void Move(float x, float y) {
             centerpoint += new CoordPoint(x, y);
         }
-        public bool IsIntersect(Bounds bounds) {
-            return true;
-        }
         public override string ToString() {
-            return string.Format("bounds: {0}:{1}|size: {2}x{3}", LeftTop, RightBottom, Width, Height);
+            return string.Format("bounds: {0}:{1}|size: {2}x{3}", Bounds.LeftTop, Bounds.RightBottom, Width, Height);
         }
     }
 }
