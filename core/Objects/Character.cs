@@ -27,6 +27,9 @@ namespace Core {
             get { return new Bounds(Location - new CoordPoint(10, 10), Location + new CoordPoint(10, 10)); }
         }
         protected internal override string ContentString { get { return "ship1"; } }
+        public float Speed {
+            get { return CalcSummaryForceVector().Length; }
+        }
         public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location) : base(viewport) {
             AttractingObjects = objects;
             engineSpeed = new CoordPoint(-.1f, 0);

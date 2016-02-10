@@ -24,6 +24,7 @@ namespace MonoGameDirectX {
         }
         protected override void Initialize() {
             primitiveDrawer = new DrawPrimitives(GraphicsDevice);
+            GameCore.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             base.Initialize();
         }
         protected override void LoadContent() {
@@ -34,6 +35,10 @@ namespace MonoGameDirectX {
 
             contentLoader = new ContentLoader(Content);
             contentLoader.SetTexture("planet1");
+            contentLoader.SetTexture("planet2");
+            contentLoader.SetTexture("planet3");
+            contentLoader.SetTexture("planet4");
+            contentLoader.SetTexture("planet5");
             contentLoader.SetTexture("ship1");
             
             font = Content.Load<SpriteFont>("Arial");
@@ -44,6 +49,11 @@ namespace MonoGameDirectX {
 
         protected override void Update(GameTime gameTime) {
             GameCore.Instance.Update();
+            if(Keyboard.GetState().IsKeyDown(Keys.Z))
+                GameCore.Instance.Viewport.ZoomIn();
+            if(Keyboard.GetState().IsKeyDown(Keys.X))
+                GameCore.Instance.Viewport.ZoomOut();
+
             mousePosition = Mouse.GetState().Position;
             base.Update(gameTime);
         }
@@ -52,10 +62,7 @@ namespace MonoGameDirectX {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
             
-            foreach(RenderObject obj in GameCore.Instance.RenderObjects)
-              {
-                
-                
+            foreach(RenderObject obj in GameCore.Instance.RenderObjects) {
                 Texture2D texture = contentLoader.GetTexture(obj.ContentString);
                 Vector2 origin = new Vector2(texture.Width/2, texture.Height/2);
                 Rectangle boundsRect = WinAdapter.ToRectangle(obj.ScreenBounds);
@@ -65,10 +72,11 @@ namespace MonoGameDirectX {
                // primitiveDrawer.DrawRect(boundsRect, spriteBatch);
             }
 
-            spriteBatch.DrawString(font, GameCore.Instance.Viewport.ToString(), new Vector2(0, 0), Color.Red);
+            spriteBatch.DrawString(font, GameCore.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.Red);
             spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 5, 5), Color.White);
             //    spriteBatch.Draw(shipTexture, Helper.ToRectangle(ship.GetLocalBounds()), null, Color.White, ship.GetRotation(),null, SpriteEffects.None, 0f);
 
+         
             spriteBatch.End();
             //base.Draw(gameTime);
         }

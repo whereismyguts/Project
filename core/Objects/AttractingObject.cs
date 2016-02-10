@@ -3,7 +3,8 @@ using System;
 namespace Core {
     public class AttractingObject : GameObject {
         float radius;
-        float selfRotation;
+        protected float SelfRotation { get; set; }
+        protected internal string ImageName { get; protected set; }
 
         protected internal override Bounds Bounds
         {
@@ -16,36 +17,33 @@ namespace Core {
         {
             get
             {
-                return "planet1";
+                return ImageName;
             }
         }
-        public AttractingObject(CoordPoint location, float diameter, Viewport viewport)
+        public AttractingObject(CoordPoint location, float diameter, Viewport viewport, string imageName)
             : base(viewport) {
 
             this.radius = diameter / 2.0f;
             this.Location = location;
-            this.Mass = diameter*10;
-
+            this.Mass = diameter * 10;
+            ImageName = imageName;
         }
         protected internal override void Move() {
-            selfRotation += 0.01f;
+            SelfRotation += 0.001f;
             return;
         }
         protected internal override float GetRotation() {
-            return selfRotation;
+            return SelfRotation;
         }
     }
     public class Planet : AttractingObject {
         float distanceToSun;
         float t = 0;
         CoordPoint rotateCenter;
-        public bool Clockwise
-        {
-            get { return true; }
-        }
+        public bool Clockwise { get { return true; } }
 
-        public Planet(CoordPoint location, float diameter, Viewport viewport, float T, AttractingObject sun)
-            : base(location, diameter, viewport) {
+        public Planet(CoordPoint location, float diameter, Viewport viewport, float T, AttractingObject sun, string imageName)
+            : base(location, diameter, viewport, imageName) {
             t = T;
             rotateCenter = sun.Location;
             distanceToSun = CoordPoint.Distance(rotateCenter, Location);
@@ -56,7 +54,7 @@ namespace Core {
             Location = new CoordPoint((float)(distanceToSun * Math.Cos(t) + rotateCenter.X), (float)(distanceToSun * Math.Sin(t) + rotateCenter.Y));
 
             t += 0.01f;
-            base.Move();
+            SelfRotation += 0.05f;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Core {
         public static GameCore Instance { get { if(instance == null) instance = new GameCore(); return instance; } }
         public List<RenderObject> RenderObjects { get { return renderObjects; } }
         GameCore() {
-            SetViewport(new Viewport(0,0,300,300));
+            SetViewport(new Viewport(300,300,0,0));
             LoadGameObjects();
         }
         void SetViewport(Viewport viewport) {
@@ -24,10 +24,10 @@ namespace Core {
             objects = new List<GameObject>();
             List<AttractingObject> bodies = new List<AttractingObject>();
             //TODO Data Driven Factory
-            AttractingObject sun = new AttractingObject(new CoordPoint(300, 300), 100, Viewport);
-            bodies.Add(new Planet(new CoordPoint(10, 10), 50, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
-            bodies.Add(new Planet(new CoordPoint(10, 100), 40, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
-            bodies.Add(new Planet(new CoordPoint(100, 10), 30, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
+            AttractingObject sun = new AttractingObject(new CoordPoint(300, 300), 100, Viewport, "planet" + rnd.Next(1, 5));
+            bodies.Add(new Planet(new CoordPoint(10, 10), 50, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun, "planet" + rnd.Next(1, 5)));
+            bodies.Add(new Planet(new CoordPoint(10, 100), 40, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun, "planet" + rnd.Next(1, 5)));
+            bodies.Add(new Planet(new CoordPoint(100, 10), 30, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun, "planet" + rnd.Next(1, 5)));
             bodies.Add(sun);
 
             objects.Add( new Character(Viewport, bodies, new CoordPoint(0, 0)));
@@ -36,6 +36,9 @@ namespace Core {
 
         public void Update() {
             MoveObjects();
+            //Viewport.Centerpoint = objects.First().Location;
+            //Viewport.SetScale(5f / (objects.First() as Character).Speed);
+            //System.Diagnostics.Debug.WriteLine((objects.First() as Character).Speed.ToString());
             UpdateRenderObjects();
         }
 
