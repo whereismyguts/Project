@@ -43,8 +43,10 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ContentLoader.cs" />
+    <Compile Include="DrawPrimitives.cs" />
     <Compile Include="GameMain.cs" />
-    <Compile Include="Helper.cs" />
+    <Compile Include="WinAdapter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

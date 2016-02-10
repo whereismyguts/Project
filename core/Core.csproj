@@ -37,6 +37,8 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Objects\AttractingObject.cs" />
+    <Compile Include="RenderObject.cs" />
     <Compile Include="Viewport\Bounds.cs" />
     <Compile Include="Objects\Character.cs" />
     <Compile Include="Objects\GameObject.cs" />

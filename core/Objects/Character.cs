@@ -28,14 +28,26 @@ namespace Core {
 
         public override Bounds Bounds
         {
-            get { return new Bounds(Location - new CoordPoint(30, 30), Location + new CoordPoint(30, 30)); }
+            get { return new Bounds(Location - new CoordPoint(10, 10), Location + new CoordPoint(10, 10)); }
         }
+
+        public override string ContentString
+        {
+            get
+            {
+                return "ship1";
+            }
+        }
+
         public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location) :base(viewport) {
             AttractingObjects = objects;
             EngineSpeed = new CoordPoint(0, 0);
             Location = location;
-            Mass = 100;
+            Mass = 10;
             currentSpeedVector = new CoordPoint();
+        }
+        public override float GetRotation() {
+            return 0;
         }
         public override void Move() {
             if(!IsCollideSomething()) {
@@ -51,6 +63,7 @@ namespace Core {
                     return true;
             return false;
         }
+        
     }
 
 }

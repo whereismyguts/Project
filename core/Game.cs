@@ -4,35 +4,50 @@ using System.Linq;
 using System.Text;
 
 namespace Core {
-    public enum GameState { Menu, InGame }
     public class GameCore {
-        GameState state = GameState.Menu;
-        Viewport viewport;
-        Character character;
-        List<AttractingObject> objects;
-
-        public GameState State { get { return state; } }
-        public Character Character { get { return character; } }
-        public List<AttractingObject> Objects { get { return objects; } }
-        //World World { get; } = new World(1000, 1000);
-        public Viewport Viewport { get { return viewport; } }
-        public GameCore() {
-            SetViewport(new Viewport(0, 0));
+        public Viewport Viewport { get; set; }
+        List<GameObjectBase> objects;
+        List<RenderObject> renderObjects;
+        static GameCore instance;
+        Random rnd = new Random();
+        public static GameCore Instance { get { if(instance == null) instance = new GameCore(); return instance; } }
+        public List<RenderObject> RenderObjects { get { return renderObjects; } }
+        GameCore() {
+            SetViewport(new Viewport(0,0,300,300));
             LoadGameObjects();
         }
         void SetViewport(Viewport viewport) {
-            this.viewport = viewport;
+            this.Viewport = viewport;
         }
-        Random rnd = new Random();
+        
         void LoadGameObjects() {
-            objects = new List<AttractingObject>();
+            objects = new List<GameObjectBase>();
+            List<AttractingObject> bodies = new List<AttractingObject>();
             //TODO Data Driven Factory
-            AttractingObject sun = new AttractingObject(new CoordPoint(300, 300), 100, viewport);
-            objects.Add(new Planet(new CoordPoint(10, 10), 50, viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
-            objects.Add(new Planet(new CoordPoint(10, 100), 40, viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
-            objects.Add(new Planet(new CoordPoint(100, 10), 30, viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
-            objects.Add(sun);
-            character = new Character(viewport, objects, new CoordPoint(0,0));
+            AttractingObject sun = new AttractingObject(new CoordPoint(300, 300), 100, Viewport);
+            bodies.Add(new Planet(new CoordPoint(10, 10), 50, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
+            bodies.Add(new Planet(new CoordPoint(10, 100), 40, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
+            bodies.Add(new Planet(new CoordPoint(100, 10), 30, Viewport, (float)(rnd.NextDouble() * Math.PI * 2), sun));
+            bodies.Add(sun);
+
+            objects.Add( new Character(Viewport, bodies, new CoordPoint(0, 0)));
+            objects.AddRange(bodies);
+        }
+
+        public void Update() {
+            MoveObjects();
+            UpdateRenderObjects();
+        }
+
+        void UpdateRenderObjects() {
+            renderObjects = new List<RenderObject>();
+            foreach(GameObjectBase obj in objects)
+                renderObjects.Add(new RenderObject(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation()));
+        }
+
+        void MoveObjects() {
+            foreach(GameObjectBase obj in objects)
+                obj.Move();
         }
     }
 }
