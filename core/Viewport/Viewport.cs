@@ -3,7 +3,7 @@ namespace Core {
         CoordPoint centerpoint;
         float height;
         float width;
-        float scale =2f;
+        float scale =1f;
         public CoordPoint Centerpoint
         {
             get { return centerpoint; }

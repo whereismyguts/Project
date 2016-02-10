@@ -1,25 +1,24 @@
 ﻿using System;
 
 namespace Core {
-    public abstract class GameObjectBase {
-        public float Mass { get; set; }
+    public abstract class GameObject {
+        protected internal float Mass { get; set; }
         internal CoordPoint Location { get; set; }
-        public string Image { get; set; }
-        public abstract Bounds Bounds { get; }
-        public abstract string ContentString { get; }
+        protected string Image { get; set; }
+        protected internal abstract Bounds Bounds { get; }
+        protected internal abstract string ContentString { get; }
         protected Viewport Viewport { get; }
-        public bool IsVisible { get { return Viewport.Bounds.isIntersect(Bounds); } }
-
-        public GameObjectBase(Viewport viewport) {
+        protected bool IsVisible { get { return Viewport.Bounds.isIntersect(Bounds); } }
+        protected GameObject(Viewport viewport) {
             Viewport = viewport;
         }
-        public Bounds GetScreenBounds() {
+        protected internal Bounds GetScreenBounds() {
             //return Bounds;
-            CoordPoint lt = new CoordPoint(Bounds.LeftTop.X - Viewport.Bounds.X, Bounds.Y - Viewport.Bounds.Y)*Viewport.Scale;
+            CoordPoint lt = new CoordPoint(Bounds.LeftTop.X - Viewport.Bounds.X, Bounds.Y - Viewport.Bounds.Y) * Viewport.Scale;
             CoordPoint delta = new CoordPoint(Bounds.Width, Bounds.Height) * (Viewport.Scale / 2);
-            return new Bounds(lt-delta, lt +delta);
+            return new Bounds(lt - delta, lt + delta);
         }
-        public abstract void Move();
-        public abstract float GetRotation();
+        protected internal abstract void Move();
+        protected internal abstract float GetRotation();
     }
 }

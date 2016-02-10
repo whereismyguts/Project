@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Core {
-    public class Character : GameObjectBase {
+    public class Character : GameObject {
         const float gravitationConstant = 0.6f;
-        const float inertiaFactor = 0.05f;
-
-        private CoordPoint CalcSummaryForceVector() {
-            CoordPoint vector = new CoordPoint(EngineSpeed);
+        const float inertiaFactor = 0.5f;
+        CoordPoint engineSpeed;
+        CoordPoint currentSpeedVector;
+        CoordPoint CalcSummaryForceVector() {
+            CoordPoint vector = new CoordPoint(engineSpeed);
             foreach(var obj in AttractingObjects) {
                 var unary = (obj.Location - Location).UnaryVector;
                 var force = AttractForce(obj);
@@ -16,54 +17,38 @@ namespace Core {
             }
             return vector;
         }
-
-        float AttractForce(GameObjectBase obj) {
+        float AttractForce(GameObject obj) {
             float dist = CoordPoint.Distance(obj.Location, Location);
-            return this.Mass*obj.Mass/(dist*dist)*gravitationConstant;
+            return this.Mass * obj.Mass / (dist * dist) * gravitationConstant;
         }
-
-        public CoordPoint EngineSpeed { get; }
         List<AttractingObject> AttractingObjects;
-        CoordPoint currentSpeedVector;
-
-        public override Bounds Bounds
+        protected internal override Bounds Bounds
         {
             get { return new Bounds(Location - new CoordPoint(10, 10), Location + new CoordPoint(10, 10)); }
         }
-
-        public override string ContentString
-        {
-            get
-            {
-                return "ship1";
-            }
-        }
-
-        public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location) :base(viewport) {
+        protected internal override string ContentString { get { return "ship1"; } }
+        public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location) : base(viewport) {
             AttractingObjects = objects;
-            EngineSpeed = new CoordPoint(0, 0);
+            engineSpeed = new CoordPoint(-.1f, 0);
             Location = location;
             Mass = 10;
             currentSpeedVector = new CoordPoint();
         }
-        public override float GetRotation() {
+        protected internal override float GetRotation() {
             return 0;
         }
-        public override void Move() {
+        protected internal override void Move() {
             if(!IsCollideSomething()) {
                 currentSpeedVector += CalcSummaryForceVector();
                 this.Location += currentSpeedVector;
             }
             currentSpeedVector *= inertiaFactor;
         }
-
         bool IsCollideSomething() {
             foreach(var obj in AttractingObjects)
                 if(obj.Bounds.isIntersect(Bounds))
                     return true;
             return false;
         }
-        
     }
-
 }

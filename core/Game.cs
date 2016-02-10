@@ -6,7 +6,7 @@ using System.Text;
 namespace Core {
     public class GameCore {
         public Viewport Viewport { get; set; }
-        List<GameObjectBase> objects;
+        List<GameObject> objects;
         List<RenderObject> renderObjects;
         static GameCore instance;
         Random rnd = new Random();
@@ -21,7 +21,7 @@ namespace Core {
         }
         
         void LoadGameObjects() {
-            objects = new List<GameObjectBase>();
+            objects = new List<GameObject>();
             List<AttractingObject> bodies = new List<AttractingObject>();
             //TODO Data Driven Factory
             AttractingObject sun = new AttractingObject(new CoordPoint(300, 300), 100, Viewport);
@@ -41,12 +41,12 @@ namespace Core {
 
         void UpdateRenderObjects() {
             renderObjects = new List<RenderObject>();
-            foreach(GameObjectBase obj in objects)
+            foreach(GameObject obj in objects)
                 renderObjects.Add(new RenderObject(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation()));
         }
 
         void MoveObjects() {
-            foreach(GameObjectBase obj in objects)
+            foreach(GameObject obj in objects)
                 obj.Move();
         }
     }
