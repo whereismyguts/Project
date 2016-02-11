@@ -46,10 +46,10 @@ namespace Core {
             return string.Format("Bounds: {0}:{1} | Size: {2}x{3} | Centerpoint: {4}", Bounds.LeftTop, Bounds.RightBottom, width, height, Centerpoint);
         }
         public void ZoomIn() {
-            scale -= .01f;
+            scale += .01f;
         }
         public void ZoomOut() {
-            scale += .01f;
+            scale -= .01f;
         }
     }
 }

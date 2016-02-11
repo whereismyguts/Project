@@ -14,7 +14,7 @@ namespace Core {
         public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location)
             : base(viewport) {
             AttractingObjects = objects;
-            engineSpeed = new CoordPoint(-.1f, 0);
+            engineSpeed = new CoordPoint();
             Location = location;
             Mass = 10;
             currentSpeedVector = new CoordPoint();

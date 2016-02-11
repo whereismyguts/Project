@@ -23,10 +23,11 @@ namespace Core {
         protected internal abstract float GetRotation();
         protected internal Bounds GetScreenBounds() {
 
+            
             //return Bounds;
             var lt = new CoordPoint(Bounds.LeftTop.X - Viewport.Bounds.X, Bounds.Y - Viewport.Bounds.Y) * Viewport.Scale;
-            var delta = new CoordPoint(Bounds.Width, Bounds.Height) * (Viewport.Scale / 2);
-            return new Bounds(lt - delta, lt + delta);
+            var delta = new CoordPoint(Bounds.Width, Bounds.Height) * (Viewport.Scale );
+            return new Bounds(lt - delta, lt + delta);// + new CoordPoint(Viewport.Width, Viewport.Height) ;
         }
         protected internal abstract void Move();
     }
