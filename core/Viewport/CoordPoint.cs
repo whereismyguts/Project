@@ -6,12 +6,14 @@ namespace Core {
     public class CoordPoint {
         float x;
         float y;
-
         public static float Distance(CoordPoint p1, CoordPoint p2) {
             return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
         public float Length {
             get { return Distance(new CoordPoint(), this); }
+        }
+        public static CoordPoint operator -(CoordPoint p1, CoordPoint p2) {
+            return new CoordPoint(p1.X - p2.X, p1.Y - p2.Y);
         }
         public static CoordPoint operator +(CoordPoint p1, CoordPoint p2) {
             return new CoordPoint(p1.X + p2.X, p1.Y + p2.Y);
@@ -27,10 +29,6 @@ namespace Core {
                 float length = (float)Math.Sqrt(x * x + y * y);
                 return this / length;
             }
-        }
-
-        public static CoordPoint operator -(CoordPoint p1, CoordPoint p2) {
-            return new CoordPoint(p1.X - p2.X, p1.Y - p2.Y);
         }
         public float X
         {

@@ -3,8 +3,8 @@
 namespace Core {
     public abstract class GameObject {
         protected internal float Mass { get; set; }
-        internal CoordPoint Location { get; set; }
         protected string Image { get; set; }
+        internal CoordPoint Location { get; set; }
         protected internal abstract Bounds Bounds { get; }
         protected internal abstract string ContentString { get; }
         protected Viewport Viewport { get; }
@@ -13,6 +13,13 @@ namespace Core {
             Viewport = viewport;
         }
         protected internal Bounds GetScreenBounds() {
+            Bounds A = Bounds;
+            CoordPoint O_ = Viewport.Centerpoint;
+
+            Bounds O_A = A - O_;
+            Bounds O_Ascaled = O_A * Viewport.Scale;
+            Bounds OAscaled = O_Ascaled + O_;
+            return OAscaled;
             //return Bounds;
             CoordPoint lt = new CoordPoint(Bounds.LeftTop.X - Viewport.Bounds.X, Bounds.Y - Viewport.Bounds.Y) * Viewport.Scale;
             CoordPoint delta = new CoordPoint(Bounds.Width, Bounds.Height) * (Viewport.Scale / 2);
