@@ -4,8 +4,8 @@ using System.Linq;
 
 namespace Core {
     public class Character : GameObject {
-        const float gravitationConstant = 0.6f;
-        const float inertiaFactor = 0.5f;
+        const float gravitationConstant = .6f;
+        const float inertiaFactor = .5f;
         CoordPoint engineSpeed;
         CoordPoint currentSpeedVector;
         CoordPoint CalcSummaryForceVector() {
@@ -17,19 +17,12 @@ namespace Core {
             }
             return vector;
         }
-        float AttractForce(GameObject obj) {
-            float dist = CoordPoint.Distance(obj.Location, Location);
-            return this.Mass * obj.Mass / (dist * dist) * gravitationConstant;
-        }
         List<AttractingObject> AttractingObjects;
-        protected internal override Bounds Bounds
-        {
-            get { return new Bounds(Location - new CoordPoint(10, 10), Location + new CoordPoint(10, 10)); }
-        }
+
+        public float Speed { get { return CalcSummaryForceVector().Length; } }
+        protected internal override Bounds Bounds { get { return new Bounds(Location - new CoordPoint(10, 10), Location + new CoordPoint(10, 10)); } }
         protected internal override string ContentString { get { return "ship1"; } }
-        public float Speed {
-            get { return CalcSummaryForceVector().Length; }
-        }
+
         public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location) : base(viewport) {
             AttractingObjects = objects;
             engineSpeed = new CoordPoint(-.1f, 0);
@@ -37,6 +30,7 @@ namespace Core {
             Mass = 10;
             currentSpeedVector = new CoordPoint();
         }
+
         protected internal override float GetRotation() {
             return 0;
         }
@@ -52,6 +46,10 @@ namespace Core {
                 if(obj.Bounds.isIntersect(Bounds))
                     return true;
             return false;
+        }
+        float AttractForce(GameObject obj) {
+            float dist = CoordPoint.Distance(obj.Location, Location);
+            return this.Mass * obj.Mass / (dist * dist) * gravitationConstant;
         }
     }
 }
