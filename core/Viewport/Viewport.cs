@@ -3,13 +3,13 @@
 namespace Core {
     public class Viewport {
         float height;
-        float scale = 1f;
+        float scale = .2f;
         float width;
 
         public Viewport(float x, float y, float w, float h) {
             Centerpoint = new CoordPoint(x, y);
-            this.width = w;
-            this.height = h;
+            width = w;
+            height = h;
         }
 
         public Bounds Bounds {

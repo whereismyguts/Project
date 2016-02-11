@@ -10,6 +10,11 @@ namespace Core {
             RightBottom = rb;
         }
 
+        public CoordPoint CenterPoint {
+            get {
+                return (LeftTop + RightBottom) / 2f;
+            }
+        }
         public float Height {
             get {
                 return Math.Abs(RightBottom.Y - LeftTop.Y);
@@ -18,16 +23,6 @@ namespace Core {
         public float Width {
             get {
                 return Math.Abs(RightBottom.X - LeftTop.X);
-            }
-        }
-        public float X {
-            get {
-                return LeftTop.X;
-            }
-        }
-        public float Y {
-            get {
-                return LeftTop.Y;
             }
         }
 

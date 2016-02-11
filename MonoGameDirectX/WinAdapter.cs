@@ -7,7 +7,7 @@ using System.Linq;
 namespace MonoGameDirectX {
     public static class WinAdapter {
         public static Rectangle ToRectangle(Bounds bounds) {
-            return new Rectangle((int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height);
+            return new Rectangle((int)bounds.LeftTop.X, (int)bounds.LeftTop.Y, (int)bounds.Width, (int)bounds.Height);
         }
     }
 }
