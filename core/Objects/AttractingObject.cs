@@ -4,14 +4,6 @@ namespace Core {
     public class AttractingObject : GameObject {
         float radius;
 
-        public AttractingObject(CoordPoint location, float diameter, Viewport viewport, string imageName)
-            : base(viewport) {
-            radius = diameter / 2.0f;
-            Location = location;
-            Mass = diameter * 10;
-            ImageName = imageName;
-        }
-
         protected float SelfRotation { get; set; }
 
         protected internal override Bounds Bounds {
@@ -25,6 +17,14 @@ namespace Core {
             }
         }
         protected internal string ImageName { get; protected set; }
+
+        public AttractingObject(CoordPoint location, float diameter, Viewport viewport, string imageName)
+            : base(viewport) {
+            radius = diameter / 2.0f;
+            Location = location;
+            Mass = diameter * 10;
+            ImageName = imageName;
+        }
 
         protected internal override float GetRotation() {
             return SelfRotation;
@@ -40,17 +40,17 @@ namespace Core {
         AttractingObject rotateCenter;
         float t = 0;
 
+        float DistanceToSun {
+            get {
+                return CoordPoint.Distance(rotateCenter.Location, Location);
+            }
+        }
+
         public Planet(CoordPoint location, float diameter, Viewport viewport, float T, AttractingObject rotateCenter, string imageName, bool clockwise)
             : base(location, diameter, viewport, imageName) {
             t = T;
             this.rotateCenter = rotateCenter;
             this.clockwise = clockwise;
-        }
-
-        float DistanceToSun {
-            get {
-                return CoordPoint.Distance(rotateCenter.Location, Location);
-            }
         }
 
         protected internal override void Move() {

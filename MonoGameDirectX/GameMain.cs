@@ -75,6 +75,8 @@ namespace MonoGameDirectX {
                 GameCore.Instance.Viewport.ZoomIn();
             if (Keyboard.GetState().IsKeyDown(Keys.X))
                 GameCore.Instance.Viewport.ZoomOut();
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                GameCore.Instance.Ship.Accselerate();
 
             mousePosition = Mouse.GetState().Position;
             base.Update(gameTime);

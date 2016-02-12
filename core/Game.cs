@@ -8,11 +8,7 @@ namespace Core {
         List<GameObject> objects;
         List<RenderObject> renderObjects;
         Random rnd = new Random();
-
-        GameCore() {
-            Viewport = new Viewport(300, 300, 0, 0);
-            LoadGameObjects();
-        }
+        Character ship;
 
         public static GameCore Instance {
             get {
@@ -26,7 +22,17 @@ namespace Core {
                 return renderObjects;
             }
         }
+        public Character Ship {
+            get {
+                return ship;
+            }
+        }
         public Viewport Viewport { get; set; }
+
+        GameCore() {
+            Viewport = new Viewport(300, 300, 0, 0);
+            LoadGameObjects();
+        }
 
         float GetRandomT() {
             return (float)(rnd.NextDouble() * Math.PI * 2);
@@ -36,16 +42,16 @@ namespace Core {
             var bodies = new List<AttractingObject>();
             //TODO Data Driven Factory
             //TODO Data Driven Factory
-            var sun = new AttractingObject(new CoordPoint(300, 300), 100, Viewport, "planet" + rnd.Next(1, 5));
-            bodies.Add(new Planet(new CoordPoint(10, 10), 50, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
-            bodies.Add(new Planet(new CoordPoint(10, 100), 40, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), false));
-            var planet_with_moon = new Planet(new CoordPoint(100, 10), 30, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true);
-            var moon = new Planet(planet_with_moon.Location + new CoordPoint(20, 20), 10, Viewport, GetRandomT(), planet_with_moon, "planet3", false);
+            var sun = new AttractingObject(new CoordPoint(3000, 3000), 1000, Viewport, "planet" + rnd.Next(1, 5));
+            bodies.Add(new Planet(new CoordPoint(100, 100), 500, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
+            bodies.Add(new Planet(new CoordPoint(100, 1000), 400, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), false));
+            var planet_with_moon = new Planet(new CoordPoint(1000, 100), 300, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true);
+            var moon = new Planet(planet_with_moon.Location + new CoordPoint(200, 200), 100, Viewport, GetRandomT(), planet_with_moon, "planet3", false);
             bodies.Add(planet_with_moon);
             bodies.Add(moon);
             bodies.Add(sun);
-
-            objects.Add(new Character(Viewport, bodies, new CoordPoint(0, 0)));
+            ship = new Character(Viewport, bodies, new CoordPoint(0, 0));
+            objects.Add(ship);
             objects.AddRange(bodies);
         }
         void MoveObjects() {

@@ -2,10 +2,6 @@
 
 namespace Core {
     public abstract class GameObject {
-        protected GameObject(Viewport viewport) {
-            Viewport = viewport;
-        }
-
         protected string Image { get; set; }
         protected bool IsVisible {
             get {
@@ -19,6 +15,10 @@ namespace Core {
         protected internal abstract Bounds Bounds { get; }
         protected internal abstract string ContentString { get; }
         protected internal float Mass { get; set; }
+
+        protected GameObject(Viewport viewport) {
+            Viewport = viewport;
+        }
 
         protected internal abstract float GetRotation();
         protected internal Bounds GetScreenBounds() {

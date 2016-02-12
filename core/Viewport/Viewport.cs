@@ -6,12 +6,6 @@ namespace Core {
         float scale = .2f;
         float width;
 
-        public Viewport(float x, float y, float w, float h) {
-            Centerpoint = new CoordPoint(x, y);
-            width = w;
-            height = h;
-        }
-
         public Bounds Bounds {
             get {
                 return new Bounds(Centerpoint - new CoordPoint(width / 2, height / 2), Centerpoint + new CoordPoint(width / 2, height / 2));
@@ -34,6 +28,12 @@ namespace Core {
             }
         }
 
+        public Viewport(float x, float y, float w, float h) {
+            Centerpoint = new CoordPoint(x, y);
+            width = w;
+            height = h;
+        }
+
         internal void SetScale(float scale) {
             this.scale = scale;
         }
@@ -50,6 +50,8 @@ namespace Core {
         }
         public void ZoomOut() {
             scale -= .01f;
+            if (scale < 0)
+                scale = 0;
         }
     }
 }

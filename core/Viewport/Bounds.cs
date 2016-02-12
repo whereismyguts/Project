@@ -5,11 +5,6 @@ namespace Core {
         public CoordPoint LeftTop;
         public CoordPoint RightBottom;
 
-        public Bounds(CoordPoint lt, CoordPoint rb) {
-            LeftTop = lt;
-            RightBottom = rb;
-        }
-
         public CoordPoint CenterPoint {
             get {
                 return (LeftTop + RightBottom) / 2f;
@@ -24,6 +19,11 @@ namespace Core {
             get {
                 return Math.Abs(RightBottom.X - LeftTop.X);
             }
+        }
+
+        public Bounds(CoordPoint lt, CoordPoint rb) {
+            LeftTop = lt;
+            RightBottom = rb;
         }
 
         public  bool isIntersect(Bounds obj) {

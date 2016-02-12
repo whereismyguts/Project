@@ -8,17 +8,9 @@ namespace Core {
         const float inertiaFactor = .5f;
 
         List<AttractingObject> AttractingObjects;
-        CoordPoint currentSpeedVector;
-        CoordPoint engineSpeed;
-
-        public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location)
-            : base(viewport) {
-            AttractingObjects = objects;
-            engineSpeed = new CoordPoint();
-            Location = location;
-            Mass = 10;
-            currentSpeedVector = new CoordPoint();
-        }
+        CoordPoint currentTotalSpeedVector;
+        float enginePower;
+        CoordPoint engineVector;
 
         protected internal override Bounds Bounds {
             get {
@@ -31,18 +23,22 @@ namespace Core {
             }
         }
 
-        public float Speed {
-            get {
-                return CalcSummaryForceVector().Length;
-            }
+        public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location)
+            : base(viewport) {
+            AttractingObjects = objects;
+            engineVector = new CoordPoint(0, -1);
+            enginePower = 0;
+            Location = location;
+            Mass = 10;
+            currentTotalSpeedVector = new CoordPoint();
         }
 
         float AttractForce(GameObject obj) {
             var dist = CoordPoint.Distance(obj.Location, Location);
-            return this.Mass * obj.Mass / (dist * dist) * gravitationConstant;
+            return Mass * obj.Mass / (dist * dist) * gravitationConstant;
         }
         CoordPoint CalcSummaryForceVector() {
-            var vector = new CoordPoint(engineSpeed);
+            var vector = new CoordPoint(engineVector).UnaryVector * enginePower;
             foreach (var obj in AttractingObjects) {
                 var unary = (obj.Location - Location).UnaryVector;
                 var force = AttractForce(obj);
@@ -62,10 +58,18 @@ namespace Core {
         }
         protected internal override void Move() {
             if (!IsCollideSomething()) {
-                currentSpeedVector += CalcSummaryForceVector();
-                Location += currentSpeedVector;
+                currentTotalSpeedVector += CalcSummaryForceVector();
+                Location += currentTotalSpeedVector;
             }
-            currentSpeedVector *= inertiaFactor;
+            currentTotalSpeedVector *= inertiaFactor;
+
+            enginePower -= .1f;
+            if (enginePower < 0)
+                enginePower = 0;
+        }
+
+        public void Accselerate() {
+            enginePower += 1;
         }
     }
 }

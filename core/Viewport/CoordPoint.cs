@@ -4,20 +4,6 @@ using System.Linq;
 
 namespace Core {
     public class CoordPoint {
-
-        public CoordPoint() {
-            X = 0;
-            Y = 0;
-        }
-        public CoordPoint(CoordPoint vector) {
-            X = vector.X;
-            Y = vector.Y;
-        }
-        public CoordPoint(float x, float y) {
-            X = x;
-            Y = y;
-        }
-
         internal CoordPoint UnaryVector {
             get {
                 var length = (float)Math.Sqrt(X * X + Y * Y);
@@ -32,6 +18,19 @@ namespace Core {
         }
         public float X { get; set; }
         public float Y { get; set; }
+
+        public CoordPoint() {
+            X = 0;
+            Y = 0;
+        }
+        public CoordPoint(CoordPoint vector) {
+            X = vector.X;
+            Y = vector.Y;
+        }
+        public CoordPoint(float x, float y) {
+            X = x;
+            Y = y;
+        }
 
         public static float Distance(CoordPoint p1, CoordPoint p2) {
             return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
