@@ -50,6 +50,9 @@ namespace Core {
             ship = new Character(Viewport, bodies, new CoordPoint(0, 0));
             objects.Add(ship);
             objects.AddRange(bodies);
+
+            for (var i = 0; i < 1000; i++)
+                objects.Add(new Star(Viewport, GetCoord()));
         }
         void MoveObjects() {
             foreach (GameObject obj in objects)
@@ -59,6 +62,13 @@ namespace Core {
             renderObjects = new List<RenderObject>();
             foreach (GameObject obj in objects)
                 renderObjects.Add(new RenderObject(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation()));
+        }
+
+        internal CoordPoint GetCoord() {
+            return new CoordPoint(GetFloat(), GetFloat());
+        }
+        internal float GetFloat() {
+            return (float)rnd.Next(-1000, 1000);
         }
 
         public void Update() {

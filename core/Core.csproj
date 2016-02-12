@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Objects\AttractingObject.cs" />
+    <Compile Include="Objects\Star.cs" />
     <Compile Include="RenderObject.cs" />
     <Compile Include="Viewport\Bounds.cs" />
     <Compile Include="Objects\Character.cs" />

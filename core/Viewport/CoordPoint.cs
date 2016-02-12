@@ -62,6 +62,12 @@ namespace Core {
             return string.Format("(X:{0}, Y:{1}, L:{2})", X, Y, Length);
         }
 
+        public static CoordPoint operator -(CoordPoint p1, float a) {
+            return new CoordPoint(p1.X - a, p1.Y - a);
+        }
+        public static CoordPoint operator +(CoordPoint p1, float a) {
+            return new CoordPoint(p1.X + a, p1.Y + a);
+        }
         public static CoordPoint operator -(CoordPoint p1, CoordPoint p2) {
             return new CoordPoint(p1.X - p2.X, p1.Y - p2.Y);
         }

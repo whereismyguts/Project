@@ -28,13 +28,13 @@ namespace MonoGameDirectX {
             spriteBatch.Begin();
 
             foreach (RenderObject obj in GameCore.Instance.RenderObjects) {
-                Texture2D texture = contentLoader.GetTexture(obj.ContentString);
-                Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
-                //Rectangle boundsRect = WinAdapter.ToRectangle(obj.ScreenBounds);
-                //var textureRect = new Rectangle(boundsRect.Location + new Point(boundsRect.Width / 2, boundsRect.Height / 2), boundsRect.Size);
-                //   spriteBatch.Draw(texture, textureRect, null, Color.White, obj.Rotation, origin, SpriteEffects.None, 0);
-                Vector2 location = WinAdapter.ToVector2(obj.ScreenBounds);
-                spriteBatch.Draw(texture, location, null, Color.Red, 1f, origin, GameCore.Instance.Viewport.Scale, SpriteEffects.None, 0f);
+                var texture = contentLoader.GetTexture(obj.ContentString);
+                var origin = new Vector2(texture.Width / 2, texture.Height / 2);
+                var boundsRect = WinAdapter.ToRectangle(obj.ScreenBounds);
+                var textureRect = new Rectangle(boundsRect.Location + new Point(boundsRect.Width / 2, boundsRect.Height / 2), boundsRect.Size);
+                spriteBatch.Draw(texture, textureRect, null, Color.White, obj.Rotation, origin, SpriteEffects.None, 0);
+                //Vector2 location = WinAdapter.ToVector2(obj.ScreenBounds);
+                //spriteBatch.Draw(texture, location, null, Color.Red, 1f, origin, GameCore.Instance.Viewport.Scale, SpriteEffects.None, 0f);
             }
 
             primitiveDrawer.DrawLine(

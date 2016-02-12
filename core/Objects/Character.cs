@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Core {
-    public class Character : GameObject {
-        const float gravitationConstant = .6f;
+    public class Character: GameObject {
+        const float gravitationConstant = .015f;
         const float inertiaFactor = .5f;
 
         List<AttractingObject> AttractingObjects;
         float enginePower = 0;
+        CoordPoint totalSpeedVector;
 
         public CoordPoint direction = new CoordPoint(1, 0);
-        private CoordPoint totalSpeedVector;
 
         protected internal override Bounds Bounds {
             get {
@@ -31,22 +31,23 @@ namespace Core {
             Mass = 10;
         }
 
+        CoordPoint GetSummaryAttractingForcesVector() {
+            var vector = new CoordPoint();
+            foreach (var obj in AttractingObjects)
+                if (!Bounds.isIntersect(obj.Bounds)) {
+                    var force = gravitationConstant * obj.Mass * Mass / CoordPoint.Distance(obj.Location, Location);
+                    var direction = (obj.Location - Location).UnaryVector;
+                    vector += direction * force;
+                }
+            return vector;
+        }
+
         protected internal override float GetRotation() {
             return (float)(direction.Angle);
         }
         protected internal override void Move() {
             totalSpeedVector = direction * enginePower + GetSummaryAttractingForcesVector();
             Location += totalSpeedVector * inertiaFactor;
-        }
-
-        CoordPoint GetSummaryAttractingForcesVector() {
-            CoordPoint vector = new CoordPoint();
-            foreach(var obj in AttractingObjects) {
-                float force = gravitationConstant * obj.Mass * this.Mass / CoordPoint.Distance(obj.Location, this.Location);
-                CoordPoint direction = (this.Location - obj.Location).UnaryVector;
-                vector += direction*force;
-            }
-            return vector;
         }
 
         public void AccselerateF() {
