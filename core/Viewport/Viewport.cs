@@ -3,7 +3,7 @@
 namespace Core {
     public class Viewport {
         float height;
-        float scale = .2f;
+        float scale = 1f;
         float width;
 
         public Bounds Bounds {

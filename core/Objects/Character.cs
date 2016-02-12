@@ -8,13 +8,13 @@ namespace Core {
         const float inertiaFactor = .5f;
 
         List<AttractingObject> AttractingObjects;
-        CoordPoint currentTotalSpeedVector;
-        float enginePower;
-        CoordPoint engineVector;
+        float enginePower = 0;
+
+        public CoordPoint direction = new CoordPoint(1, 0);
 
         protected internal override Bounds Bounds {
             get {
-                return new Bounds(Location - new CoordPoint(10, 10), Location + new CoordPoint(10, 10));
+                return new Bounds(Location - new CoordPoint(5, 5), Location + new CoordPoint(5, 5));
             }
         }
         protected internal override string ContentString {
@@ -26,50 +26,28 @@ namespace Core {
         public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location)
             : base(viewport) {
             AttractingObjects = objects;
-            engineVector = new CoordPoint(0, -1);
-            enginePower = 0;
             Location = location;
             Mass = 10;
-            currentTotalSpeedVector = new CoordPoint();
-        }
-
-        float AttractForce(GameObject obj) {
-            var dist = CoordPoint.Distance(obj.Location, Location);
-            return Mass * obj.Mass / (dist * dist) * gravitationConstant;
-        }
-        CoordPoint CalcSummaryForceVector() {
-            var vector = new CoordPoint(engineVector).UnaryVector * enginePower;
-            foreach (var obj in AttractingObjects) {
-                var unary = (obj.Location - Location).UnaryVector;
-                var force = AttractForce(obj);
-                vector += unary * force;
-            }
-            return vector;
-        }
-        bool IsCollideSomething() {
-            foreach (var obj in AttractingObjects)
-                if (obj.Bounds.isIntersect(Bounds))
-                    return true;
-            return false;
         }
 
         protected internal override float GetRotation() {
-            return 0;
+            return (float)(direction.Angle);
         }
         protected internal override void Move() {
-            if (!IsCollideSomething()) {
-                currentTotalSpeedVector += CalcSummaryForceVector();
-                Location += currentTotalSpeedVector;
-            }
-            currentTotalSpeedVector *= inertiaFactor;
-
-            enginePower -= .1f;
-            if (enginePower < 0)
-                enginePower = 0;
+            Location += direction * enginePower;
         }
 
-        public void Accselerate() {
-            enginePower += 1;
+        public void AccselerateF() {
+            enginePower = 10;
+        }
+        public void RotateL() {
+            direction.Rotate(-.1f);
+        }
+        public void RotateR() {
+            direction.Rotate(.1f);
+        }
+        public void Stop() {
+            enginePower = 0;
         }
     }
 }

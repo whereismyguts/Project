@@ -21,11 +21,12 @@ namespace Core {
         }
 
         protected internal abstract float GetRotation();
-        protected internal Bounds GetScreenBounds() {
+        protected internal abstract void Move();
+
+        public  Bounds GetScreenBounds() {
             var centerPoint = (Bounds.CenterPoint - Viewport.Bounds.CenterPoint) * Viewport.Scale;
             var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) * Viewport.Scale;
             return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.Width, Viewport.Height) / 2 ;
         }
-        protected internal abstract void Move();
     }
 }

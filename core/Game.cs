@@ -42,13 +42,10 @@ namespace Core {
             var bodies = new List<AttractingObject>();
             //TODO Data Driven Factory
             //TODO Data Driven Factory
-            var sun = new AttractingObject(new CoordPoint(3000, 3000), 1000, Viewport, "planet" + rnd.Next(1, 5));
-            bodies.Add(new Planet(new CoordPoint(100, 100), 500, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
-            bodies.Add(new Planet(new CoordPoint(100, 1000), 400, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), false));
-            var planet_with_moon = new Planet(new CoordPoint(1000, 100), 300, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true);
-            var moon = new Planet(planet_with_moon.Location + new CoordPoint(200, 200), 100, Viewport, GetRandomT(), planet_with_moon, "planet3", false);
-            bodies.Add(planet_with_moon);
-            bodies.Add(moon);
+            var sun = new AttractingObject(new CoordPoint(300, 300), 100, Viewport, "planet" + rnd.Next(1, 5));
+            bodies.Add(new Planet(new CoordPoint(10, 10), 50, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
+            bodies.Add(new Planet(new CoordPoint(10, 100), 40, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), false));
+            bodies.Add(new Planet(new CoordPoint(100, 10), 00, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
             bodies.Add(sun);
             ship = new Character(Viewport, bodies, new CoordPoint(0, 0));
             objects.Add(ship);

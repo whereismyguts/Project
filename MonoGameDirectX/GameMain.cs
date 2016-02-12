@@ -37,7 +37,12 @@ namespace MonoGameDirectX {
                 // primitiveDrawer.DrawRect(boundsRect, spriteBatch);
             }
 
-            spriteBatch.DrawString(font, GameCore.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.Red);
+            primitiveDrawer.DrawLine(
+                WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds()).Center.ToVector2(),
+                (WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds() + GameCore.Instance.Ship.direction * 50).Center.ToVector2()),
+                spriteBatch);
+
+            spriteBatch.DrawString(font, GameCore.Instance.Ship.direction.ToString(), new Vector2(0, 0), Color.Red);
             spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 5, 5), Color.White);
             //    spriteBatch.Draw(shipTexture, Helper.ToRectangle(ship.GetLocalBounds()), null, Color.White, ship.GetRotation(),null, SpriteEffects.None, 0f);
 
@@ -76,7 +81,16 @@ namespace MonoGameDirectX {
             if (Keyboard.GetState().IsKeyDown(Keys.X))
                 GameCore.Instance.Viewport.ZoomOut();
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                GameCore.Instance.Ship.Accselerate();
+                GameCore.Instance.Ship.AccselerateF();
+            else
+                GameCore.Instance.Ship.Stop();
+            //if(Keyboard.GetState().IsKeyDown(Keys.Down))
+            //    GameCore.Instance.Ship.AccselerateB();
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                GameCore.Instance.Ship.RotateL();
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                GameCore.Instance.Ship.RotateR();
+
 
             mousePosition = Mouse.GetState().Position;
             base.Update(gameTime);

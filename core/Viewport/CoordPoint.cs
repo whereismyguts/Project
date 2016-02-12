@@ -11,6 +11,18 @@ namespace Core {
             }
         }
 
+        public float Angle {
+            get {
+                var x2 = 0f;
+                var y2 = -1;
+                var dot = X * x2 + Y * y2;
+                var det = X * y2 - Y * x2;
+                var angle = Math.Atan2(det, dot);
+
+                //var angle = (Math.Atan2(0 - X, Y - (-1)));
+                return -(float)angle;
+            }
+        }
         public float Length {
             get {
                 return Distance(new CoordPoint(), this);
@@ -31,12 +43,23 @@ namespace Core {
             X = x;
             Y = y;
         }
+        public CoordPoint(double x, double y) {
+            X = (float)x;
+            Y = (float)y;
+        }
+
+        internal void Rotate(float angle) {
+            var newX = X * Math.Cos(angle) - Y * Math.Sin(angle);
+            var newY = X * Math.Sin(angle) + Y * Math.Cos(angle);
+            X = (float)newX;
+            Y = (float)newY;
+        }
 
         public static float Distance(CoordPoint p1, CoordPoint p2) {
             return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
         public override string ToString() {
-            return string.Format("({0}:{1})", X, Y);
+            return string.Format("(X:{0}, Y:{1}, L:{2})", X, Y, Length);
         }
 
         public static CoordPoint operator -(CoordPoint p1, CoordPoint p2) {

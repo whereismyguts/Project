@@ -58,7 +58,7 @@ namespace Core {
                 t = 0;
             Location = new CoordPoint((float)(DistanceToSun * Math.Cos(t) + rotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(t) + rotateCenter.Location.Y));
 
-            t += clockwise ? .01f : -.01f;
+            t += clockwise ? .001f : -.001f;
             SelfRotation += .05f;
         }
     }
