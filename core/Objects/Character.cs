@@ -11,6 +11,7 @@ namespace Core {
         float enginePower = 0;
 
         public CoordPoint direction = new CoordPoint(1, 0);
+        private CoordPoint totalSpeedVector;
 
         protected internal override Bounds Bounds {
             get {
@@ -34,7 +35,18 @@ namespace Core {
             return (float)(direction.Angle);
         }
         protected internal override void Move() {
-            Location += direction * enginePower;
+            totalSpeedVector = direction * enginePower + GetSummaryAttractingForcesVector();
+            Location += totalSpeedVector * inertiaFactor;
+        }
+
+        CoordPoint GetSummaryAttractingForcesVector() {
+            CoordPoint vector = new CoordPoint();
+            foreach(var obj in AttractingObjects) {
+                float force = gravitationConstant * obj.Mass * this.Mass / CoordPoint.Distance(obj.Location, this.Location);
+                CoordPoint direction = (this.Location - obj.Location).UnaryVector;
+                vector += direction*force;
+            }
+            return vector;
         }
 
         public void AccselerateF() {
