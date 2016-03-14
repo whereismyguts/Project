@@ -1,8 +1,4 @@
-﻿using FarseerPhysics;
-using FarseerPhysics.Collision.Shapes;
-using FarseerPhysics.Dynamics;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,16 +30,6 @@ namespace Core {
         public Viewport Viewport { get; set; }
 
         GameCore() {
-            World world = new World(new Vector2(0f, 9.82f));
-            Body myBody = new Body(world, new Vector2(0, 0));
-
-            myBody.BodyType = BodyType.Dynamic;
-            CircleShape circleShape = new CircleShape(0.5f, 1f);
-
-
-            Fixture fixture = myBody.CreateFixture(circleShape);
-
-
             Viewport = new Viewport(300, 300, 0, 0);
             LoadGameObjects();
         }
