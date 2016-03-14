@@ -15,7 +15,7 @@ namespace Core {
         }
         public static CoordPoint GravitationForceVector(GameObject obj1, GameObject obj2) {
             float force = CalcGravitationForce(obj1, obj2);
-            var direction = (obj1.Location - obj2.Location).UnaryVector;
+            var direction = (obj2.Location - obj1.Location).UnaryVector;
             return direction * force;
         }
     }
