@@ -4,9 +4,6 @@ using System.Linq;
 
 namespace Core {
     public class Character: GameObject {
-        const float gravitationConstant = .015f;
-        const float inertiaFactor = .99f;
-
         List<AttractingObject> AttractingObjects;
         float enginePower = 0;
         CoordPoint totalSpeedVector;
@@ -31,27 +28,28 @@ namespace Core {
             Mass = 10;
         }
 
-        CoordPoint GetSummaryAttractingForcesVector() {
+        CoordPoint GetSummaryAttractingForce() {
             var vector = new CoordPoint();
             foreach (var obj in AttractingObjects)
-                if (!Bounds.isIntersect(obj.Bounds)) {
-                    var force = gravitationConstant * obj.Mass * Mass / CoordPoint.Distance(obj.Location, Location);
-                    var direction = (obj.Location - Location).UnaryVector;
-                    vector += direction * force;
-                }
+                if (!Bounds.isIntersect(obj.Bounds)) 
+                    vector += PhysicsHelper.GravitationForceVector(this, obj);
+                
             return vector;
         }
+
+        
+
 
         protected internal override float GetRotation() {
             return (float)(direction.Angle);
         }
         protected internal override void Move() {
-            totalSpeedVector += direction * enginePower + GetSummaryAttractingForcesVector();
-            Location += totalSpeedVector * inertiaFactor;
+            totalSpeedVector += direction * enginePower + GetSummaryAttractingForce();
+            Location += totalSpeedVector * PhysicsHelper.Inertia;
         }
 
         public void AccselerateF() {
-            enginePower +=.5f;
+            enginePower =.1f;
         }
         public void RotateL() {
             direction.Rotate(-.1f);
