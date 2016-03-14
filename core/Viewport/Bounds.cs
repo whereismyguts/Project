@@ -30,7 +30,9 @@ namespace Core {
             return (Math.Abs(LeftTop.X - obj.LeftTop.X) * 2 < (Width + obj.Width)) &&
             (Math.Abs(LeftTop.Y - obj.LeftTop.Y) * 2 < (Height + obj.Height));
         }
-
+        public static Bounds operator /(Bounds p1, float k) {
+            return new Bounds(p1.LeftTop / k, p1.RightBottom / k);
+        }
         public static Bounds operator *(Bounds p1, float k) {
             return new Bounds(p1.LeftTop * k, p1.RightBottom * k);
         }

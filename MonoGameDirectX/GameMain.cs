@@ -60,6 +60,7 @@ namespace MonoGameDirectX {
             dummyTexture.SetData(new Color[] { Color.White });
 
             contentLoader = new ContentLoader(Content);
+            contentLoader.SetTexture("star");
             contentLoader.SetTexture("planet1");
             contentLoader.SetTexture("planet2");
             contentLoader.SetTexture("planet3");

@@ -72,6 +72,10 @@ namespace Core {
             return new CoordPoint(p1.X - p2.X, p1.Y - p2.Y);
         }
         public static CoordPoint operator +(CoordPoint p1, CoordPoint p2) {
+            if(p2 == null)
+                return p1;
+            if(p1 == null)
+                return p2;
             return new CoordPoint(p1.X + p2.X, p1.Y + p2.Y);
         }
         public static CoordPoint operator /(CoordPoint vector, float factor) {

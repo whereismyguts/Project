@@ -22,7 +22,7 @@ namespace Core {
             : base(viewport) {
             radius = diameter / 2.0f;
             Location = location;
-            Mass = diameter * 10;
+            Mass = diameter ;
             ImageName = imageName;
         }
 

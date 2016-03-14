@@ -5,7 +5,7 @@ using System.Linq;
 namespace Core {
     public class Character: GameObject {
         const float gravitationConstant = .015f;
-        const float inertiaFactor = .5f;
+        const float inertiaFactor = .99f;
 
         List<AttractingObject> AttractingObjects;
         float enginePower = 0;
@@ -46,12 +46,12 @@ namespace Core {
             return (float)(direction.Angle);
         }
         protected internal override void Move() {
-            totalSpeedVector = direction * enginePower + GetSummaryAttractingForcesVector();
+            totalSpeedVector += direction * enginePower + GetSummaryAttractingForcesVector();
             Location += totalSpeedVector * inertiaFactor;
         }
 
         public void AccselerateF() {
-            enginePower = 10;
+            enginePower +=.5f;
         }
         public void RotateL() {
             direction.Rotate(-.1f);

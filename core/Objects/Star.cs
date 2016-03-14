@@ -13,14 +13,15 @@ namespace Core {
         }
         protected internal override string ContentString {
             get {
-                return "planet3";
+                return "star";
             }
         }
 
         protected internal Star(Viewport viewport, CoordPoint location)
             : base(viewport) {
             Location = location;
-            t = 0;
+            t = location.Length;
+           
         }
 
         protected internal override float GetRotation() {
