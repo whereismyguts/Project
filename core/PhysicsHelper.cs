@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core {
     public static class PhysicsHelper {
-        public const float Gravitation = .015f;
+        public const float Gravitation = .0055f;
         /// <summary>0 - stop moving immediately, 1.0 -moving never stops</summary>
         public const float MovingInertia = .7f;
         public const float RotationInertia = .9f;

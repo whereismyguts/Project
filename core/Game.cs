@@ -41,16 +41,16 @@ namespace Core {
             objects = new List<GameObject>();
             var bodies = new List<AttractingObject>();
             //TODO Data Driven Factory
-            var sun = new AttractingObject(new CoordPoint(300, 300), 100, Viewport, "planet" + rnd.Next(1, 5));
-            bodies.Add(new Planet(new CoordPoint(10, 10), 50, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
-            bodies.Add(new Planet(new CoordPoint(10, 100), 40, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), false));
-            bodies.Add(new Planet(new CoordPoint(100, 10), 00, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
+            var sun = new AttractingObject(new CoordPoint(0, 0), 5500, Viewport, "planet" + rnd.Next(1, 5));
+            bodies.Add(new Planet(new CoordPoint(9600, 9600), 150, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
+            bodies.Add(new Planet(new CoordPoint(8100, 8100), 100, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), false));
+            bodies.Add(new Planet(new CoordPoint(10000, 10000), 200, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
             bodies.Add(sun);
-            ship = new Character(Viewport, bodies, new CoordPoint(0, 0));
+            ship = new Character(Viewport, bodies, new CoordPoint(10100, 10100));
             objects.Add(ship);
             objects.AddRange(bodies);
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 100; i++)
                 objects.Add(new Star(Viewport, GetCoord()));
         }
         void MoveObjects() {
