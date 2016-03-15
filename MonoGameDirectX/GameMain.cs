@@ -39,10 +39,10 @@ namespace MonoGameDirectX {
 
             primitiveDrawer.DrawLine(
                 WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds()).Center.ToVector2(),
-                (WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds() + GameCore.Instance.Ship.direction * 50).Center.ToVector2()),
+                (WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds() + GameCore.Instance.Ship.Direction * 50).Center.ToVector2()),
                 spriteBatch);
 
-            spriteBatch.DrawString(font, GameCore.Instance.Ship.direction.ToString(), new Vector2(0, 0), Color.Red);
+            spriteBatch.DrawString(font, GameCore.Instance.Ship.Direction.ToString(), new Vector2(0, 0), Color.Red);
             spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 5, 5), Color.White);
 
             spriteBatch.End();
@@ -80,9 +80,9 @@ namespace MonoGameDirectX {
             if (Keyboard.GetState().IsKeyDown(Keys.X))
                 GameCore.Instance.Viewport.ZoomOut();
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                GameCore.Instance.Ship.AccselerateF();
+                GameCore.Instance.Ship.Accselerate();
             else
-                GameCore.Instance.Ship.Stop();
+                GameCore.Instance.Ship.StopEngine();
             //if(Keyboard.GetState().IsKeyDown(Keys.Down))
             //    GameCore.Instance.Ship.AccselerateB();
             if (Keyboard.GetState().IsKeyDown(Keys.Left))

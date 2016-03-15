@@ -49,6 +49,8 @@ namespace Core {
         }
 
         internal void Rotate(float angle) {
+            if(angle == 0)
+                return;
             var newX = X * Math.Cos(angle) - Y * Math.Sin(angle);
             var newY = X * Math.Sin(angle) + Y * Math.Cos(angle);
             X = (float)newX;

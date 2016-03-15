@@ -8,7 +8,10 @@ namespace Core {
         float enginePower = 0;
         CoordPoint totalSpeedVector;
 
-        public CoordPoint direction = new CoordPoint(1, 0);
+        float angleSpeed = 0;
+        CoordPoint direction = new CoordPoint(1, 0);
+
+        public CoordPoint Direction { get { return direction; } }
 
         protected internal override Bounds Bounds {
             get {
@@ -30,34 +33,31 @@ namespace Core {
 
         CoordPoint GetSummaryAttractingForce() {
             var vector = new CoordPoint();
-            foreach (var obj in AttractingObjects)
-                if (!Bounds.isIntersect(obj.Bounds)) 
+            foreach(var obj in AttractingObjects)
+                if(!Bounds.isIntersect(obj.Bounds))
                     vector += PhysicsHelper.GravitationForceVector(this, obj);
-                
+
             return vector;
         }
-
-        
-
-
         protected internal override float GetRotation() {
-            return (float)(direction.Angle);
+            return (float)(Direction.Angle);
         }
         protected internal override void Move() {
-            totalSpeedVector += direction * enginePower + GetSummaryAttractingForce();
-            Location += totalSpeedVector * PhysicsHelper.Inertia;
+            totalSpeedVector += Direction * enginePower + GetSummaryAttractingForce();
+            Location += totalSpeedVector * PhysicsHelper.MovingInertia;
+            direction.Rotate(angleSpeed);
+            angleSpeed *= PhysicsHelper.RotationInertia;
         }
-
-        public void AccselerateF() {
-            enginePower =.1f;
+        public void Accselerate() {
+            enginePower = .1f;
         }
         public void RotateL() {
-            direction.Rotate(-.1f);
+            angleSpeed -= .01f;
         }
         public void RotateR() {
-            direction.Rotate(.1f);
+            angleSpeed += .01f;
         }
-        public void Stop() {
+        public void StopEngine() {
             enginePower = 0;
         }
     }
