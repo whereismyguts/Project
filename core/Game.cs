@@ -6,7 +6,7 @@ namespace Core {
     public class GameCore {
         static GameCore instance;
         List<GameObject> objects;
-        List<RenderObject> renderObjects;
+        List<RenderObjectCore> renderObjects;
         Random rnd = new Random();
         Character ship;
 
@@ -17,7 +17,7 @@ namespace Core {
                 return instance;
             }
         }
-        public List<RenderObject> RenderObjects {
+        public List<RenderObjectCore> RenderObjects {
             get {
                 return renderObjects;
             }
@@ -58,9 +58,9 @@ namespace Core {
                 obj.Move();
         }
         void UpdateRenderObjects() {
-            renderObjects = new List<RenderObject>();
+            renderObjects = new List<RenderObjectCore>();
             foreach (GameObject obj in objects)
-                renderObjects.Add(new RenderObject(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation()));
+                renderObjects.Add(new RenderObjectCore(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation()));
         }
 
         internal CoordPoint GetCoord() {
