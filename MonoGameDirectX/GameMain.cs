@@ -31,15 +31,13 @@ namespace MonoGameDirectX {
                 RenderObject renderObject = WinAdapter.CreateRenderObject(obj);
                 spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
                 primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width/2, spriteBatch, Color.Red);
-
-
-                primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width-100, GraphicsDevice.Viewport.Height-100)+ WinAdapter.ToVector2(renderObject.MiniMapBounds.Center) / 10,renderObject.MiniMapBounds.Width/10f, spriteBatch, Color.Yellow);
+                primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width-100, GraphicsDevice.Viewport.Height-100)+ WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center) / 10,renderObject.MiniMapBounds.Width/10f, spriteBatch, Color.Yellow);
                
             }
 
             primitiveDrawer.DrawLine(
-                WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds()).Center.ToVector2(),
-                (WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds() + GameCore.Instance.Ship.Direction * 20).Center.ToVector2()),
+                WinAdapter.Bounds2Rectangle(GameCore.Instance.Ship.GetScreenBounds()).Center.ToVector2(),
+                (WinAdapter.Bounds2Rectangle(GameCore.Instance.Ship.GetScreenBounds() + GameCore.Instance.Ship.Direction * 20).Center.ToVector2()),
                 spriteBatch, Color.White);
             
 

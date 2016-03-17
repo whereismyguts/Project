@@ -9,20 +9,19 @@ using Microsoft.Xna.Framework.Content;
 namespace MonoGameDirectX {
     public static class WinAdapter {
         static ContentLoader contentLoader;
-
-        internal static Rectangle ToRectangle(Bounds bounds) {
+        internal static Rectangle Bounds2Rectangle(Bounds bounds) {
             return new Rectangle((int)bounds.LeftTop.X, (int)bounds.LeftTop.Y, (int)bounds.Width, (int)bounds.Height);
         }
-        internal static Vector2 ToVector2(Bounds bounds) {
+        internal static Vector2 Bounds2Vector(Bounds bounds) {
             return new Vector2(bounds.LeftTop.X, bounds.LeftTop.Y);
         }
-        internal static Vector2 ToVector2(CoordPoint point) {
+        internal static Vector2 CoordPoint2Vector(CoordPoint point) {
             return new Vector2(point.X, point.Y);
         }
         internal static RenderObject CreateRenderObject(RenderObjectCore obj) {
             Texture2D texture = contentLoader.GetTexture(obj.ContentString);
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            Rectangle boundsRect = WinAdapter.ToRectangle(obj.ScreenBounds);
+            Rectangle boundsRect = WinAdapter.Bounds2Rectangle(obj.ScreenBounds);
             Rectangle textureRect = new Rectangle(boundsRect.Location + new Point(boundsRect.Width / 2, boundsRect.Height / 2), boundsRect.Size);
 
             RenderObject rObj = new RenderObject(texture, textureRect, origin, obj.Rotation, contentLoader.GetColorMask(obj.ContentString), obj.MiniMapBounds);
@@ -38,8 +37,6 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("planet4");
             contentLoader.SetTexture("planet5");
             contentLoader.SetTexture("star", new Color(100, 100, 100, 100));
-
-            
         }
     }
 }
