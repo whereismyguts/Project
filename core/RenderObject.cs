@@ -11,5 +11,8 @@
             ContentString = content;
             Rotation = rotation;
         }
+        public override string ToString() {
+            return ContentString;
+        }
     }
 }

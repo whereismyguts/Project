@@ -61,7 +61,7 @@ namespace Core {
             return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
         public override string ToString() {
-            return string.Format("(X:{0}, Y:{1}, L:{2})", X, Y, Length);
+            return string.Format("X:{0}, Y:{1}", X, Y, Length);
         }
 
         public static CoordPoint operator -(CoordPoint p1, float a) {

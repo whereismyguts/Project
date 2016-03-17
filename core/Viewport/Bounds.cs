@@ -48,5 +48,8 @@ namespace Core {
         public static Bounds operator +(Bounds p1, CoordPoint p2) {
             return new Bounds(p1.LeftTop + p2, p1.RightBottom + p2);
         }
+        public override string ToString() {
+            return LeftTop +" : " +RightBottom;
+        }
     }
 }
