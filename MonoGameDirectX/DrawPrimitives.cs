@@ -20,7 +20,7 @@ namespace MonoGameDirectX {
             graphDevice = null;
             Dispose();
         }
-        public void DrawLine(Vector2 start, Vector2 end, SpriteBatch spBatch) {
+        public void DrawLine(Vector2 start, Vector2 end, SpriteBatch spBatch, Color color) {
             var edge = end - start;
             // calculate angle to rotate line
             // calculate angle to rotate line
@@ -33,21 +33,53 @@ namespace MonoGameDirectX {
                     (int)edge.Length(), //sb will strech the texture to fill this rectangle
                     1), //width of line, change this to make thicker line
                 null,
-                Color.Red, //colour of line
+                color,
                 angle, //angle of line (calulated above)
                 new Vector2(0, 0), // point in line about which to rotate
                 SpriteEffects.None,
                 0);
         }
-        public void DrawRect(Rectangle rect, SpriteBatch spBatch) {
+        public void DrawRect(Rectangle rect, SpriteBatch spBatch, Color color) {
             var lt = new Vector2(rect.Left, rect.Top);
             var lb = new Vector2(rect.Left, rect.Bottom);
             var rt = new Vector2(rect.Right, rect.Top);
             var rb = new Vector2(rect.Right, rect.Bottom);
-            DrawLine(lt, rt, spBatch);
-            DrawLine(rt, rb, spBatch);
-            DrawLine(rb, lb, spBatch);
-            DrawLine(lb, lt, spBatch);
+            DrawLine(lt, rt, spBatch, color);
+            DrawLine(rt, rb, spBatch, color);
+            DrawLine(rb, lb, spBatch, color);
+            DrawLine(lb, lt, spBatch, color);
+        }
+
+        public void DrawPixel(Vector2 point, SpriteBatch spBatch, Color color) {
+            DrawPixel(point.X, point.Y, spBatch, color);
+        }
+
+        public void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color) {
+            double theta = -Math.PI;  // angle that will be increased each loop
+            double step = .01;  // amount to add to theta each time (degrees)
+
+            
+
+            while( theta < Math.PI)
+            {
+                
+                double x = center.X + radius * Math.Cos(theta);
+                double y = center.Y + radius * Math.Sin(theta);
+                DrawPixel(x,y, spBatch, color);
+                theta += step;
+                
+            }
+        }
+
+        void DrawPixel(double x, double y, SpriteBatch spBatch,Color color) {
+            spBatch.Draw(t,
+                new Rectangle((int)x, (int)y, 1, 1),
+               null,
+                color, //colour of line
+                0, //angle of line (calulated above)
+                new Vector2(0, 0), // point in line about which to rotate
+                SpriteEffects.None,
+                0);
         }
     }
 }

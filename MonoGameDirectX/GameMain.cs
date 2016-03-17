@@ -30,16 +30,25 @@ namespace MonoGameDirectX {
             foreach(RenderObjectCore obj in GameCore.Instance.RenderObjects) {
                 RenderObject renderObject = WinAdapter.CreateRenderObject(obj);
                 spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
+                primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width/2, spriteBatch, Color.Red);
+
+
+                primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width-100, GraphicsDevice.Viewport.Height-100)+ WinAdapter.ToVector2(renderObject.MiniMapBounds.Center) / 10,renderObject.MiniMapBounds.Width/10f, spriteBatch, Color.Yellow);
+               
             }
 
             primitiveDrawer.DrawLine(
                 WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds()).Center.ToVector2(),
-                (WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds() + GameCore.Instance.Ship.Direction * 50).Center.ToVector2()),
-                spriteBatch);
+                (WinAdapter.ToRectangle(GameCore.Instance.Ship.GetScreenBounds() + GameCore.Instance.Ship.Direction * 20).Center.ToVector2()),
+                spriteBatch, Color.White);
+            
 
-            spriteBatch.DrawString(font, GameCore.Instance.Ship.Direction.ToString(), new Vector2(0, 0), Color.Red);
+
+
+
+            spriteBatch.DrawString(font, GameCore.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
             spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 5, 5), Color.White);
-
+            
             spriteBatch.End();
             //base.Draw(gameTime);
         }

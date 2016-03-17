@@ -5,7 +5,7 @@ namespace Core {
         public CoordPoint LeftTop;
         public CoordPoint RightBottom;
 
-        public CoordPoint CenterPoint {
+        public CoordPoint Center {
             get {
                 return (LeftTop + RightBottom) / 2f;
             }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameDirectX {
@@ -8,13 +9,15 @@ namespace MonoGameDirectX {
         public float Rotation { get; internal set; }
         public Texture2D Texture { get; internal set; }
         public Rectangle TextureRect { get; internal set; }
+        public Bounds MiniMapBounds { get; internal set; }
 
-        public RenderObject(Texture2D texture, Rectangle textureRect, Vector2 origin, float rotation, Color color) {
+        public RenderObject(Texture2D texture, Rectangle textureRect, Vector2 origin, float rotation, Color color, Bounds miniMapBounds) {
             Texture = texture;
             TextureRect = textureRect;
             Origin = origin;
             Rotation = rotation;
             ColorMask = color;
+            MiniMapBounds = miniMapBounds;
         }
     }
 }

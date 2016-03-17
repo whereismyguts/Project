@@ -50,8 +50,8 @@ namespace Core {
             objects.Add(ship);
             objects.AddRange(bodies);
 
-            for (var i = 0; i < 100; i++)
-                objects.Add(new Star(Viewport, GetCoord()));
+            //for (var i = 0; i < 100; i++)
+            //    objects.Add(new Star(Viewport, GetCoord()));
         }
         void MoveObjects() {
             foreach (GameObject obj in objects)
@@ -60,7 +60,7 @@ namespace Core {
         void UpdateRenderObjects() {
             renderObjects = new List<RenderObjectCore>();
             foreach (GameObject obj in objects)
-                renderObjects.Add(new RenderObjectCore(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation()));
+                renderObjects.Add(new RenderObjectCore(obj.GetScreenBounds(), obj.GetMiniMapBounds(), obj.ContentString, obj.GetRotation()));
         }
 
         internal CoordPoint GetCoord() {

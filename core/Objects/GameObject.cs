@@ -24,9 +24,14 @@ namespace Core {
         protected internal abstract void Move();
 
         public  Bounds GetScreenBounds() {
-            var centerPoint = (Bounds.CenterPoint - Viewport.Bounds.CenterPoint) * Viewport.Scale;
-            var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) * Viewport.Scale;
+            var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.Scale;
+            var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) / Viewport.Scale;
             return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.Width, Viewport.Height) / 2 ;
+        }
+        public Bounds GetMiniMapBounds() {
+            var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.MiniMapScale;
+            var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) / Viewport.MiniMapScale;
+            return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.Width, Viewport.Height) / 2;
         }
     }
 }
