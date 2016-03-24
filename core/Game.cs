@@ -8,8 +8,8 @@ namespace Core {
         List<GameObject> objects;
         List<RenderObjectCore> renderObjects;
         Random rnd = new Random();
-        Character ship;
-
+        List<Character> ships = new List<Character>();
+            
         public static GameCore Instance {
             get {
                 if (instance == null)
@@ -22,9 +22,9 @@ namespace Core {
                 return renderObjects;
             }
         }
-        public Character Ship {
+        public List<Character> Ships {
             get {
-                return ship;
+                return ships;
             }
         }
         public Viewport Viewport { get; set; }
@@ -46,8 +46,10 @@ namespace Core {
             bodies.Add(new Planet(new CoordPoint(8100, 8100), 100, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), false));
             bodies.Add(new Planet(new CoordPoint(10000, 10000), 200, Viewport, GetRandomT(), sun, "planet" + rnd.Next(1, 5), true));
             bodies.Add(sun);
-            ship = new Character(Viewport, bodies, new CoordPoint(10100, 10100));
-            objects.Add(ship);
+            ships.Add( new Character(Viewport, bodies, new CoordPoint(10100, 10100), bodies.First()));
+            ships.Add(new Character(Viewport, bodies, new CoordPoint(-10100, 10100), ships.First()));
+            ships.Add(new Character(Viewport, bodies, new CoordPoint(-10100, 10100), null)); // player controlled
+            objects.AddRange(ships);
             objects.AddRange(bodies);
 
             //for (var i = 0; i < 100; i++)
@@ -72,7 +74,7 @@ namespace Core {
 
         public void Update() {
             MoveObjects();
-            Viewport.Centerpoint = objects.First().Location;
+            //Viewport.Centerpoint = new CoordPoint(); //objects.First().Location;
             //Viewport.SetScale(5f / (objects.First() as Character).Speed);
             //System.Diagnostics.Debug.WriteLine((objects.First() as Character).Speed.ToString());
             UpdateRenderObjects();

@@ -10,17 +10,10 @@ namespace Core {
                 return this / length;
             }
         }
-
+      
         public float Angle {
             get {
-                var x2 = 0f;
-                var y2 = -1;
-                var dot = X * x2 + Y * y2;
-                var det = X * y2 - Y * x2;
-                var angle = Math.Atan2(det, dot);
-
-                //var angle = (Math.Atan2(0 - X, Y - (-1)));
-                return -(float)angle;
+                return AngleTo(new CoordPoint(0,-1));
             }
         }
         public float Length {
@@ -47,7 +40,16 @@ namespace Core {
             X = (float)x;
             Y = (float)y;
         }
+        public float AngleTo(CoordPoint vector) {
+            var x2 = vector.X;
+            var y2 = vector.Y;
+            var dot = X * x2 + Y * y2;
+            var det = X * y2 - Y * x2;
+            var angle = Math.Atan2(det, dot);
 
+            //var angle = (Math.Atan2(0 - X, Y - (-1)));
+            return -(float)angle;
+        }
         internal void Rotate(float angle) {
             if(angle == 0)
                 return;

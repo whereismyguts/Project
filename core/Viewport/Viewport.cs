@@ -14,7 +14,7 @@ namespace Core {
 
             }
         }
-        public CoordPoint Centerpoint { get; set; }
+        public CoordPoint Centerpoint { get; set; } = new CoordPoint();
         public float Height {
             get {
                 return height;
