@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Core {
-    public class Character: GameObject {
-        List<AttractingObject> AttractingObjects;
+    public class Ship: GameObject {
         float enginePower = 0;
-        CoordPoint totalSpeedVector = new CoordPoint();
         float angleSpeed = 0;
+        GameObject targetObject;
+        CoordPoint totalSpeedVector = new CoordPoint();
         CoordPoint direction = new CoordPoint(1, 0);
-        GameObject target;
-
         static Random r = new Random();
+
         public ColorCore Color { get; set; }
         public bool IsBot {
-            get { return target != null; } }
+            get { return targetObject != null; }
+        }
+        public GameObject TargetObject { get { return IsBot ? targetObject : this; } }
         public CoordPoint Direction { get { return direction; } }
 
         protected internal override Bounds Bounds {
@@ -28,17 +29,46 @@ namespace Core {
             }
         }
 
-        public GameObject Target { get { return IsBot ? target : this; } }
+        List<AttractingObject> AttractingObjects {
+            get { return CurrentSystem.Objects; }
+        }
 
-        public Character(Viewport viewport, List<AttractingObject> objects, CoordPoint location, GameObject target)
-            : base(viewport) {
-            AttractingObjects = objects;
+        public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
+
             Location = location;
             Mass = 10;
             Color = new ColorCore(r.Next(100, 255), r.Next(100, 255), r.Next(100, 255));
-            this.target = target;// GetRandomTarget();
+            this.targetObject = target;// GetRandomTarget();
         }
 
+        public void AccselerateEngine() {
+            enginePower = 3f;
+        }
+        public void StopEngine() {
+            enginePower = 0;
+        }
+        public void RotateL() {
+            angleSpeed -= .01f;
+        }
+        public void RotateR() {
+            angleSpeed += .01f;
+        }
+
+        protected internal override float GetRotation() {
+            return (float)(Direction.Angle);
+        }
+        protected internal override void Move() {
+
+            totalSpeedVector += Direction * enginePower + GetSummaryAttractingForce();
+            totalSpeedVector *= PhysicsHelper.MovingInertia;
+            Location += totalSpeedVector;
+            direction.Rotate(angleSpeed);
+            angleSpeed *= PhysicsHelper.RotationInertia;
+
+            if(IsBot)
+                MakeAIMove();
+        }
+        
         CoordPoint GetSummaryAttractingForce() {
             var vector = new CoordPoint();
             foreach(var obj in AttractingObjects)
@@ -47,63 +77,40 @@ namespace Core {
 
             return vector;
         }
-        protected internal override float GetRotation() {
-            return (float)(Direction.Angle);
-        }
         int CheckWayToTarget() {
-            float angle = direction.AngleTo(target.Location - Location);
+            float angle = direction.AngleTo(targetObject.Location - Location);
 
-            System.Diagnostics.Debug.WriteLine(angle.ToString());
             if(angle <= Math.PI / 16 && angle > -Math.PI / 16)
                 return 0;
             return angle > 0 ? 1 : -1;
         }
-
-        void MakeDecision() {
+        void StraitToTarget() {
             switch(CheckWayToTarget()) {
                 case 0:
                     AccselerateEngine();
                     break;
-                case 1: RotateL();
+                case 1:
+                    RotateL();
                     break;
                 case -1:
                     RotateR();
                     break;
-            }            
-            
+            }
         }
-        protected internal override void Move() {
-            
-            totalSpeedVector += Direction * enginePower + GetSummaryAttractingForce();
-            totalSpeedVector *= PhysicsHelper.MovingInertia;
-            Location += totalSpeedVector;
-            direction.Rotate(angleSpeed);
-            angleSpeed *= PhysicsHelper.RotationInertia;
+        bool InStarDeathZone() {
+            return false;
+        }
+        void LeaveDeathZone() {
 
-            if(IsBot)
-            MakeDecision();
         }
-        public void AccselerateEngine() {
-            enginePower = 5;
-            return;
-            if(enginePower + .1f <= 20f)
-                enginePower += .1f;
+        void MoveToTarget(CoordPoint location) {
+            if(InStarDeathZone())
+                LeaveDeathZone();
+            else
+                StraitToTarget();
         }
-        public void LowDownEngine() {
-            enginePower = 0;
-            return;
-            if(enginePower - .5f > 0)
-                enginePower -= .5f;
-        }
-
-        public void RotateL() {
-            angleSpeed -= .01f;
-        }
-        public void RotateR() {
-            angleSpeed += .01f;
-        }
-        public void StopEngine() {
-            enginePower = 0;
+        void MakeAIMove() {
+            MoveToTarget(targetObject.Location);
         }
         Planet GetRandomTarget() {
             while(true) {

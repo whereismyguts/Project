@@ -9,7 +9,7 @@ namespace Core {
 
         public Bounds Bounds {
             get {
-                
+
                 return new Bounds(Centerpoint - new CoordPoint(width / 2, height / 2), Centerpoint + new CoordPoint(width / 2, height / 2));
 
             }
@@ -42,19 +42,7 @@ namespace Core {
             height = h;
         }
 
-
-        public void SetViewportSize(int width, int height) {
-            this.width = width;
-            this.height = height;
-        }
-        public override string ToString() {
-            return string.Format("Bounds: {0}:{1} | Size: {2}x{3} | Centerpoint: {4}", Bounds.LeftTop, Bounds.RightBottom, width, height, Centerpoint);
-        }
-        public void ZoomIn() {
-            ChangeZoom(scale);
-        }
-
-        private void ChangeZoom(float delta) {
+        void ChangeZoom(float delta) {
             if(lockTime == 0) {
                 scale += delta;
                 lockTime = 5;
@@ -62,11 +50,20 @@ namespace Core {
             else
                 lockTime--;
         }
-
+        public void SetViewportSize(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+        public void ZoomIn() {
+            ChangeZoom(scale);
+        }
         public void ZoomOut() {
             ChangeZoom(-scale / 2);
-            if (scale < 0)
+            if(scale < 0)
                 scale = 0;
+        }
+        public override string ToString() {
+            return string.Format("Bounds: {0}:{1} | Size: {2}x{3} | Centerpoint: {4}", Bounds.LeftTop, Bounds.RightBottom, width, height, Centerpoint);
         }
     }
 }

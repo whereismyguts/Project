@@ -1,11 +1,11 @@
 ﻿using System;
 
 namespace Core {
-    public class AttractingObject : GameObject {
+    public class AttractingObject: GameObject {
         float radius;
+        string ImageName;
 
         protected float SelfRotation { get; set; }
-
         protected internal override Bounds Bounds {
             get {
                 return new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius));
@@ -16,13 +16,11 @@ namespace Core {
                 return ImageName;
             }
         }
-        protected internal string ImageName { get; protected set; }
 
-        public AttractingObject(CoordPoint location, float diameter, Viewport viewport, string imageName)
-            : base(viewport) {
+        public AttractingObject(CoordPoint location, float diameter, string imageName, StarSystem system) : base(system) {
             radius = diameter / 2.0f;
             Location = location;
-            Mass = diameter ;
+            Mass = diameter;
             ImageName = imageName;
         }
 
@@ -34,31 +32,31 @@ namespace Core {
         }
     }
 
-    public class Planet : AttractingObject {
+    public class Planet: AttractingObject {
         bool clockwise;
         static Random rnd = new Random();
-        AttractingObject rotateCenter;
-        float t = 0;
+        float starRotation = 0;
 
+        AttractingObject RotateCenter { get { return CurrentSystem.Star; } }
         float DistanceToSun {
             get {
-                return CoordPoint.Distance(rotateCenter.Location, Location);
+                return CoordPoint.Distance(RotateCenter.Location, Location);
             }
         }
 
-        public Planet(CoordPoint location, float diameter, Viewport viewport, float T, AttractingObject rotateCenter, string imageName, bool clockwise)
-            : base(location, diameter, viewport, imageName) {
-            t = T;
-            this.rotateCenter = rotateCenter;
+        public Planet(CoordPoint location, float diameter, float rotation, string imageName, bool clockwise, StarSystem system)
+            : base(location, diameter, imageName, system) {
+            this.starRotation = rotation;
+
             this.clockwise = clockwise;
         }
 
         protected internal override void Move() {
-            if (t >= 2 * Math.PI)
-                t = 0;
-            Location = new CoordPoint((float)(DistanceToSun * Math.Cos(t) + rotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(t) + rotateCenter.Location.Y));
+            if(starRotation >= 2 * Math.PI)
+                starRotation = 0;
+            Location = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Location.Y));
 
-            t += clockwise ? .001f : -.001f;
+            starRotation += clockwise ? .001f : -.001f;
             SelfRotation += .05f;
         }
     }

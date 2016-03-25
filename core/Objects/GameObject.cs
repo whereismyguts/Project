@@ -2,31 +2,30 @@
 
 namespace Core {
     public abstract class GameObject {
+        protected StarSystem CurrentSystem { get; set; }
         protected string Image { get; set; }
-        protected bool IsVisible {
+        protected internal bool IsVisible {
             get {
-                return Viewport.Bounds.isIntersect(Bounds);
+                return true;
             }
         }
-        protected Viewport Viewport { get; set; }
-
+        protected Viewport Viewport { get { return Core.Instance.Viewport; } }
         internal CoordPoint Location { get; set; }
-
         protected internal abstract Bounds Bounds { get; }
         protected internal abstract string ContentString { get; }
         protected internal float Mass { get; set; }
 
-        protected GameObject(Viewport viewport) {
-            Viewport = viewport;
+        public GameObject(StarSystem system) {
+            CurrentSystem = system;
         }
 
         protected internal abstract float GetRotation();
         protected internal abstract void Move();
 
-        public  Bounds GetScreenBounds() {
+        public Bounds GetScreenBounds() {
             var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.Scale;
             var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) / Viewport.Scale;
-            return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.Width, Viewport.Height) / 2 ;
+            return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.Width, Viewport.Height) / 2;
         }
         public Bounds GetMiniMapBounds() {
             var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.MiniMapScale;
