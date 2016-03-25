@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Core {
     public class StarSystem {
-        List<AttractingObject> planets = new List<AttractingObject>();
-        List<AttractingObject> stations = new List<AttractingObject>();
-        AttractingObject star;
+        List<SpaceBody> planets = new List<SpaceBody>();
+        List<SpaceBody> stations = new List<SpaceBody>();
+        SpaceBody star;
         public CoordPoint MapLocation { get; }
-        public AttractingObject Star { get { return star; } }
-        public List<AttractingObject> Objects {
+        public SpaceBody Star { get { return star; } }
+        public List<SpaceBody> Objects {
             get {
-                List<AttractingObject> objs = new List<AttractingObject>();
+                List<SpaceBody> objs = new List<SpaceBody>();
                 objs.AddRange(planets);
                 objs.AddRange(stations);
                 objs.Add(star);
@@ -21,9 +21,9 @@ namespace Core {
             }
         }
         public StarSystem(int planetsNumber) {
-            planets = new List<AttractingObject>();
+            planets = new List<SpaceBody>();
             //TODO Data Driven Factory
-            star = new AttractingObject(new CoordPoint(0, 0), 5500, "planet1", this);
+            star = new SpaceBody(new CoordPoint(0, 0), 5500, "planet1", this);
             planets.Add(new Planet(new CoordPoint(9600, 9600), 150, Core.GetRandomT(), "planet2", true, this));
             planets.Add(new Planet(new CoordPoint(8100, 8100), 100, Core.GetRandomT(), "planet3", false, this));
             planets.Add(new Planet(new CoordPoint(10000, 10000), 200, Core.GetRandomT(), "planet4", true, this));

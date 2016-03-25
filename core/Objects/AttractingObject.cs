@@ -1,10 +1,13 @@
 ﻿using System;
 
 namespace Core {
-    public class AttractingObject: GameObject {
+    public class SpaceBody: GameObject {
         float radius;
         string ImageName;
 
+        public float Diameter {
+            get { return radius * 2; }
+        }
         protected float SelfRotation { get; set; }
         protected internal override Bounds Bounds {
             get {
@@ -17,7 +20,7 @@ namespace Core {
             }
         }
 
-        public AttractingObject(CoordPoint location, float diameter, string imageName, StarSystem system) : base(system) {
+        public SpaceBody(CoordPoint location, float diameter, string imageName, StarSystem system) : base(system) {
             radius = diameter / 2.0f;
             Location = location;
             Mass = diameter;
@@ -32,12 +35,12 @@ namespace Core {
         }
     }
 
-    public class Planet: AttractingObject {
+    public class Planet: SpaceBody {
         bool clockwise;
         static Random rnd = new Random();
         float starRotation = 0;
 
-        AttractingObject RotateCenter { get { return CurrentSystem.Star; } }
+        SpaceBody RotateCenter { get { return CurrentSystem.Star; } }
         float DistanceToSun {
             get {
                 return CoordPoint.Distance(RotateCenter.Location, Location);

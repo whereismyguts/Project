@@ -34,13 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Objects\Weapon.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\AttractingObject.cs" />
     <Compile Include="Objects\Star.cs" />
     <Compile Include="RenderObject.cs" />
     <Compile Include="StarSystem.cs" />
     <Compile Include="Viewport\Bounds.cs" />
-    <Compile Include="Objects\Player.cs" />
+    <Compile Include="Objects\Ship.cs" />
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Viewport\CoordPoint.cs" />
     <Compile Include="GameCore.cs" />

@@ -10,7 +10,9 @@ namespace Core {
         CoordPoint totalSpeedVector = new CoordPoint();
         CoordPoint direction = new CoordPoint(1, 0);
         static Random r = new Random();
+        WeaponBase weapon;
 
+        public WeaponBase Weapon { get { return weapon; } }
         public ColorCore Color { get; set; }
         public bool IsBot {
             get { return targetObject != null; }
@@ -29,7 +31,7 @@ namespace Core {
             }
         }
 
-        List<AttractingObject> AttractingObjects {
+        List<SpaceBody> AttractingObjects {
             get { return CurrentSystem.Objects; }
         }
 
@@ -39,10 +41,11 @@ namespace Core {
             Mass = 10;
             Color = new ColorCore(r.Next(100, 255), r.Next(100, 255), r.Next(100, 255));
             this.targetObject = target;// GetRandomTarget();
+            weapon = new DefaultCannon();
         }
 
         public void AccselerateEngine() {
-            enginePower = 3f;
+            enginePower = 1f;
         }
         public void StopEngine() {
             enginePower = 0;
@@ -97,14 +100,18 @@ namespace Core {
                     break;
             }
         }
-        bool InStarDeathZone() {
-            return false;
+        bool InStarDeathZone {
+            get {
+
+                CurrentSystem.Star.Location
+                return false;
+            }
         }
         void LeaveDeathZone() {
 
         }
         void MoveToTarget(CoordPoint location) {
-            if(InStarDeathZone())
+            if(InStarDeathZone)
                 LeaveDeathZone();
             else
                 StraitToTarget();
