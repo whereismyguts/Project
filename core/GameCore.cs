@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core {
+namespace GameCore {
     public class Core {
-        static Core instance;
+        public static Core instance;
         static Random rnd = new Random();
         List<RenderObjectCore> renderObjects;
         List<Ship> ships = new List<Ship>();

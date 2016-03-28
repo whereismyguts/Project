@@ -36,7 +36,7 @@
   <ItemGroup>
     <Compile Include="Objects\Weapon.cs" />
     <Compile Include="PhysicsHelper.cs" />
-    <Compile Include="Objects\AttractingObject.cs" />
+    <Compile Include="Objects\Body.cs" />
     <Compile Include="Objects\Star.cs" />
     <Compile Include="RenderObject.cs" />
     <Compile Include="StarSystem.cs" />

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core {
+namespace GameCore {
     public class Bounds {
         public CoordPoint LeftTop;
         public CoordPoint RightBottom;

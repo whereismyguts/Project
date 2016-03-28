@@ -1,4 +1,4 @@
-﻿namespace Core {
+﻿namespace GameCore {
     public class RenderObjectCore {
         public string ContentString { get; set; }
         public float Rotation { get; set; }

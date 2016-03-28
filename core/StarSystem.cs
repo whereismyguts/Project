@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core {
+namespace GameCore {
     public class StarSystem {
-        List<SpaceBody> planets = new List<SpaceBody>();
-        List<SpaceBody> stations = new List<SpaceBody>();
-        SpaceBody star;
+        List<Body> planets = new List<Body>();
+        List<Body> stations = new List<Body>();
+        Body star;
         public CoordPoint MapLocation { get; }
-        public SpaceBody Star { get { return star; } }
-        public List<SpaceBody> Objects {
+        public Body Star { get { return star; } }
+        public List<Body> Objects {
             get {
-                List<SpaceBody> objs = new List<SpaceBody>();
+                List<Body> objs = new List<Body>();
                 objs.AddRange(planets);
                 objs.AddRange(stations);
                 objs.Add(star);
@@ -21,9 +21,9 @@ namespace Core {
             }
         }
         public StarSystem(int planetsNumber) {
-            planets = new List<SpaceBody>();
+            planets = new List<Body>();
             //TODO Data Driven Factory
-            star = new SpaceBody(new CoordPoint(0, 0), 5500, "planet1", this);
+            star = new Body(new CoordPoint(0, 0), 5500, "planet1", this);
             planets.Add(new Planet(new CoordPoint(9600, 9600), 150, Core.GetRandomT(), "planet2", true, this));
             planets.Add(new Planet(new CoordPoint(8100, 8100), 100, Core.GetRandomT(), "planet3", false, this));
             planets.Add(new Planet(new CoordPoint(10000, 10000), 200, Core.GetRandomT(), "planet4", true, this));

@@ -1,5 +1,6 @@
-﻿namespace Core {
-    public class WeaponBase {
+﻿namespace GameCore {
+    public abstract class WeaponBase {
+
     }
     public class DefaultCannon : WeaponBase { }
 }

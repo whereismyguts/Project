@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core {
+namespace GameCore {
     public class Viewport {
         float height;
         float scale = 30f;

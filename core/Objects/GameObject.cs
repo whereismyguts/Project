@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core {
+namespace GameCore {
     public abstract class GameObject {
         protected StarSystem CurrentSystem { get; set; }
         protected string Image { get; set; }

@@ -1,7 +1,7 @@
 ﻿using System;
 
-namespace Core {
-    public class SpaceBody: GameObject {
+namespace GameCore {
+    public class Body: GameObject {
         float radius;
         string ImageName;
 
@@ -20,7 +20,7 @@ namespace Core {
             }
         }
 
-        public SpaceBody(CoordPoint location, float diameter, string imageName, StarSystem system) : base(system) {
+        public Body(CoordPoint location, float diameter, string imageName, StarSystem system) : base(system) {
             radius = diameter / 2.0f;
             Location = location;
             Mass = diameter;
@@ -35,12 +35,12 @@ namespace Core {
         }
     }
 
-    public class Planet: SpaceBody {
+    public class Planet: Body {
         bool clockwise;
         static Random rnd = new Random();
         float starRotation = 0;
 
-        SpaceBody RotateCenter { get { return CurrentSystem.Star; } }
+        Body RotateCenter { get { return CurrentSystem.Star; } }
         float DistanceToSun {
             get {
                 return CoordPoint.Distance(RotateCenter.Location, Location);
@@ -59,8 +59,8 @@ namespace Core {
                 starRotation = 0;
             Location = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Location.Y));
 
-            starRotation += clockwise ? .001f : -.001f;
-            SelfRotation += .05f;
+            starRotation += clockwise ? .0001f : -.0001f;
+            SelfRotation += .005f;
         }
     }
 }

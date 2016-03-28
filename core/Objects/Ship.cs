@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core {
+namespace GameCore {
     public class Ship: GameObject {
         float enginePower = 0;
         float angleSpeed = 0;
@@ -31,7 +31,7 @@ namespace Core {
             }
         }
 
-        List<SpaceBody> AttractingObjects {
+        List<Body> AttractingObjects {
             get { return CurrentSystem.Objects; }
         }
 
@@ -71,7 +71,7 @@ namespace Core {
             if(IsBot)
                 MakeAIMove();
         }
-        
+
         CoordPoint GetSummaryAttractingForce() {
             var vector = new CoordPoint();
             foreach(var obj in AttractingObjects)
@@ -80,14 +80,20 @@ namespace Core {
 
             return vector;
         }
+
+        #region AI controller
+
         int CheckWayToTarget() {
-            float angle = direction.AngleTo(targetObject.Location - Location);
+            float angle = direction.AngleTo(targetLocation - Location);
 
             if(angle <= Math.PI / 16 && angle > -Math.PI / 16)
                 return 0;
             return angle > 0 ? 1 : -1;
         }
-        void StraitToTarget() {
+        void MoveToTarget() {
+            if(CoordPoint.Distance(targetObject.Location, Location) < targetObject.Bounds.Width * 4)
+                SetLeaveDeathZone(targetObject);
+
             switch(CheckWayToTarget()) {
                 case 0:
                     AccselerateEngine();
@@ -100,31 +106,49 @@ namespace Core {
                     break;
             }
         }
-        bool InStarDeathZone {
-            get {
+        Body GetDangerZone() {
+                foreach(Body obj in CurrentSystem.Objects)
+                    if(CoordPoint.Distance(obj.Location, Location) <= 1.2 * obj.Diameter)
+                        return obj;
+                return null;
+        }
+        CoordPoint targetLocation;
+        void SetLeaveDeathZone(GameObject obj) {
+            // set target location as end of vector, normal to strait vector from center of danger obj
+            CoordPoint toTarget = targetObject.Location - Location;
+            CoordPoint leaveVector = (Location-obj.Location) * 2;
 
-                CurrentSystem.Star.Location
-                return false;
+            if(Math.Abs(leaveVector.AngleTo(toTarget)) < Math.PI / 8)
+                targetLocation = TargetObject.Location;
+            else {
+
+                CoordPoint v1 = new CoordPoint(-leaveVector.Y, leaveVector.X);
+                CoordPoint v2 = new CoordPoint(leaveVector.Y, -leaveVector.X);
+               
+                float a1 = Math.Abs(v1.AngleTo(toTarget));
+                float a2 = Math.Abs(v2.AngleTo(toTarget));
+
+                CoordPoint normalVector = a1 < a2 ? v1 : v2;
+
+
+                targetLocation = normalVector + Location;
             }
         }
-        void LeaveDeathZone() {
-
-        }
-        void MoveToTarget(CoordPoint location) {
-            if(InStarDeathZone)
-                LeaveDeathZone();
-            else
-                StraitToTarget();
+        void SetGoToTarget() {
+            targetLocation = targetObject.Location;
         }
         void MakeAIMove() {
-            MoveToTarget(targetObject.Location);
+
+
+            Body danger = GetDangerZone();
+            if(danger!=null)
+                SetLeaveDeathZone(danger);
+            else
+                SetGoToTarget();
+            MoveToTarget();
         }
-        Planet GetRandomTarget() {
-            while(true) {
-                int i = r.Next(0, AttractingObjects.Count - 1);
-                return (Planet)AttractingObjects[i];
-            }
-        }
+
+        #endregion
     }
 
     public struct ColorCore {

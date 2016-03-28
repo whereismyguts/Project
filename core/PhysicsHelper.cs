@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core {
+namespace GameCore {
     public static class PhysicsHelper {
-        public const float Gravitation = .055f;
+        public const float Gravitation = .035f;
         /// <summary>0 - stop moving immediately, 1.0 -moving never stops</summary>
         public const float MovingInertia = .9f;
         public const float RotationInertia = .9f;
