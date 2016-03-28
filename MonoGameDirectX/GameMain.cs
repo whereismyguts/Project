@@ -76,24 +76,24 @@ namespace MonoGameDirectX {
                 Core.Instance.Viewport.ZoomIn();
             if(Keyboard.GetState().IsKeyDown(Keys.X))
                 Core.Instance.Viewport.ZoomOut();
-            //if(Keyboard.GetState().IsKeyDown(Keys.Up))
-            //    Core.Core.Instance.Ships.Last().AccselerateEngine();
-            //else
-            //    Core.Core.Instance.Ships.Last().StopEngine();
-
-            //if(Keyboard.GetState().IsKeyDown(Keys.Left))
-            //    Core.Core.Instance.Ships.Last().RotateL();
-            //if(Keyboard.GetState().IsKeyDown(Keys.Right))
-            //    Core.Core.Instance.Ships.Last().RotateR();
-
             if(Keyboard.GetState().IsKeyDown(Keys.Up))
-                Core.Instance.Viewport.Centerpoint += new CoordPoint(0, -10);
-            if(Keyboard.GetState().IsKeyDown(Keys.Down))
-                Core.Instance.Viewport.Centerpoint += new CoordPoint(0, 10);
-            if(Keyboard.GetState().IsKeyDown(Keys.Right))
-                Core.Instance.Viewport.Centerpoint += new CoordPoint(10, 0);
+                Core.Instance.Ships[0].AccselerateEngine();
+            else
+                Core.Instance.Ships[0].StopEngine();
+
             if(Keyboard.GetState().IsKeyDown(Keys.Left))
-                Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
+                Core.Instance.Ships[0].RotateL();
+            if(Keyboard.GetState().IsKeyDown(Keys.Right))
+                Core.Instance.Ships[0].RotateR();
+
+            //if(Keyboard.GetState().IsKeyDown(Keys.Up))
+            //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, -10);
+            //if(Keyboard.GetState().IsKeyDown(Keys.Down))
+            //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, 10);
+            //if(Keyboard.GetState().IsKeyDown(Keys.Right))
+            //    Core.Instance.Viewport.Centerpoint += new CoordPoint(10, 0);
+            //if(Keyboard.GetState().IsKeyDown(Keys.Left))
+            //    Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
 
 
 
