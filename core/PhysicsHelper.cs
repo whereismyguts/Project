@@ -8,8 +8,8 @@ namespace GameCore {
     public static class PhysicsHelper {
         public const float Gravitation = .035f;
         /// <summary>0 - stop moving immediately, 1.0 -moving never stops</summary>
-        public const float MovingInertia = .9f;
-        public const float RotationInertia = .9f;
+        //public const float MovingInertia = .9f;
+        public const float RotationInertia = .95f;
 
         public static float CalcGravitationForce(GameObject obj1, GameObject obj2) {
             return Gravitation * obj1.Mass * obj2.Mass / CoordPoint.Distance(obj1.Location, obj2.Location);

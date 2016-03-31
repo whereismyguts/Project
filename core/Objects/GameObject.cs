@@ -2,7 +2,7 @@
 
 namespace GameCore {
     public abstract class GameObject {
-        protected StarSystem CurrentSystem { get; set; }
+        public StarSystem CurrentSystem { get; }
         protected string Image { get; set; }
         protected internal bool IsVisible {
             get {
@@ -20,7 +20,7 @@ namespace GameCore {
         }
 
         protected internal abstract float GetRotation();
-        protected internal abstract void Move();
+        protected internal abstract void Step();
 
         public Bounds GetScreenBounds() {
             var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.Scale;

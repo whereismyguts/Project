@@ -30,7 +30,7 @@ namespace GameCore {
         protected internal override float GetRotation() {
             return SelfRotation;
         }
-        protected internal override void Move() {
+        protected internal override void Step() {
             SelfRotation += .001f;
         }
     }
@@ -54,7 +54,7 @@ namespace GameCore {
             this.clockwise = clockwise;
         }
 
-        protected internal override void Move() {
+        protected internal override void Step() {
             if(starRotation >= 2 * Math.PI)
                 starRotation = 0;
             Location = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Location.Y));

@@ -27,7 +27,7 @@ namespace MonoGameDirectX {
 
             foreach(RenderObjectCore obj in GameCore.Core.Instance.RenderObjects) {
                 RenderObject renderObject = WinAdapter.CreateRenderObject(obj);
-                spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
+                //spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
                 primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width / 2, spriteBatch, Color.Red);
                 primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100) + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center) / 10, renderObject.MiniMapBounds.Width / 10f, spriteBatch, Color.Yellow);
 
