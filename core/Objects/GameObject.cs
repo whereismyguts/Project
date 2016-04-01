@@ -14,6 +14,7 @@ namespace GameCore {
         protected internal abstract Bounds Bounds { get; }
         protected internal abstract string ContentString { get; }
         protected internal float Mass { get; set; }
+        public virtual string Name { get { return ""; } }
 
         public GameObject(StarSystem system) {
             CurrentSystem = system;

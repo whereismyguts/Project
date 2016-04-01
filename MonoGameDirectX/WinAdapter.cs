@@ -24,8 +24,7 @@ namespace MonoGameDirectX {
             Rectangle boundsRect = WinAdapter.Bounds2Rectangle(obj.ScreenBounds);
             Rectangle textureRect = new Rectangle(boundsRect.Location + new Point(boundsRect.Width / 2, boundsRect.Height / 2), boundsRect.Size);
 
-            RenderObject rObj = new RenderObject(texture, textureRect, origin, obj.Rotation, contentLoader.GetColorMask(obj.ContentString), obj.MiniMapBounds);
-            return rObj;
+            return new RenderObject(texture, textureRect, origin, obj.Rotation, contentLoader.GetColorMask(obj.ContentString), obj.MiniMapBounds, obj.Name);
         }
         internal static void LoadContent(ContentManager content) {
             contentLoader = new ContentLoader(content);

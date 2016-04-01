@@ -10,14 +10,16 @@ namespace MonoGameDirectX {
         public Texture2D Texture { get; internal set; }
         public Rectangle TextureRect { get; internal set; }
         public Bounds MiniMapBounds { get; internal set; }
+        public string Name { get; internal set; }
 
-        public RenderObject(Texture2D texture, Rectangle textureRect, Vector2 origin, float rotation, Color color, Bounds miniMapBounds) {
+        public RenderObject(Texture2D texture, Rectangle textureRect, Vector2 origin, float rotation, Color color, Bounds miniMapBounds, string name) {
             Texture = texture;
             TextureRect = textureRect;
             Origin = origin;
             Rotation = rotation;
             ColorMask = color;
             MiniMapBounds = miniMapBounds;
+            Name = name;
         }
     }
 }

@@ -25,11 +25,14 @@ namespace MonoGameDirectX {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
-            foreach(RenderObjectCore obj in GameCore.Core.Instance.RenderObjects) {
+            foreach(RenderObjectCore obj in Core.Instance.RenderObjects) {
                 RenderObject renderObject = WinAdapter.CreateRenderObject(obj);
                 //spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
                 primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width / 2, spriteBatch, Color.Red);
                 primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100) + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center) / 10, renderObject.MiniMapBounds.Width / 10f, spriteBatch, Color.Yellow);
+
+                if(!string.IsNullOrEmpty(renderObject.Name))
+                    spriteBatch.DrawString(font, renderObject.Name, renderObject.TextureRect.Location.ToVector2(), Color.Red);
 
             }
             foreach(Ship ship in GameCore.Core.Instance.Ships) {
@@ -38,13 +41,20 @@ namespace MonoGameDirectX {
                     (WinAdapter.CoordPoint2Vector((ship.GetScreenBounds() + ship.Direction * 20).Center)),
                     spriteBatch, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
 
-                primitiveDrawer.DrawLine(
+                //primitiveDrawer.DrawLine(
+                //    WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
+                //    WinAdapter.CoordPoint2Vector(ship.TargetObject.GetScreenBounds().Center),
+                //    spriteBatch, Color.Yellow);
+
+
+                if(ship.Reactive.Length>0)
+                    primitiveDrawer.DrawLine(
                     WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
-                    WinAdapter.CoordPoint2Vector(ship.TargetObject.GetScreenBounds().Center),
-                    spriteBatch, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
+                    (WinAdapter.CoordPoint2Vector((ship.GetScreenBounds() + ship.Reactive).Center)),
+                    spriteBatch, Color.Yellow);
             }
 
-
+            
 
             spriteBatch.DrawString(font, GameCore.Core.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
             spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 5, 5), Color.White);
@@ -78,8 +88,6 @@ namespace MonoGameDirectX {
                 Core.Instance.Viewport.ZoomOut();
             if(Keyboard.GetState().IsKeyDown(Keys.Up))
                 Core.Instance.Ships[0].AccselerateEngine();
-            else
-                Core.Instance.Ships[0].StopEngine();
 
             if(Keyboard.GetState().IsKeyDown(Keys.Left))
                 Core.Instance.Ships[0].RotateL();

@@ -10,10 +10,10 @@ namespace GameCore {
                 return this / length;
             }
         }
-      
+
         public float Angle {
             get {
-                return AngleTo(new CoordPoint(0,-1));
+                return AngleTo(new CoordPoint(0, -1));
             }
         }
         public float Length {
@@ -87,6 +87,9 @@ namespace GameCore {
         }
         public static CoordPoint operator *(CoordPoint vector, float factor) {
             return new CoordPoint(vector.X * factor, vector.Y * factor);
+        }
+        public static CoordPoint operator -(CoordPoint p) {
+            return new CoordPoint(-p.X, -p.Y);
         }
     }
 }

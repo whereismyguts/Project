@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GameCore {
     public class AIController {
@@ -12,7 +13,6 @@ namespace GameCore {
             targetObject = target;
             task = taskType;
         }
-
         int CheckWayToTarget() {
             float angle = owner.Direction.AngleTo(targetLocation - owner.Location);
             if(angle <= Math.PI / 16 && angle > -Math.PI / 16)
@@ -20,12 +20,12 @@ namespace GameCore {
             return angle > 0 ? 1 : -1;
         }
         void TaskDecreaseSpeed() {
+            
             targetLocation = owner.Location - owner.Velosity.UnaryVector;
         }
-
         Body GetDangerZone() {
             foreach(Body obj in owner.CurrentSystem.Objects)
-                if(CoordPoint.Distance(obj.Location, owner.Location) <= 1.2 * obj.Diameter)
+                if(CoordPoint.Distance(obj.Location, owner.Location) <= 1.5 * obj.Diameter)
                     return obj;
             return null;
         }
@@ -53,33 +53,36 @@ namespace GameCore {
         void TaskGoToTarget() {
             targetLocation = targetObject.Location;
         }
-        bool CloseToTarget() {
-            return CoordPoint.Distance(targetObject.Location, owner.Location) < targetObject.Bounds.Width * 4;
-        }
-        Action GetPeersuitAction() {
+        List<Action> GetPeersuitActions() {
             Body danger = GetDangerZone();
             if(danger != null)
                 TaskLeaveDeathZone(danger);
-            else
-                TaskGoToTarget();
-
-            if(CloseToTarget() || owner.Velosity.Length > 10)
-                TaskDecreaseSpeed();
-
-            switch(CheckWayToTarget()) {
-                case 0:
-                    return new Action(owner.AccselerateEngine);
-                case 1:
-                    return new Action(owner.RotateL);
-                case -1:
-                    return new Action(owner.RotateR);
+            else {
+                float dist = CoordPoint.Distance(targetObject.Location, owner.Location);
+                if(dist / 500f < owner.Velosity.Length)
+                    TaskDecreaseSpeed();
+                else
+                    TaskGoToTarget();
+                if(dist <= 500+targetObject.Bounds.Width && owner.Velosity.Length <= 20)
+                    return new List<Action>();
             }
-            return null;
+
+
+
+                switch(CheckWayToTarget()) {
+                case 0:
+                    return new List<Action>() { new Action(owner.AccselerateEngine) };
+                case 1:
+                    return new List<Action>() { new Action(owner.RotateL) };
+                case -1:
+                    return new List<Action>() { new Action(owner.RotateR) }; 
+            }
+            throw new Exception("cant decide");
         }
-        public Action Step() {
+        public List<Action> Step() {
             switch (task){
                 case TaskType.Peersuit: 
-                    return GetPeersuitAction();
+                    return GetPeersuitActions();
             }
             return null;
         }

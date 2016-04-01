@@ -3,7 +3,7 @@
 namespace GameCore {
     public class Viewport {
         float height;
-        float scale = 30f;
+        float scale = 50f;
         float width;
         int lockTime = 0;
 
