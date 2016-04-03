@@ -2,8 +2,8 @@
 
 namespace GameCore {
     public class Bounds {
-        public CoordPoint LeftTop;
-        public CoordPoint RightBottom;
+        public CoordPoint LeftTop = new CoordPoint();
+        public CoordPoint RightBottom = new CoordPoint();
 
         public CoordPoint Center {
             get {
@@ -25,6 +25,7 @@ namespace GameCore {
             LeftTop = lt;
             RightBottom = rb;
         }
+        public Bounds() { }
 
         public  bool isIntersect(Bounds obj) {
             return (Math.Abs(LeftTop.X - obj.LeftTop.X) * 2 < (Width + obj.Width)) &&

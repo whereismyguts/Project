@@ -7,7 +7,7 @@ namespace GameCore {
         float acceleration = 0;
         float accselerationUp;
         float accselerationDown;
-        float accelerationMax = 1f;
+        float accelerationMax = 0.7f;
         float angleSpeed = 0;
         GameObject targetObject;
         CoordPoint velosity = new CoordPoint();
@@ -68,7 +68,7 @@ namespace GameCore {
         CoordPoint GetSummaryAttractingForce() {
             var vector = new CoordPoint();
             foreach(var obj in CurrentSystem.Objects)
-                if(!Bounds.isIntersect(obj.Bounds))
+             //   if(!Bounds.isIntersect(obj.Bounds))
                     vector += PhysicsHelper.GravitationForceVector(this, obj);
 
             return vector;
@@ -77,6 +77,11 @@ namespace GameCore {
             return (float)(Direction.Angle);
         }
         protected internal override void Step() {
+            foreach(Body obj in CurrentSystem.Objects)
+                if(CoordPoint.Distance(obj.Location, Location) <= obj.Radius)
+                    Death();
+
+
             if(IsBot) {
                 List<Action> actions = controller.Step();
                 foreach(Action a in actions)
@@ -90,9 +95,22 @@ namespace GameCore {
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
 
-            System.Diagnostics.Debug.WriteLine(acceleration);
+
 
             LowEngine();
+        }
+
+        void Death() {
+            Location = new CoordPoint(-170, 170);
+            acceleration = 0;
+            direction = new CoordPoint(1, 0);
+            velosity = new CoordPoint();
+        }
+
+        public void SwitchAI() {
+            if(controller != null)
+                controller = null;
+            else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
         }
     }
 

@@ -6,8 +6,8 @@ namespace GameCore {
         float radius;
         string ImageName;
 
-        public float Diameter {
-            get { return radius * 2; }
+        public float Radius {
+            get { return radius ; }
         }
         protected float SelfRotation { get; set; }
         protected internal override Bounds Bounds {
@@ -21,10 +21,10 @@ namespace GameCore {
             }
         }
 
-        public Body(CoordPoint location, float diameter, string imageName, StarSystem system) : base(system) {
-            radius = diameter / 2.0f;
+        public Body(CoordPoint location, float radius, string imageName, StarSystem system) : base(system) {
+            this.radius = radius;
             Location = location;
-            Mass = diameter;
+            Mass = radius*500;
             ImageName = imageName;
         }
 

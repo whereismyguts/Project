@@ -25,7 +25,7 @@ namespace GameCore {
         }
         Body GetDangerZone() {
             foreach(Body obj in owner.CurrentSystem.Objects)
-                if(CoordPoint.Distance(obj.Location, owner.Location) <= 1.5 * obj.Diameter)
+                if(CoordPoint.Distance(obj.Location, owner.Location) <= 1.5 * obj.Radius)
                     return obj;
             return null;
         }
@@ -47,7 +47,7 @@ namespace GameCore {
                 CoordPoint normalVector = a1 < a2 ? v1 : v2;
 
 
-                targetLocation = normalVector + owner.Location;
+                targetLocation = leaveVector + normalVector + owner.Location;
             }
         }
         void TaskGoToTarget() {
@@ -59,11 +59,11 @@ namespace GameCore {
                 TaskLeaveDeathZone(danger);
             else {
                 float dist = CoordPoint.Distance(targetObject.Location, owner.Location);
-                if(dist / 500f < owner.Velosity.Length)
+                if(dist < owner.Velosity.Length)
                     TaskDecreaseSpeed();
                 else
                     TaskGoToTarget();
-                if(dist <= 500+targetObject.Bounds.Width && owner.Velosity.Length <= 20)
+                if(dist <= targetObject.Bounds.Width && owner.Velosity.Length <= 20)
                     return new List<Action>();
             }
 
