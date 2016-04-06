@@ -17,11 +17,16 @@ namespace MonoGameDirectX {
         Point mousePosition;
         DrawPrimitives primitiveDrawer;
         SpriteBatch spriteBatch;
-        Rectangle allowedBorder;
+        Rectangle miniMapBorder;
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            
+        }
+        void WriteDebugInformation() {
+            spriteBatch.DrawString(font, Core.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
+        }
+        void DrawCursor() {
+            spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 5, 5), Color.White);
         }
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
@@ -31,8 +36,8 @@ namespace MonoGameDirectX {
                 RenderObject renderObject = WinAdapter.CreateRenderObject(obj);
                 //spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
                 primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width / 2, spriteBatch, Color.Red);
-                primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100) + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center) / 10, renderObject.MiniMapBounds.Width / 10f, spriteBatch, Color.Yellow, allowedBorder);
-                primitiveDrawer.DrawRect(allowedBorder, spriteBatch, Color.GhostWhite);
+                primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100) + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center) / 10, renderObject.MiniMapBounds.Width / 10f, spriteBatch, Color.Yellow, miniMapBorder);
+                primitiveDrawer.DrawRect(miniMapBorder, spriteBatch, 3, Color.GhostWhite);
 
                 if(!string.IsNullOrEmpty(renderObject.Name))
                     spriteBatch.DrawString(font, renderObject.Name, renderObject.TextureRect.Location.ToVector2(), Color.Red);
@@ -42,33 +47,28 @@ namespace MonoGameDirectX {
                 primitiveDrawer.DrawLine(
                     WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
                     (WinAdapter.CoordPoint2Vector((ship.GetScreenBounds() + ship.Direction * 20).Center)),
-                    spriteBatch, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
+                    spriteBatch, 1, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
 
                 //primitiveDrawer.DrawLine(
                 //    WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
                 //    WinAdapter.CoordPoint2Vector(ship.TargetObject.GetScreenBounds().Center),
                 //    spriteBatch, Color.Yellow);
 
-
-                if(ship.Reactive.Length>0)
+                if(ship.Reactive.Length > 0)
                     primitiveDrawer.DrawLine(
                     WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
                     (WinAdapter.CoordPoint2Vector((ship.GetScreenBounds() + ship.Reactive).Center)),
-                    spriteBatch, Color.Yellow);
+                    spriteBatch, 5, Color.Yellow);
             }
-
-            
-
-            spriteBatch.DrawString(font, GameCore.Core.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
-            spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 5, 5), Color.White);
-
+            WriteDebugInformation();
+            DrawCursor();
             spriteBatch.End();
-            //base.Draw(gameTime);
+            base.Draw(gameTime);
         }
         protected override void Initialize() {
             primitiveDrawer = new DrawPrimitives(GraphicsDevice);
             GameCore.Core.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            allowedBorder = new Rectangle(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100, 90, 90);
+            miniMapBorder = new Rectangle(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100, 90, 90);
             base.Initialize();
         }
         protected override void LoadContent() {

@@ -12,9 +12,6 @@ namespace MonoGameDirectX {
         internal static Rectangle Bounds2Rectangle(Bounds bounds) {
             return new Rectangle((int)bounds.LeftTop.X, (int)bounds.LeftTop.Y, (int)bounds.Width, (int)bounds.Height);
         }
-        internal static Vector2 Bounds2Vector(Bounds bounds) {
-            return new Vector2(bounds.LeftTop.X, bounds.LeftTop.Y);
-        }
         internal static Vector2 CoordPoint2Vector(CoordPoint point) {
             return new Vector2(point.X, point.Y);
         }
@@ -28,7 +25,6 @@ namespace MonoGameDirectX {
         }
         internal static void LoadContent(ContentManager content) {
             contentLoader = new ContentLoader(content);
-
             contentLoader.SetTexture("ship1");
             contentLoader.SetTexture("planet1");
             contentLoader.SetTexture("planet2");

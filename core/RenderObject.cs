@@ -8,9 +8,9 @@ namespace GameCore {
         public Bounds MiniMapBounds { get; set; }
         public string Name { get; set; }
 
-        internal RenderObjectCore(Bounds bounds, Bounds miniMapBounds, string content, float rotation, string name) {
+        internal RenderObjectCore(Bounds bounds, string content, float rotation, string name) {
             ScreenBounds = bounds;
-            MiniMapBounds = miniMapBounds;
+            MiniMapBounds = bounds;
             ContentString = content;
             Rotation = rotation;
             Name = name;

@@ -64,13 +64,12 @@ namespace GameCore {
             renderObjects = new List<RenderObjectCore>();
             foreach(GameObject obj in Objects)
                 if(obj.IsVisible)
-                    renderObjects.Add(new RenderObjectCore(obj.GetScreenBounds(), obj.GetMiniMapBounds(), obj.ContentString, obj.GetRotation(), obj.Name));
+                    renderObjects.Add(new RenderObjectCore(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation(), obj.Name));
         }
         void CreatePlayers() {
             ships.Add(new Ship(new CoordPoint(-10100, 10100), StarSystems[0].Objects[1], StarSystems[0])); // player controlled
-            //ships.Add(new Ship(new CoordPoint(10100, 10100), ships[0], StarSystems[0]));
-            //ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
-            
+            ships.Add(new Ship(new CoordPoint(10100, 10100), ships[0], StarSystems[0]));
+            ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
         }
     }
 }
