@@ -24,7 +24,7 @@ namespace GameCore {
         public Body(CoordPoint location, float radius, string imageName, StarSystem system) : base(system) {
             this.radius = radius;
             Location = location;
-            Mass = radius*500;
+            Mass = radius;
             ImageName = imageName;
         }
 

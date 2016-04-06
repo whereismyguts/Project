@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameCore {
     public static class PhysicsHelper {
-        public const float Gravitation = .035f;
+        public const float Gravitation = .35f;
         /// <summary>0 - stop moving immediately, 1.0 -moving never stops</summary>
         //public const float MovingInertia = .9f;
         public const float RotationInertia = .8f;

@@ -17,9 +17,11 @@ namespace MonoGameDirectX {
         Point mousePosition;
         DrawPrimitives primitiveDrawer;
         SpriteBatch spriteBatch;
+        Rectangle allowedBorder;
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            
         }
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
@@ -29,7 +31,8 @@ namespace MonoGameDirectX {
                 RenderObject renderObject = WinAdapter.CreateRenderObject(obj);
                 //spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
                 primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width / 2, spriteBatch, Color.Red);
-                primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100) + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center) / 10, renderObject.MiniMapBounds.Width / 10f, spriteBatch, Color.Yellow);
+                primitiveDrawer.DrawCircle(new Vector2(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100) + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center) / 10, renderObject.MiniMapBounds.Width / 10f, spriteBatch, Color.Yellow, allowedBorder);
+                primitiveDrawer.DrawRect(allowedBorder, spriteBatch, Color.GhostWhite);
 
                 if(!string.IsNullOrEmpty(renderObject.Name))
                     spriteBatch.DrawString(font, renderObject.Name, renderObject.TextureRect.Location.ToVector2(), Color.Red);
@@ -65,6 +68,7 @@ namespace MonoGameDirectX {
         protected override void Initialize() {
             primitiveDrawer = new DrawPrimitives(GraphicsDevice);
             GameCore.Core.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            allowedBorder = new Rectangle(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100, 90, 90);
             base.Initialize();
         }
         protected override void LoadContent() {

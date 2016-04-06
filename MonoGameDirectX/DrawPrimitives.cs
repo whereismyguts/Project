@@ -51,27 +51,38 @@ namespace MonoGameDirectX {
         }
 
         public void DrawPixel(Vector2 point, SpriteBatch spBatch, Color color) {
-            DrawPixel(point.X, point.Y, spBatch, color);
+            DrawPixel(point, spBatch, color, Rectangle.Empty);
+        }
+        public void DrawPixel(Vector2 point, SpriteBatch spBatch, Color color, Rectangle alowedBorder) {
+            DrawPixel(point, spBatch, color, alowedBorder);
         }
 
-        public void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color) {
+        public void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color, Rectangle alowwedBorder) {
             double theta = -Math.PI;  // angle that will be increased each loop
             double step = .01;  // amount to add to theta each time (degrees)
 
-            
 
-            while( theta < Math.PI)
-            {
-                
+
+            while(theta < Math.PI) {
+
                 double x = center.X + radius * Math.Cos(theta);
                 double y = center.Y + radius * Math.Sin(theta);
-                DrawPixel(x,y, spBatch, color);
+                DrawPixel(x, y, spBatch, color,alowwedBorder);
                 theta += step;
-                
+
             }
         }
+        public void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color) {
+            DrawCircle(center, radius, spBatch, color, Rectangle.Empty);
+        }
 
-        void DrawPixel(double x, double y, SpriteBatch spBatch,Color color) {
+        void DrawPixel(double x, double y, SpriteBatch spBatch,Color color, Rectangle allowedBorder) {
+
+            if(!allowedBorder.IsEmpty)
+                if(!allowedBorder.Contains(new Point((int)x, (int)y)))
+                    return;
+            
+
             spBatch.Draw(t,
                 new Rectangle((int)x, (int)y, 1, 1),
                null,

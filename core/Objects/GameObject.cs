@@ -24,14 +24,20 @@ namespace GameCore {
         protected internal abstract void Step();
 
         public Bounds GetScreenBounds() {
-            var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.Scale;
-            var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) / Viewport.Scale;
-            return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.Width, Viewport.Height) / 2;
+            return new Bounds(
+                Viewport.World2Screen(Bounds.LeftTop),
+                Viewport.World2Screen(Bounds.RightBottom) );
+            //var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.Scale;
+            //var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) / Viewport.Scale;
+            //return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.PxlWidth, Viewport.PxlHeight) / 2;
         }
         public Bounds GetMiniMapBounds() {
-            var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.MiniMapScale;
-            var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) / Viewport.MiniMapScale;
-            return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.Width, Viewport.Height) / 2;
+            return new Bounds(
+                Viewport.World2Screen(Bounds.LeftTop),
+                Viewport.World2Screen(Bounds.RightBottom));
+            //var centerPoint = (Bounds.Center - Viewport.Bounds.Center) / Viewport.MiniMapScale;
+            //var scaleVector = new CoordPoint(Bounds.Width, Bounds.Height) / Viewport.MiniMapScale;
+            //return new Bounds(centerPoint - scaleVector, centerPoint + scaleVector) + new CoordPoint(Viewport.PxlWidth, Viewport.PxlHeight) / 2;
         }
     }
 }

@@ -101,7 +101,7 @@ namespace GameCore {
         }
 
         void Death() {
-            Location = new CoordPoint(-170, 170);
+            Location = new CoordPoint(-101000, 101000);
             acceleration = 0;
             direction = new CoordPoint(1, 0);
             velosity = new CoordPoint();
