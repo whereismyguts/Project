@@ -1,19 +1,20 @@
 ﻿using System;
 
 namespace GameCore {
-    public class RenderObjectCore {
+    public class VisualElement {
         public string ContentString { get; set; }
         public float Rotation { get; set; }
         public Bounds ScreenBounds { get; set; }
         public Bounds MiniMapBounds { get; set; }
         public string Name { get; set; }
 
-        internal RenderObjectCore(Bounds bounds, string content, float rotation, string name) {
-            ScreenBounds = bounds;
-            MiniMapBounds = bounds;
-            ContentString = content;
-            Rotation = rotation;
-            Name = name;
+        internal VisualElement(GameObject obj) {
+            //obj.GetScreenBounds(), obj.ContentString, obj.GetRotation(), obj.Name
+            ScreenBounds = obj.GetScreenBounds();
+            MiniMapBounds = ScreenBounds / 10f;
+            ContentString = obj.ContentString;
+            Rotation = obj.Rotation;
+            Name = obj.Name;
         }
         public override string ToString() {
             return ContentString+" "+Name;

@@ -4,22 +4,18 @@ using System.Collections.Generic;
 namespace GameCore {
     public class Body: GameObject {
         float radius;
+        float selfRotation;
         string ImageName;
 
-        public float Radius {
-            get { return radius ; }
-        }
-        protected float SelfRotation { get; set; }
+        public float Radius { get { return radius; } }
+
+        protected internal override float Rotation { get { return selfRotation; } }
         protected internal override Bounds Bounds {
             get {
                 return new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius));
             }
         }
-        protected internal override string ContentString {
-            get {
-                return ImageName;
-            }
-        }
+        protected internal override string ContentString { get { return ImageName; } }
 
         public Body(CoordPoint location, float radius, string imageName, StarSystem system) : base(system) {
             this.radius = radius;
@@ -28,11 +24,9 @@ namespace GameCore {
             ImageName = imageName;
         }
 
-        protected internal override float GetRotation() {
-            return SelfRotation;
-        }
+
         protected internal override void Step() {
-            SelfRotation += .001f;
+            selfRotation += .001f;
         }
     }
 
@@ -40,6 +34,7 @@ namespace GameCore {
         bool clockwise;
         static Random rnd = new Random();
         float starRotation = 0;
+        float selfRotation;
         public override string Name { get; } = NameGenerator.Generate();
         Body RotateCenter { get { return CurrentSystem.Star; } }
         float DistanceToSun {
@@ -47,7 +42,7 @@ namespace GameCore {
                 return CoordPoint.Distance(RotateCenter.Location, Location);
             }
         }
-
+        protected internal override float Rotation { get { return selfRotation; } }
         public Planet(CoordPoint location, float diameter, float rotation, string imageName, bool clockwise, StarSystem system)
             : base(location, diameter, imageName, system) {
             this.starRotation = rotation;
@@ -65,7 +60,7 @@ namespace GameCore {
             Location = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Location.Y));
 
             starRotation += clockwise ? .0001f : -.0001f;
-            SelfRotation += .005f;
+            selfRotation += .005f;
 
         }
     }
@@ -73,7 +68,7 @@ namespace GameCore {
     static class NameGenerator {
         static List<string> baseparts = new List<string> { "za", "ke", "bre", "tho", "hu", "me", "ni", "jo", "cu", "az", "li", "eh", "unt", "ua", "hi", "che", "shi", "om", "slu" };
         static List<string> biom1 = new List<string> { "mue", "flo", "ph", "ble", "loo", "parr", "lio", "khai", "q'lee", "oo", "rash", "kroo", "o-i", "w'e", "aml", "faul", "hua", "hue", "hui", "eh", "oh", "ah" };
-        static List<string> biom2 = new List<string> { "wlan", "xor", "tty", "stack", "izm", "tox", "vox", "pex", "mex", "sky", "zex", "row", "buff","ling","synt","tic" };
+        static List<string> biom2 = new List<string> { "wlan", "xor", "tty", "stack", "izm", "tox", "vox", "pex", "mex", "sky", "zex", "row", "buff", "ling", "synt", "tic" };
         static List<string> biom3 = new List<string> { "grog", "agrh", "gerr", "urg", "krag", "ghar", "rog", "kog", "zorg", "gnar" };
         static List<string> biom4 = new List<string> { "plok", "plu", "qwa", "kue", "wle", "kle", "blow", "blob", "plee" };
         static Random rnd = new Random();

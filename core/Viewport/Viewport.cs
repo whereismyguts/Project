@@ -79,5 +79,8 @@ namespace GameCore {
         public Bounds World2ScreenBounds(Bounds scrBounds) {
             return new Bounds(World2ScreenPoint(scrBounds.LeftTop), World2ScreenPoint(scrBounds.RightBottom));
         }
+        public bool Contains(GameObject obj) {
+            return Bounds.Intersect(obj.Bounds);
+        }
     }
 }

@@ -1,9 +1,11 @@
-﻿using GameCore;
+﻿using System;
+using GameCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameDirectX {
     internal class RenderObject {
+        
         public Color ColorMask { get; internal set; }
         public Vector2 Origin { get; internal set; }
         public float Rotation { get; internal set; }

@@ -6,7 +6,7 @@ namespace GameCore {
     public class MainCore {
         static MainCore instance;
         static Random rnd = new Random();
-        List<RenderObjectCore> renderObjects;
+        //List<VisualElement> renderObjects;
         List<Ship> ships = new List<Ship>();
         
         public static MainCore Instance {
@@ -16,9 +16,11 @@ namespace GameCore {
                 return instance;
             }
         }
-        public List<RenderObjectCore> RenderObjects {
+        public IEnumerable<VisualElement> VisualElements {
             get {
-                return renderObjects;
+                foreach(GameObject obj in Objects)
+                            if(Viewport.Contains(obj))
+                                yield return new VisualElement(obj);
             }
         }
         public Viewport Viewport { get;  set; }
@@ -48,24 +50,17 @@ namespace GameCore {
         }
 
         public void Update() {
-            MoveObjects();
-            Viewport.Centerpoint = ships[0].Location;
-            //Viewport.SetScale(5f / (objects.First() as Character).Speed);
-            //System.Diagnostics.Debug.WriteLine((objects.First() as Character).Speed.ToString());
-            UpdateRenderObjects();
-        }
-        
-        void MoveObjects() {
             foreach(GameObject obj in Objects)
                 obj.Step();
-
+            Viewport.Centerpoint = ships[0].Location;
+            //UpdateRenderObjects();
         }
-        void UpdateRenderObjects() {
-            renderObjects = new List<RenderObjectCore>();
-            foreach(GameObject obj in Objects)
-                if(obj.IsVisible)
-                    renderObjects.Add(new RenderObjectCore(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation(), obj.Name));
-        }
+        //void UpdateRenderObjects() {
+        //    renderObjects = new List<RenderObjectCore>();
+        //    foreach(GameObject obj in Objects)
+        //        if(obj.IsVisible)
+        //            renderObjects.Add(new RenderObjectCore(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation(), obj.Name));
+        //}
         void CreatePlayers() {
             ships.Add(new Ship(new CoordPoint(-10100, 10100), StarSystems[0].Objects[1], StarSystems[0])); // player controlled
             ships.Add(new Ship(new CoordPoint(10100, 10100), ships[0], StarSystems[0]));

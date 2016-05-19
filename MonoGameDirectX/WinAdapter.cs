@@ -15,7 +15,7 @@ namespace MonoGameDirectX {
         internal static Vector2 CoordPoint2Vector(CoordPoint point) {
             return new Vector2(point.X, point.Y);
         }
-        internal static RenderObject CreateRenderObject(RenderObjectCore obj) {
+        static RenderObject CreateRenderObject(VisualElement obj) {
             Texture2D texture = contentLoader.GetTexture(obj.ContentString);
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
             Rectangle boundsRect = WinAdapter.Bounds2Rectangle(obj.ScreenBounds);
@@ -23,6 +23,7 @@ namespace MonoGameDirectX {
 
             return new RenderObject(texture, textureRect, origin, obj.Rotation, contentLoader.GetColorMask(obj.ContentString), obj.MiniMapBounds, obj.Name);
         }
+
 
         internal static Texture2D GetCursor() {
             return contentLoader.GetTexture(""); // TODO get "cursor"
@@ -38,6 +39,13 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("planet5");
             contentLoader.SetTexture("star", new Color(100, 100, 100, 100));
         }
+        internal static void UpdateRenderObjects(ref List<RenderObject> renderObjects) {
+            if(renderObjects == null)
+                renderObjects = new List<RenderObject>();
+            else renderObjects.Clear();
 
+            foreach(VisualElement ve in MainCore.Instance.VisualElements)
+                renderObjects.Add(CreateRenderObject(ve));
+        }
     }
 }

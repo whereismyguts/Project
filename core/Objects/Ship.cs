@@ -24,6 +24,7 @@ namespace GameCore {
         public CoordPoint Velosity { get { return velosity; } }
         public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
 
+        protected internal override float Rotation { get { return (float)(Direction.Angle); } }
         protected internal override Bounds Bounds {
             get {
                 return new Bounds(Location - new CoordPoint(5, 5), Location + new CoordPoint(5, 5));
@@ -68,13 +69,10 @@ namespace GameCore {
         CoordPoint GetSummaryAttractingForce() {
             var vector = new CoordPoint();
             foreach(var obj in CurrentSystem.Objects)
-             //   if(!Bounds.isIntersect(obj.Bounds))
-                    vector += PhysicsHelper.GravitationForceVector(this, obj);
+                //   if(!Bounds.isIntersect(obj.Bounds))
+                vector += PhysicsHelper.GravitationForceVector(this, obj);
 
             return vector;
-        }
-        protected internal override float GetRotation() {
-            return (float)(Direction.Angle);
         }
         protected internal override void Step() {
             foreach(Body obj in CurrentSystem.Objects)

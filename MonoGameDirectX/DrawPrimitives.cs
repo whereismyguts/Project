@@ -60,15 +60,11 @@ namespace MonoGameDirectX {
             double theta = -Math.PI;  // angle that will be increased each loop
             double step = .01;  // amount to add to theta each time (degrees)
 
-
-
             while(theta < Math.PI) {
-
                 double x = center.X + radius * Math.Cos(theta);
                 double y = center.Y + radius * Math.Sin(theta);
                 DrawPixel(x, y, spBatch, color, alowwedBorder);
                 theta += step;
-
             }
         }
         public void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color) {

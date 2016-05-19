@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GameCore {
     public class Bounds {
@@ -27,10 +28,10 @@ namespace GameCore {
         }
         public Bounds() { }
 
-        public  bool isIntersect(Bounds obj) {
-            return (Math.Abs(LeftTop.X - obj.LeftTop.X) * 2 < (Width + obj.Width)) &&
-            (Math.Abs(LeftTop.Y - obj.LeftTop.Y) * 2 < (Height + obj.Height));
-        }
+        //public  bool isIntersect(Bounds obj) {
+        //    return (Math.Abs(LeftTop.X - obj.LeftTop.X) * 2 < (Width + obj.Width)) &&
+        //    (Math.Abs(LeftTop.Y - obj.LeftTop.Y) * 2 < (Height + obj.Height));
+        //}
         public static Bounds operator /(Bounds p1, float k) {
             return new Bounds(p1.LeftTop / k, p1.RightBottom / k);
         }
@@ -50,7 +51,22 @@ namespace GameCore {
             return new Bounds(p1.LeftTop + p2, p1.RightBottom + p2);
         }
         public override string ToString() {
-            return LeftTop +" : " +RightBottom;
+            return LeftTop + " : " + RightBottom;
+        }
+        public IEnumerable<CoordPoint> GetPoints() {
+            yield return this.LeftTop;
+            yield return this.LeftTop + new CoordPoint(this.Width, 0);
+            yield return this.RightBottom;
+            yield return this.RightBottom + new CoordPoint(0, this.Height);
+        }
+        public bool Contains(CoordPoint p) {
+            return this.LeftTop.X <= p.X && LeftTop.Y <= p.Y && RightBottom.X >= p.X && RightBottom.Y > p.Y;
+        }
+        public bool Intersect(Bounds bounds) {
+            foreach(CoordPoint p in bounds.GetPoints())
+                if(bounds.Contains(p))
+                    return true;
+            return false;
         }
     }
 }
