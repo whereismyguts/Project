@@ -30,7 +30,6 @@ namespace GameCore {
             planets.Add(new Planet(new CoordPoint(100000, 100000), 200, RndService.GetPeriod(), "planet4", true, this));
 
         }
-
     }
 }
 

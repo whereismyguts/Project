@@ -17,6 +17,7 @@ namespace MonoGameDirectX {
             dummyTexture = new Texture2D(gd, 1, 1);
             dummyTexture.SetData(new Color[] { Color.White });
         }
+
         internal Texture2D GetTexture(string key) {
             if(textures.ContainsKey(key))
                 return textures[key];
@@ -36,7 +37,6 @@ namespace MonoGameDirectX {
                 masks = new Dictionary<string, Color>();
             masks[key] = mask;
         }
-
         internal Color GetColorMask(string key) {
             if(masks.ContainsKey(key))
                 return masks[key];

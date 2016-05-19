@@ -9,13 +9,13 @@ namespace GameCore {
         public string Name { get; set; }
 
         internal VisualElement(GameObject obj) {
-            //obj.GetScreenBounds(), obj.ContentString, obj.GetRotation(), obj.Name
             ScreenBounds = obj.GetScreenBounds();
-            MiniMapBounds = ScreenBounds / 10f;
+            MiniMapBounds = obj.IsMinimapVisible ? ScreenBounds / 10f : null;
             ContentString = obj.ContentString;
             Rotation = obj.Rotation;
             Name = obj.Name;
         }
+
         public override string ToString() {
             return ContentString+" "+Name;
         }

@@ -8,7 +8,7 @@ namespace GameCore {
         string ImageName;
 
         public float Radius { get { return radius; } }
-
+        internal override bool IsMinimapVisible { get { return true; } }
         protected internal override float Rotation { get { return selfRotation; } }
         protected internal override Bounds Bounds {
             get {
@@ -24,7 +24,6 @@ namespace GameCore {
             ImageName = imageName;
         }
 
-
         protected internal override void Step() {
             selfRotation += .001f;
         }
@@ -35,14 +34,12 @@ namespace GameCore {
         static Random rnd = new Random();
         float starRotation = 0;
         float selfRotation;
+
         public override string Name { get; } = NameGenerator.Generate();
         Body RotateCenter { get { return CurrentSystem.Star; } }
-        float DistanceToSun {
-            get {
-                return CoordPoint.Distance(RotateCenter.Location, Location);
-            }
-        }
+        float DistanceToSun { get { return CoordPoint.Distance(RotateCenter.Location, Location); } }
         protected internal override float Rotation { get { return selfRotation; } }
+
         public Planet(CoordPoint location, float diameter, float rotation, string imageName, bool clockwise, StarSystem system)
             : base(location, diameter, imageName, system) {
             this.starRotation = rotation;

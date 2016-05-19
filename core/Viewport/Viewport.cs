@@ -34,12 +34,12 @@ namespace GameCore {
             }
         }
 
-
         public Viewport(float x, float y, float w, float h) {
             Centerpoint = new CoordPoint(x, y);
             pxlWidth = w;
             pxlHeight = h;
         }
+
         void ChangeZoom(float delta) {
             if(lockTime == 0) {
                 scale += delta;
@@ -60,9 +60,6 @@ namespace GameCore {
             if(scale < 0)
                 scale = 0;
         }
-        public override string ToString() {
-            return string.Format("Bounds: {0}:{1} | Size: {2}x{3} | Centerpoint: {4}", Bounds.LeftTop, Bounds.RightBottom, pxlWidth, pxlHeight, Centerpoint);
-        }
         public CoordPoint Screen2WorldPoint(CoordPoint scrPoint) {
             double pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
             double pixelFactorY = PxlHeight > 0 ? Bounds.Width / PxlWidth : 0;
@@ -81,6 +78,9 @@ namespace GameCore {
         }
         public bool Contains(GameObject obj) {
             return Bounds.Intersect(obj.Bounds);
+        }
+        public override string ToString() {
+            return string.Format("Bounds: {0}:{1} | Size: {2}x{3} | Centerpoint: {4}", Bounds.LeftTop, Bounds.RightBottom, pxlWidth, pxlHeight, Centerpoint);
         }
     }
 }

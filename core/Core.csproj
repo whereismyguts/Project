@@ -35,14 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Objects\AIController.cs" />
-    <Compile Include="Objects\Size.cs" />
+    <Compile Include="Viewport\Size.cs" />
     <Compile Include="Objects\Weapon.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\Body.cs" />
-    <Compile Include="Objects\Star.cs" />
     <Compile Include="VisualElement.cs" />
     <Compile Include="RndService.cs" />
-    <Compile Include="StarSystem.cs" />
+    <Compile Include="Objects\StarSystem.cs" />
     <Compile Include="Viewport\Bounds.cs" />
     <Compile Include="Objects\Ship.cs" />
     <Compile Include="Objects\GameObject.cs" />

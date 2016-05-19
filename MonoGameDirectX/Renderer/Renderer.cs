@@ -47,10 +47,11 @@ namespace MonoGameDirectX {
             }
         }
         void DrawMiniMap() {
-            foreach(RenderObject renderObject in renderObjects) {
-                Vector2 objLocation = miniMapBorder.Location.ToVector2() + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center);
-                primitiveDrawer.DrawCircle(objLocation, renderObject.MiniMapBounds.Width, spriteBatch, Color.Yellow, miniMapBorder);
-            }
+            foreach(RenderObject renderObject in renderObjects)
+                if(renderObject.MiniMapBounds != null) {
+                    Vector2 objLocation = miniMapBorder.Location.ToVector2() + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center);
+                    primitiveDrawer.DrawCircle(objLocation, renderObject.MiniMapBounds.Width, spriteBatch, Color.Yellow, miniMapBorder);
+                }
             primitiveDrawer.DrawRect(miniMapBorder, spriteBatch, 3, Color.GhostWhite);
         }
         void DrawVisualInfo() {

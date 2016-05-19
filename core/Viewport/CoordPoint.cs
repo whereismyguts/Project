@@ -11,15 +11,9 @@ namespace GameCore {
             }
         }
 
-        public float Angle {
-            get {
-                return AngleTo(new CoordPoint(0, -1));
-            }
-        }
+        public float Angle { get { return AngleTo(new CoordPoint(0, -1)); } }
         public float Length {
-            get {
-                return Distance(new CoordPoint(), this);
-            }
+            get { return Distance(new CoordPoint(), this); }
         }
         public float X { get; set; }
         public float Y { get; set; }

@@ -13,6 +13,7 @@ namespace GameCore {
             targetObject = target;
             task = taskType;
         }
+
         int CheckWayToTarget() {
             float angle = owner.Direction.AngleTo(targetLocation - owner.Location);
             if(angle <= Math.PI / 16 && angle > -Math.PI / 16)
@@ -20,7 +21,7 @@ namespace GameCore {
             return angle > 0 ? 1 : -1;
         }
         void TaskDecreaseSpeed() {
-            
+
             targetLocation = owner.Location - owner.Velosity.UnaryVector;
         }
         Body GetDangerZone() {
@@ -69,19 +70,20 @@ namespace GameCore {
 
 
 
-                switch(CheckWayToTarget()) {
+            switch(CheckWayToTarget()) {
                 case 0:
                     return new List<Action>() { new Action(owner.AccselerateEngine) };
                 case 1:
                     return new List<Action>() { new Action(owner.RotateL) };
                 case -1:
-                    return new List<Action>() { new Action(owner.RotateR) }; 
+                    return new List<Action>() { new Action(owner.RotateR) };
             }
             throw new Exception("cant decide");
         }
+
         public List<Action> Step() {
-            switch (task){
-                case TaskType.Peersuit: 
+            switch(task) {
+                case TaskType.Peersuit:
                     return GetPeersuitActions();
             }
             return null;

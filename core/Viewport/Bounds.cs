@@ -27,11 +27,19 @@ namespace GameCore {
             RightBottom = rb;
         }
         public Bounds() { }
-
         //public  bool isIntersect(Bounds obj) {
         //    return (Math.Abs(LeftTop.X - obj.LeftTop.X) * 2 < (Width + obj.Width)) &&
         //    (Math.Abs(LeftTop.Y - obj.LeftTop.Y) * 2 < (Height + obj.Height));
         //}
+        public bool Contains(CoordPoint p) {
+            return this.LeftTop.X <= p.X && LeftTop.Y <= p.Y && RightBottom.X >= p.X && RightBottom.Y > p.Y;
+        }
+        public bool Intersect(Bounds bounds) {
+            foreach(CoordPoint p in bounds.GetPoints())
+                if(bounds.Contains(p))
+                    return true;
+            return false;
+        }
         public static Bounds operator /(Bounds p1, float k) {
             return new Bounds(p1.LeftTop / k, p1.RightBottom / k);
         }
@@ -59,14 +67,6 @@ namespace GameCore {
             yield return this.RightBottom;
             yield return this.RightBottom + new CoordPoint(0, this.Height);
         }
-        public bool Contains(CoordPoint p) {
-            return this.LeftTop.X <= p.X && LeftTop.Y <= p.Y && RightBottom.X >= p.X && RightBottom.Y > p.Y;
-        }
-        public bool Intersect(Bounds bounds) {
-            foreach(CoordPoint p in bounds.GetPoints())
-                if(bounds.Contains(p))
-                    return true;
-            return false;
-        }
+
     }
 }

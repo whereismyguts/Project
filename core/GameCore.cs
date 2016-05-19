@@ -6,9 +6,8 @@ namespace GameCore {
     public class MainCore {
         static MainCore instance;
         static Random rnd = new Random();
-        //List<VisualElement> renderObjects;
         List<Ship> ships = new List<Ship>();
-        
+
         public static MainCore Instance {
             get {
                 if(instance == null)
@@ -19,11 +18,11 @@ namespace GameCore {
         public IEnumerable<VisualElement> VisualElements {
             get {
                 foreach(GameObject obj in Objects)
-                            if(Viewport.Contains(obj))
-                                yield return new VisualElement(obj);
+                    if(Viewport.Contains(obj))
+                        yield return new VisualElement(obj);
             }
         }
-        public Viewport Viewport { get;  set; }
+        public Viewport Viewport { get; set; }
         public List<Ship> Ships {
             get {
                 return ships;
@@ -53,14 +52,7 @@ namespace GameCore {
             foreach(GameObject obj in Objects)
                 obj.Step();
             Viewport.Centerpoint = ships[0].Location;
-            //UpdateRenderObjects();
         }
-        //void UpdateRenderObjects() {
-        //    renderObjects = new List<RenderObjectCore>();
-        //    foreach(GameObject obj in Objects)
-        //        if(obj.IsVisible)
-        //            renderObjects.Add(new RenderObjectCore(obj.GetScreenBounds(), obj.ContentString, obj.GetRotation(), obj.Name));
-        //}
         void CreatePlayers() {
             ships.Add(new Ship(new CoordPoint(-10100, 10100), StarSystems[0].Objects[1], StarSystems[0])); // player controlled
             ships.Add(new Ship(new CoordPoint(10100, 10100), ships[0], StarSystems[0]));

@@ -15,20 +15,18 @@ namespace MonoGameDirectX {
         internal static Vector2 CoordPoint2Vector(CoordPoint point) {
             return new Vector2(point.X, point.Y);
         }
+
         static RenderObject CreateRenderObject(VisualElement obj) {
             Texture2D texture = contentLoader.GetTexture(obj.ContentString);
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
             Rectangle boundsRect = WinAdapter.Bounds2Rectangle(obj.ScreenBounds);
             Rectangle textureRect = new Rectangle(boundsRect.Location + new Point(boundsRect.Width / 2, boundsRect.Height / 2), boundsRect.Size);
 
-            return new RenderObject(texture, textureRect, origin, obj.Rotation, contentLoader.GetColorMask(obj.ContentString), obj.MiniMapBounds, obj.Name);
+            return new RenderObject(texture, textureRect, origin, contentLoader.GetColorMask(obj.ContentString), obj);
         }
-
-
         internal static Texture2D GetCursor() {
             return contentLoader.GetTexture(""); // TODO get "cursor"
         }
-
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);
             contentLoader.SetTexture("ship1");

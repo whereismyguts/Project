@@ -11,14 +11,13 @@ namespace GameCore {
         protected internal abstract string ContentString { get; }
         protected internal float Mass { get; set; }
         public virtual string Name { get { return ""; } }
+        internal abstract bool IsMinimapVisible { get; }
 
         public GameObject(StarSystem system) {
             CurrentSystem = system;
         }
 
-        //protected internal abstract float GetRotation();
         protected internal abstract void Step();
-
         public Bounds GetScreenBounds() {
             return Viewport.World2ScreenBounds(Bounds);
         }
