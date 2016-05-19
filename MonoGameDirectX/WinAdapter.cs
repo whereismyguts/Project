@@ -23,8 +23,13 @@ namespace MonoGameDirectX {
 
             return new RenderObject(texture, textureRect, origin, obj.Rotation, contentLoader.GetColorMask(obj.ContentString), obj.MiniMapBounds, obj.Name);
         }
-        internal static void LoadContent(ContentManager content) {
-            contentLoader = new ContentLoader(content);
+
+        internal static Texture2D GetCursor() {
+            return contentLoader.GetTexture(""); // TODO get "cursor"
+        }
+
+        internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
+            contentLoader = new ContentLoader(content, gd);
             contentLoader.SetTexture("ship1");
             contentLoader.SetTexture("planet1");
             contentLoader.SetTexture("planet2");
@@ -33,5 +38,6 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("planet5");
             contentLoader.SetTexture("star", new Color(100, 100, 100, 100));
         }
+
     }
 }

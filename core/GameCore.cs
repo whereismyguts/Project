@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GameCore {
     public class MainCore {
-        public static MainCore instance;
+        static MainCore instance;
         static Random rnd = new Random();
         List<RenderObjectCore> renderObjects;
         List<Ship> ships = new List<Ship>();
@@ -21,7 +21,7 @@ namespace GameCore {
                 return renderObjects;
             }
         }
-        public static Viewport Viewport { get; set; }
+        public Viewport Viewport { get;  set; }
         public List<Ship> Ships {
             get {
                 return ships;
@@ -32,8 +32,10 @@ namespace GameCore {
             foreach(StarSystem sys in StarSystems)
                 foreach(GameObject obj in sys.Objects)
                     yield return obj;
-            foreach(Ship s in ships)
+            foreach(Ship s in ships) {
+                yield return s.Weapon;
                 yield return s;
+            }
         }
         List<GameObject> Objects {
             get { return GetAllObjects().ToList(); }

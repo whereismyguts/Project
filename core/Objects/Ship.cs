@@ -39,8 +39,8 @@ namespace GameCore {
             Location = location;
             Mass = 1;
             Color = RndService.GetColor();
-            this.targetObject = target;
-            weapon = new DefaultCannon();
+            targetObject = target;
+            weapon = new DefaultCannon(this);
             controller = new AIController(this, target, TaskType.Peersuit);
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 3f;

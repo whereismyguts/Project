@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Objects\AIController.cs" />
+    <Compile Include="Objects\Size.cs" />
     <Compile Include="Objects\Weapon.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\Body.cs" />
