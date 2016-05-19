@@ -3,6 +3,10 @@ using System;
 
 namespace GameCore {
     public abstract class WeaponBase: GameObject {
+        // symmetry y/n
+        // rotate y/n
+        // firemode single/auto
+        // load number/inf
         float rotation = 0f;
         protected virtual Size Size { get; set; }
         protected virtual CoordPoint Origin { get; set; }
