@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +13,6 @@ namespace GameCore {
         GameObject targetObject;
         CoordPoint velosity = new CoordPoint();
         CoordPoint direction = new CoordPoint(1, 0);
-        static Random r = new Random();
         WeaponBase weapon;
         AIController controller;
 
@@ -38,7 +38,7 @@ namespace GameCore {
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
             Location = location;
             Mass = 1;
-            Color = new ColorCore(r.Next(100, 255), r.Next(100, 255), r.Next(100, 255));
+            Color = RndService.GetColor();
             this.targetObject = target;
             weapon = new DefaultCannon();
             controller = new AIController(this, target, TaskType.Peersuit);

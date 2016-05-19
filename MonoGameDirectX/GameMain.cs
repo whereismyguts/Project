@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core;
 
 namespace MonoGameDirectX {
     /// <summary>
@@ -23,7 +24,7 @@ namespace MonoGameDirectX {
             Content.RootDirectory = "Content";
         }
         void WriteDebugInformation() {
-            spriteBatch.DrawString(font, Core.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
+            spriteBatch.DrawString(font, MainCore.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
         }
         void DrawCursor() {
             spriteBatch.Draw(dummyTexture, new Rectangle(mousePosition.X, mousePosition.Y, 5, 5), Color.White);
@@ -32,7 +33,7 @@ namespace MonoGameDirectX {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
-            foreach(RenderObjectCore obj in Core.Instance.RenderObjects) {
+            foreach(RenderObjectCore obj in MainCore.Instance.RenderObjects) {
                 RenderObject renderObject = WinAdapter.CreateRenderObject(obj);
                 //spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
                 primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width / 2, spriteBatch, Color.Red);
@@ -43,7 +44,7 @@ namespace MonoGameDirectX {
                     spriteBatch.DrawString(font, renderObject.Name, renderObject.TextureRect.Location.ToVector2(), Color.Red);
 
             }
-            foreach(Ship ship in GameCore.Core.Instance.Ships) {
+            foreach(Ship ship in GameCore.MainCore.Instance.Ships) {
                 primitiveDrawer.DrawLine(
                     WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
                     (WinAdapter.CoordPoint2Vector((ship.GetScreenBounds() + ship.Direction * 20).Center)),
@@ -67,7 +68,7 @@ namespace MonoGameDirectX {
         }
         protected override void Initialize() {
             primitiveDrawer = new DrawPrimitives(GraphicsDevice);
-            GameCore.Core.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            MainCore.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             miniMapBorder = new Rectangle(GraphicsDevice.Viewport.Width - 100, GraphicsDevice.Viewport.Height - 100, 90, 90);
             base.Initialize();
         }
@@ -85,18 +86,18 @@ namespace MonoGameDirectX {
             // TODO: Unload any non ContentManager content here
         }
         protected override void Update(GameTime gameTime) {
-            Core.Instance.Update();
+            MainCore.Instance.Update();
             if(Keyboard.GetState().IsKeyDown(Keys.Z))
-                Core.Instance.Viewport.ZoomIn();
+                MainCore.Viewport.ZoomIn();
             if(Keyboard.GetState().IsKeyDown(Keys.X))
-                Core.Instance.Viewport.ZoomOut();
+                MainCore.Viewport.ZoomOut();
             if(Keyboard.GetState().IsKeyDown(Keys.Up))
-                Core.Instance.Ships[0].AccselerateEngine();
+                MainCore.Instance.Ships[0].AccselerateEngine();
 
             if(Keyboard.GetState().IsKeyDown(Keys.Left))
-                Core.Instance.Ships[0].RotateL();
+                MainCore.Instance.Ships[0].RotateL();
             if(Keyboard.GetState().IsKeyDown(Keys.Right))
-                Core.Instance.Ships[0].RotateR();
+                MainCore.Instance.Ships[0].RotateR();
 
             //if(Keyboard.GetState().IsKeyDown(Keys.Up))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, -10);

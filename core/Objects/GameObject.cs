@@ -9,7 +9,7 @@ namespace GameCore {
                 return true;
             }
         }
-        protected Viewport Viewport { get { return Core.Instance.Viewport; } }
+        protected Viewport Viewport { get { return MainCore.Viewport; } }
         internal CoordPoint Location { get; set; }
         protected internal abstract Bounds Bounds { get; }
         protected internal abstract string ContentString { get; }

@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GameCore {
-    public class Core {
-        public static Core instance;
+    public class MainCore {
+        public static MainCore instance;
         static Random rnd = new Random();
         List<RenderObjectCore> renderObjects;
         List<Ship> ships = new List<Ship>();
-
-        public static Core Instance {
+        
+        public static MainCore Instance {
             get {
                 if(instance == null)
-                    instance = new Core();
+                    instance = new MainCore();
                 return instance;
             }
         }
@@ -21,7 +21,7 @@ namespace GameCore {
                 return renderObjects;
             }
         }
-        public Viewport Viewport { get; set; }
+        public static Viewport Viewport { get; set; }
         public List<Ship> Ships {
             get {
                 return ships;
@@ -39,7 +39,7 @@ namespace GameCore {
             get { return GetAllObjects().ToList(); }
         }
 
-        Core() {
+        MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);
             StarSystems.Add(new StarSystem(3));
             CreatePlayers();
@@ -52,9 +52,7 @@ namespace GameCore {
             //System.Diagnostics.Debug.WriteLine((objects.First() as Character).Speed.ToString());
             UpdateRenderObjects();
         }
-        static internal float GetRandomT() {
-            return (float)(rnd.NextDouble() * Math.PI * 2);
-        }
+        
         void MoveObjects() {
             foreach(GameObject obj in Objects)
                 obj.Step();
