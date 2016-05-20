@@ -1,11 +1,9 @@
-﻿using GameCore;
+﻿using System;
+using System.Linq;
+using GameCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Core;
 
 namespace MonoGameDirectX {
     /// <summary>
@@ -27,7 +25,7 @@ namespace MonoGameDirectX {
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice);
             MainCore.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            
+
             base.Initialize();
         }
         protected override void LoadContent() {
@@ -59,7 +57,7 @@ namespace MonoGameDirectX {
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(10, 0);
             //if(Keyboard.GetState().IsKeyDown(Keys.Left))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
-            
+
             base.Update(gameTime);
         }
     }

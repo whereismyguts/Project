@@ -3,10 +3,10 @@
 namespace GameCore {
     public class VisualElement {
         public string ContentString { get; set; }
-        public float Rotation { get; set; }
-        public Bounds ScreenBounds { get; set; }
         public Bounds MiniMapBounds { get; set; }
         public string Name { get; set; }
+        public float Rotation { get; set; }
+        public Bounds ScreenBounds { get; set; }
 
         internal VisualElement(GameObject obj) {
             ScreenBounds = obj.GetScreenBounds();
@@ -17,7 +17,7 @@ namespace GameCore {
         }
 
         public override string ToString() {
-            return ContentString+" "+Name;
+            return ContentString + " " + Name;
         }
     }
 }

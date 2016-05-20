@@ -1,20 +1,14 @@
-﻿using GameCore;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameCore;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameDirectX {
     public static class WinAdapter {
         static ContentLoader contentLoader;
-        internal static Rectangle Bounds2Rectangle(Bounds bounds) {
-            return new Rectangle((int)bounds.LeftTop.X, (int)bounds.LeftTop.Y, (int)bounds.Width, (int)bounds.Height);
-        }
-        internal static Vector2 CoordPoint2Vector(CoordPoint point) {
-            return new Vector2(point.X, point.Y);
-        }
 
         static RenderObject CreateRenderObject(VisualElement obj) {
             Texture2D texture = contentLoader.GetTexture(obj.ContentString);
@@ -24,8 +18,15 @@ namespace MonoGameDirectX {
 
             return new RenderObject(texture, textureRect, origin, contentLoader.GetColorMask(obj.ContentString), obj);
         }
+
+        internal static Rectangle Bounds2Rectangle(Bounds bounds) {
+            return new Rectangle((int)bounds.LeftTop.X, (int)bounds.LeftTop.Y, (int)bounds.Width, (int)bounds.Height);
+        }
+        internal static Vector2 CoordPoint2Vector(CoordPoint point) {
+            return new Vector2(point.X, point.Y);
+        }
         internal static Texture2D GetCursor() {
-            return contentLoader.GetTexture(""); // TODO get "cursor"
+            return contentLoader.GetTexture(string.Empty); // TODO get "cursor"
         }
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);

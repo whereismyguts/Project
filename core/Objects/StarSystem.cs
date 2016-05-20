@@ -1,17 +1,13 @@
-﻿using Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Core;
 
 namespace GameCore {
     public class StarSystem {
-        List<Body> planets = new List<Body>();
-        List<Body> stations = new List<Body>();
         Body star;
+
         public CoordPoint MapLocation { get; }
-        public Body Star { get { return star; } }
         public List<Body> Objects {
             get {
                 List<Body> objs = new List<Body>();
@@ -21,6 +17,8 @@ namespace GameCore {
                 return objs;
             }
         }
+        public Body Star { get { return star; } }
+
         public StarSystem(int planetsNumber) {
             planets = new List<Body>();
             //TODO Data Driven Factory
@@ -30,6 +28,8 @@ namespace GameCore {
             planets.Add(new Planet(new CoordPoint(100000, 100000), 200, RndService.GetPeriod(), "planet4", true, this));
 
         }
+        List<Body> planets = new List<Body>();
+        List<Body> stations = new List<Body>();
     }
 }
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace GameCore {
     public class AIController {
-        CoordPoint targetLocation;
         Ship owner;
+        CoordPoint targetLocation;
         GameObject targetObject;
         TaskType task;
 
@@ -20,39 +20,11 @@ namespace GameCore {
                 return 0;
             return angle > 0 ? 1 : -1;
         }
-        void TaskDecreaseSpeed() {
-
-            targetLocation = owner.Location - owner.Velosity.UnaryVector;
-        }
         Body GetDangerZone() {
             foreach(Body obj in owner.CurrentSystem.Objects)
                 if(CoordPoint.Distance(obj.Location, owner.Location) <= 1.5 * obj.Radius)
                     return obj;
             return null;
-        }
-        void TaskLeaveDeathZone(GameObject obj) {
-            // set target location as end of vector, normal to strait vector from center of danger obj
-            CoordPoint toTarget = targetObject.Location - owner.Location;
-            CoordPoint leaveVector = (owner.Location - obj.Location) * 2;
-
-            if(Math.Abs(leaveVector.AngleTo(toTarget)) < Math.PI / 8)
-                targetLocation = targetObject.Location;
-            else {
-
-                CoordPoint v1 = new CoordPoint(-leaveVector.Y, leaveVector.X);
-                CoordPoint v2 = new CoordPoint(leaveVector.Y, -leaveVector.X);
-
-                float a1 = Math.Abs(v1.AngleTo(toTarget));
-                float a2 = Math.Abs(v2.AngleTo(toTarget));
-
-                CoordPoint normalVector = a1 < a2 ? v1 : v2;
-
-
-                targetLocation = leaveVector + normalVector + owner.Location;
-            }
-        }
-        void TaskGoToTarget() {
-            targetLocation = targetObject.Location;
         }
         List<Action> GetPeersuitActions() {
             Body danger = GetDangerZone();
@@ -79,6 +51,34 @@ namespace GameCore {
                     return new List<Action>() { new Action(owner.RotateR) };
             }
             throw new Exception("cant decide");
+        }
+        void TaskDecreaseSpeed() {
+
+            targetLocation = owner.Location - owner.Velosity.UnaryVector;
+        }
+        void TaskGoToTarget() {
+            targetLocation = targetObject.Location;
+        }
+        void TaskLeaveDeathZone(GameObject obj) {
+            // set target location as end of vector, normal to strait vector from center of danger obj
+            CoordPoint toTarget = targetObject.Location - owner.Location;
+            CoordPoint leaveVector = (owner.Location - obj.Location) * 2;
+
+            if(Math.Abs(leaveVector.AngleTo(toTarget)) < Math.PI / 8)
+                targetLocation = targetObject.Location;
+            else {
+
+                CoordPoint v1 = new CoordPoint(-leaveVector.Y, leaveVector.X);
+                CoordPoint v2 = new CoordPoint(leaveVector.Y, -leaveVector.X);
+
+                float a1 = Math.Abs(v1.AngleTo(toTarget));
+                float a2 = Math.Abs(v2.AngleTo(toTarget));
+
+                CoordPoint normalVector = a1 < a2 ? v1 : v2;
+
+
+                targetLocation = leaveVector + normalVector + owner.Location;
+            }
         }
 
         public List<Action> Step() {

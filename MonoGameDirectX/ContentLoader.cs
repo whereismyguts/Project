@@ -1,21 +1,28 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameDirectX {
     internal class ContentLoader {
         ContentManager content;
+        Texture2D dummyTexture;
         Dictionary<string, Color> masks;
         Dictionary<string, Texture2D> textures;
-        Texture2D dummyTexture;
 
         public ContentLoader(ContentManager content, GraphicsDevice gd) {
             this.content = content;
             dummyTexture = new Texture2D(gd, 1, 1);
             dummyTexture.SetData(new Color[] { Color.White });
+        }
+
+        internal Color GetColorMask(string key) {
+            if(masks.ContainsKey(key))
+                return masks[key];
+            return Color.White;
+            throw new Exception("color unasigned!");
         }
 
         internal Texture2D GetTexture(string key) {
@@ -36,12 +43,6 @@ namespace MonoGameDirectX {
             if(masks == null)
                 masks = new Dictionary<string, Color>();
             masks[key] = mask;
-        }
-        internal Color GetColorMask(string key) {
-            if(masks.ContainsKey(key))
-                return masks[key];
-            return Color.White;
-            throw new Exception("color unasigned!");
         }
     }
 }

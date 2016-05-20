@@ -5,8 +5,11 @@ using System.Linq;
 namespace GameCore {
     public class MainCore {
         static MainCore instance;
-        static Random rnd = new Random();
-        List<Ship> ships = new List<Ship>();
+
+        List<GameObject> Objects {
+            get { return GetAllObjects().ToList(); }
+        }
+        List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
 
         public static MainCore Instance {
             get {
@@ -15,6 +18,12 @@ namespace GameCore {
                 return instance;
             }
         }
+        public List<Ship> Ships {
+            get {
+                return ships;
+            }
+        }
+        public Viewport Viewport { get; set; }
         public IEnumerable<VisualElement> VisualElements {
             get {
                 foreach(GameObject obj in Objects)
@@ -22,13 +31,18 @@ namespace GameCore {
                         yield return new VisualElement(obj);
             }
         }
-        public Viewport Viewport { get; set; }
-        public List<Ship> Ships {
-            get {
-                return ships;
-            }
+
+        MainCore() {
+            Viewport = new Viewport(300, 300, 0, 0);
+            StarSystems.Add(new StarSystem(3));
+            CreatePlayers();
         }
-        List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
+
+        void CreatePlayers() {
+            ships.Add(new Ship(new CoordPoint(-10100, 10100), StarSystems[0].Objects[1], StarSystems[0])); // player controlled
+            ships.Add(new Ship(new CoordPoint(10100, 10100), ships[0], StarSystems[0]));
+            ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
+        }
         IEnumerable<GameObject> GetAllObjects() {
             foreach(StarSystem sys in StarSystems)
                 foreach(GameObject obj in sys.Objects)
@@ -38,25 +52,13 @@ namespace GameCore {
                 yield return s;
             }
         }
-        List<GameObject> Objects {
-            get { return GetAllObjects().ToList(); }
-        }
-
-        MainCore() {
-            Viewport = new Viewport(300, 300, 0, 0);
-            StarSystems.Add(new StarSystem(3));
-            CreatePlayers();
-        }
 
         public void Update() {
             foreach(GameObject obj in Objects)
                 obj.Step();
             Viewport.Centerpoint = ships[0].Location;
         }
-        void CreatePlayers() {
-            ships.Add(new Ship(new CoordPoint(-10100, 10100), StarSystems[0].Objects[1], StarSystems[0])); // player controlled
-            ships.Add(new Ship(new CoordPoint(10100, 10100), ships[0], StarSystems[0]));
-            ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
-        }
+        static Random rnd = new Random();
+        List<Ship> ships = new List<Ship>();
     }
 }

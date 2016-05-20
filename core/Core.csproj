@@ -35,20 +35,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Objects\AIController.cs" />
-    <Compile Include="Viewport\Size.cs" />
+    <Compile Include="CoordSystem\Size.cs" />
     <Compile Include="Objects\Weapon.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\Body.cs" />
     <Compile Include="VisualElement.cs" />
     <Compile Include="RndService.cs" />
     <Compile Include="Objects\StarSystem.cs" />
-    <Compile Include="Viewport\Bounds.cs" />
+    <Compile Include="CoordSystem\Bounds.cs" />
     <Compile Include="Objects\Ship.cs" />
     <Compile Include="Objects\GameObject.cs" />
-    <Compile Include="Viewport\CoordPoint.cs" />
+    <Compile Include="CoordSystem\CoordPoint.cs" />
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Viewport\Viewport.cs" />
+    <Compile Include="CoordSystem\Viewport.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

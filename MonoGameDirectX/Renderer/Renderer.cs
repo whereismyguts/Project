@@ -40,7 +40,7 @@ namespace MonoGameDirectX {
         void DrawObjects() {
             foreach(RenderObject renderObject in renderObjects) {
                 spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
-                primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width / 2, spriteBatch, Color.Red);
+                primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width / 2.0f, spriteBatch, Color.Red);
 
                 if(!string.IsNullOrEmpty(renderObject.Name))
                     spriteBatch.DrawString(Font, renderObject.Name, renderObject.TextureRect.Location.ToVector2(), Color.Red);

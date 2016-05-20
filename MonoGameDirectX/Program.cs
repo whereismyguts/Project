@@ -11,9 +11,7 @@ namespace MonoGameDirectX {
         /// </summary>
         [STAThread]
         static void Main() {
-            using (var game = new GameMain()) {
-                game.Run();
-            }
+            using(var game = new GameMain()) game.Run();
         }
     }
 #endif

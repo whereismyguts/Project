@@ -1,31 +1,16 @@
-﻿using Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core;
 
 namespace GameCore {
     public class Ship: GameObject {
-        float acceleration = 0;
-        float accselerationUp;
         float accselerationDown;
-        float accelerationMax = 0.7f;
-        float angleSpeed = 0;
-        GameObject targetObject;
-        CoordPoint velosity = new CoordPoint();
-        CoordPoint direction = new CoordPoint(1, 0);
-        WeaponBase weapon;
+        float accselerationUp;
         AIController controller;
+        GameObject targetObject;
+        WeaponBase weapon;
 
-        public WeaponBase Weapon { get { return weapon; } }
-        public ColorCore Color { get; }
-        public bool IsBot { get { return controller != null; } }
-        public GameObject TargetObject { get { return IsBot ? targetObject : this; } }
-        public CoordPoint Direction { get { return direction; } }
-        public CoordPoint Velosity { get { return velosity; } }
-        public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
-
-        internal override bool IsMinimapVisible { get { return true; } }
-        protected internal override float Rotation { get { return (float)(Direction.Angle); } }
         protected internal override Bounds Bounds {
             get {
                 return new Bounds(Location - new CoordPoint(5, 5), Location + new CoordPoint(5, 5));
@@ -36,6 +21,18 @@ namespace GameCore {
                 return "ship1";
             }
         }
+        protected internal override float Rotation { get { return (Direction.Angle); } }
+
+        internal override bool IsMinimapVisible { get { return true; } }
+
+        public ColorCore Color { get; }
+        public CoordPoint Direction { get { return direction; } }
+        public bool IsBot { get { return controller != null; } }
+        public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
+        public GameObject TargetObject { get { return IsBot ? targetObject : this; } }
+        public CoordPoint Velosity { get { return velosity; } }
+
+        public WeaponBase Weapon { get { return weapon; } }
 
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
             Location = location;
@@ -48,6 +45,13 @@ namespace GameCore {
             accselerationDown = accselerationUp / 3f;
         }
 
+        void Death() {
+            Location = new CoordPoint(-101000, 101000);
+            acceleration = 0;
+            direction = new CoordPoint(1, 0);
+            velosity = new CoordPoint();
+        }
+
 
         CoordPoint GetSummaryAttractingForce() {
             var vector = new CoordPoint();
@@ -55,6 +59,7 @@ namespace GameCore {
                 vector += PhysicsHelper.GravitationForceVector(this, obj);
             return vector;
         }
+
         protected internal override void Step() {
             foreach(Body obj in CurrentSystem.Objects)
                 if(CoordPoint.Distance(obj.Location, Location) <= obj.Radius)
@@ -73,18 +78,6 @@ namespace GameCore {
             LowEngine();
         }
 
-        void Death() {
-            Location = new CoordPoint(-101000, 101000);
-            acceleration = 0;
-            direction = new CoordPoint(1, 0);
-            velosity = new CoordPoint();
-        }
-
-        public void SwitchAI() {
-            if(controller != null)
-                controller = null;
-            else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
-        }
         public void AccselerateEngine() {
             if(acceleration + accselerationUp <= accelerationMax)
                 acceleration = acceleration + accselerationUp;
@@ -103,12 +96,24 @@ namespace GameCore {
         public void RotateR() {
             angleSpeed += .01f;
         }
+
+        public void SwitchAI() {
+            if(controller != null)
+                controller = null;
+            else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
+        }
+        float acceleration = 0;
+        float accelerationMax = 0.7f;
+        float angleSpeed = 0;
+        CoordPoint velosity = new CoordPoint();
+        CoordPoint direction = new CoordPoint(1, 0);
     }
 
     public struct ColorCore {
         public int b;
         public int g;
         public int r;
+
         public ColorCore(int r, int g, int b) {
             this.r = r;
             this.g = g;

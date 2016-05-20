@@ -3,19 +3,21 @@ using System.Collections.Generic;
 
 namespace GameCore {
     public class Body: GameObject {
+        string ImageName;
         float radius;
         float selfRotation;
-        string ImageName;
 
-        public float Radius { get { return radius; } }
-        internal override bool IsMinimapVisible { get { return true; } }
-        protected internal override float Rotation { get { return selfRotation; } }
         protected internal override Bounds Bounds {
             get {
                 return new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius));
             }
         }
         protected internal override string ContentString { get { return ImageName; } }
+        protected internal override float Rotation { get { return selfRotation; } }
+
+        internal override bool IsMinimapVisible { get { return true; } }
+
+        public float Radius { get { return radius; } }
 
         public Body(CoordPoint location, float radius, string imageName, StarSystem system) : base(system) {
             this.radius = radius;
@@ -31,14 +33,14 @@ namespace GameCore {
 
     public class Planet: Body {
         bool clockwise;
-        static Random rnd = new Random();
-        float starRotation = 0;
         float selfRotation;
 
-        public override string Name { get; } = NameGenerator.Generate();
-        Body RotateCenter { get { return CurrentSystem.Star; } }
         float DistanceToSun { get { return CoordPoint.Distance(RotateCenter.Location, Location); } }
+        Body RotateCenter { get { return CurrentSystem.Star; } }
+
         protected internal override float Rotation { get { return selfRotation; } }
+
+        public override string Name { get; } = NameGenerator.Generate();
 
         public Planet(CoordPoint location, float diameter, float rotation, string imageName, bool clockwise, StarSystem system)
             : base(location, diameter, imageName, system) {
@@ -60,18 +62,14 @@ namespace GameCore {
             selfRotation += .005f;
 
         }
+        static Random rnd = new Random();
+        float starRotation = 0;
     }
 
     static class NameGenerator {
-        static List<string> baseparts = new List<string> { "za", "ke", "bre", "tho", "hu", "me", "ni", "jo", "cu", "az", "li", "eh", "unt", "ua", "hi", "che", "shi", "om", "slu" };
-        static List<string> biom1 = new List<string> { "mue", "flo", "ph", "ble", "loo", "parr", "lio", "khai", "q'lee", "oo", "rash", "kroo", "o-i", "w'e", "aml", "faul", "hua", "hue", "hui", "eh", "oh", "ah" };
-        static List<string> biom2 = new List<string> { "wlan", "xor", "tty", "stack", "izm", "tox", "vox", "pex", "mex", "sky", "zex", "row", "buff", "ling", "synt", "tic" };
-        static List<string> biom3 = new List<string> { "grog", "agrh", "gerr", "urg", "krag", "ghar", "rog", "kog", "zorg", "gnar" };
-        static List<string> biom4 = new List<string> { "plok", "plu", "qwa", "kue", "wle", "kle", "blow", "blob", "plee" };
-        static Random rnd = new Random();
         static string internalGenerate(List<string> biom) {
             int n = rnd.Next(2, 4);
-            string name = "";
+            string name = string.Empty;
             List<string> parts = new List<string>();
             parts.AddRange(biom);
             parts.AddRange(biom);
@@ -82,8 +80,15 @@ namespace GameCore {
                 name += parts[rnd.Next(0, parts.Count - 1)];
             return char.ToUpper(name[0]) + name.Substring(1);
         }
+
         public static string Generate() {
             return internalGenerate(biom1);// + " / " + internalGenerate(biom2) + " / " +internalGenerate(biom3) + " / " + internalGenerate(biom4); 
         }
+        static List<string> baseparts = new List<string> { "za", "ke", "bre", "tho", "hu", "me", "ni", "jo", "cu", "az", "li", "eh", "unt", "ua", "hi", "che", "shi", "om", "slu" };
+        static List<string> biom1 = new List<string> { "mue", "flo", "ph", "ble", "loo", "parr", "lio", "khai", "q'lee", "oo", "rash", "kroo", "o-i", "w'e", "aml", "faul", "hua", "hue", "hui", "eh", "oh", "ah" };
+        static List<string> biom2 = new List<string> { "wlan", "xor", "tty", "stack", "izm", "tox", "vox", "pex", "mex", "sky", "zex", "row", "buff", "ling", "synt", "tic" };
+        static List<string> biom3 = new List<string> { "grog", "agrh", "gerr", "urg", "krag", "ghar", "rog", "kog", "zorg", "gnar" };
+        static List<string> biom4 = new List<string> { "plok", "plu", "qwa", "kue", "wle", "kle", "blow", "blob", "plee" };
+        static Random rnd = new Random();
     }
 }
