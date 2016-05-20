@@ -12,6 +12,21 @@ namespace MonoGameDirectX {
         Rectangle miniMapBorder;
         GraphicsDevice graphicsDevice;
         SpriteBatch spriteBatch;
+
+
+        #region animation
+        float time;
+        // duration of time to show each frame
+        float frameTime = 0.1f;
+        // an index of the current frame being shown
+        int frameIndex;
+        // total number of frames in our spritesheet
+        const int totalFrames = 10;
+        // define the size of our animation frame
+        int frameHeight = 64;
+        int frameWidth = 64;
+        #endregion
+
         public SpriteFont Font { get; set; }
 
         public Renderer(GraphicsDevice gd) {
@@ -20,13 +35,40 @@ namespace MonoGameDirectX {
             primitiveDrawer = new DrawPrimitives(graphicsDevice);
             miniMapBorder = new Rectangle(graphicsDevice.Viewport.Width - 100, graphicsDevice.Viewport.Height - 100, 90, 90);
         }
+        public void Render(GameTime gameTime) {
+            graphicsDevice.Clear(Color.White);
 
-        public void Render() {
-            graphicsDevice.Clear(Color.Black);
+
+            time += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if(time > frameTime) {
+                // Play the next frame in the SpriteSheet
+                frameIndex++;
+
+                // reset elapsed time
+                time = 0f;
+            }
+            if(frameIndex > totalFrames) frameIndex = 1;
+
+            // Calculate the source rectangle of the current frame.
+            Rectangle source = new Rectangle(frameIndex * frameWidth, 0, frameWidth, frameHeight);
+
+            // Calculate position and origin to draw in the center of the screen
+            Vector2 position = new Vector2(100,100);
+            Vector2 origin = new Vector2(frameWidth / 2.0f, frameHeight);
+
             spriteBatch.Begin();
+
+            // Draw the current frame.
+            spriteBatch.Draw(WinAdapter.GetTexture("Celebrate"), position, source, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
+
+            primitiveDrawer.DrawRect(new Rectangle((position-origin).ToPoint(), new Point(frameWidth, frameHeight)), spriteBatch, 1, Color.Red);
+
+
+
+            
             WinAdapter.UpdateRenderObjects(ref renderObjects);
 
-            DrawObjects();
+            DrawObjects(gameTime);
             DrawMiniMap();
             DrawVisualInfo();
             DrawCursor();
@@ -35,15 +77,13 @@ namespace MonoGameDirectX {
         }
         void DrawCursor() {
             Point mPoint = Mouse.GetState().Position;
-            spriteBatch.Draw(WinAdapter.GetCursor(), new Rectangle(mPoint.X, mPoint.Y, 5, 5), Color.White);
+            spriteBatch.Draw(WinAdapter.GetCursor(), new Rectangle(mPoint.X, mPoint.Y, 5, 5), Color.Black);
         }
-        void DrawObjects() {
+        void DrawObjects(GameTime gameTime) {
             foreach(RenderObject renderObject in renderObjects) {
-                spriteBatch.Draw(renderObject.Texture, renderObject.TextureRect, null, renderObject.ColorMask, renderObject.Rotation, renderObject.Origin, SpriteEffects.None, 0);
-                primitiveDrawer.DrawCircle(renderObject.TextureRect.Location.ToVector2(), renderObject.TextureRect.Width / 2.0f, spriteBatch, Color.Red);
-
+                renderObject.Draw(spriteBatch, gameTime);
                 if(!string.IsNullOrEmpty(renderObject.Name))
-                    spriteBatch.DrawString(Font, renderObject.Name, renderObject.TextureRect.Location.ToVector2(), Color.Red);
+                    spriteBatch.DrawString(Font, renderObject.Name, WinAdapter.CoordPoint2Vector(renderObject.Bounds.LeftTop), Color.Red);
             }
         }
         void DrawMiniMap() {

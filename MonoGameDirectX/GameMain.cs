@@ -18,8 +18,25 @@ namespace MonoGameDirectX {
             Content.RootDirectory = "Content";
         }
 
+
+        float time;
+        // duration of time to show each frame
+        float frameTime = 0.1f;
+        // an index of the current frame being shown
+        int frameIndex;
+        // total number of frames in our spritesheet
+        const int totalFrames = 10;
+        // define the size of our animation frame
+        int frameHeight = 64;
+        int frameWidth = 64;
+
         protected override void Draw(GameTime gameTime) {
-            renderer.Render();
+
+
+            
+
+
+            renderer.Render(gameTime);
             base.Draw(gameTime);
         }
         protected override void Initialize() {
@@ -31,6 +48,7 @@ namespace MonoGameDirectX {
         protected override void LoadContent() {
             WinAdapter.LoadContent(Content, GraphicsDevice);
             renderer.Font = Content.Load<SpriteFont>("Arial");
+            
         }
         protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GameCore {
     public abstract class GameObject {
@@ -14,6 +15,19 @@ namespace GameCore {
         internal abstract bool IsMinimapVisible { get; }
 
         public StarSystem CurrentSystem { get; }
+
+        protected internal abstract IEnumerable<SpriteInfo> GetSpriteInfos() {
+            //foreach in all iternal items (weapons, effects, clouds, engines) :
+            var screenBounds = GetScreenBounds();
+            SpriteInfo info = new SpriteInfo() {
+                ScreenBounds = screenBounds,
+                MiniMapBounds = IsMinimapVisible ? screenBounds / 10f : null,
+                ContentString = ContentString,
+                Rotation = Rotation
+            };
+            
+        }
+
         public virtual string Name { get { return string.Empty; } }
 
         public GameObject(StarSystem system) {

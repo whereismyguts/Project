@@ -19,8 +19,8 @@ namespace GameCore {
 
         public WeaponBase(Ship owner) : base(owner.CurrentSystem) {
             Owner = owner;
-            Size = new Size(10, 20);
-            Origin = new CoordPoint(0, 0);
+            Size = new Size(20, 60);
+            Origin = new CoordPoint(10, 0);
         }
 
         protected internal override void Step() { }

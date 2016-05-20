@@ -48,8 +48,8 @@ namespace GameCore {
                 foreach(GameObject obj in sys.Objects)
                     yield return obj;
             foreach(Ship s in ships) {
-                yield return s.Weapon;
                 yield return s;
+                yield return s.Weapon;
             }
         }
 

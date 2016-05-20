@@ -13,7 +13,7 @@ namespace GameCore {
 
         protected internal override Bounds Bounds {
             get {
-                return new Bounds(Location - new CoordPoint(5, 5), Location + new CoordPoint(5, 5));
+                return new Bounds(Location - new CoordPoint(50, 50), Location + new CoordPoint(500, 500));
             }
         }
         protected internal override string ContentString {
