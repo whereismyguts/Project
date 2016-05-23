@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GameCore {
+    public enum StateEnum { MainMenu, Space, Pause, Inventory, Landing };
     public class MainCore {
         static MainCore instance;
 
@@ -31,6 +32,8 @@ namespace GameCore {
                         yield return new VisualElement(obj);
             }
         }
+
+        public static StateEnum State { get; } = StateEnum.MainMenu;
 
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);

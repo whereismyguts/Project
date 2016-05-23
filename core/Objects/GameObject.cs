@@ -16,7 +16,7 @@ namespace GameCore {
 
         public StarSystem CurrentSystem { get; }
 
-        protected internal abstract IEnumerable<SpriteInfo> GetSpriteInfos() {
+        protected internal virtual IEnumerable<SpriteInfo> GetSpriteInfos() {
             //foreach in all iternal items (weapons, effects, clouds, engines) :
             var screenBounds = GetScreenBounds();
             SpriteInfo info = new SpriteInfo() {
@@ -25,7 +25,7 @@ namespace GameCore {
                 ContentString = ContentString,
                 Rotation = Rotation
             };
-            
+            return new SpriteInfo[]{ };
         }
 
         public virtual string Name { get { return string.Empty; } }

@@ -77,7 +77,8 @@ namespace MonoGameDirectX {
         }
         void DrawCursor() {
             Point mPoint = Mouse.GetState().Position;
-            spriteBatch.Draw(WinAdapter.GetCursor(), new Rectangle(mPoint.X, mPoint.Y, 5, 5), Color.Black);
+            primitiveDrawer.DrawRect(new Rectangle(mPoint.X, mPoint.Y, 10, 10), spriteBatch, 1, Color.White, Color.Red);
+            //spriteBatch.Draw(WinAdapter.GetCursor(), new Rectangle(mPoint.X, mPoint.Y, 5, 5), Color.Black);
         }
         void DrawObjects(GameTime gameTime) {
             foreach(RenderObject renderObject in renderObjects) {
@@ -115,6 +116,18 @@ namespace MonoGameDirectX {
         }
         void WriteDebugInformation() {
             spriteBatch.DrawString(Font, MainCore.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
+        }
+        public void RenderMenu(List<Control> controls) {
+            graphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin();
+            foreach(Control c in controls) { 
+                primitiveDrawer.DrawRect(c.Rectangle, spriteBatch, 1, c.BorderColor, c.FillColor);
+                Label l = c as Label;
+                if(l!=null)
+                    spriteBatch.DrawString(Font, l.Text, l.Rectangle.Location.ToVector2()+new Vector2(10,10), l.TextColor);
+            }
+            DrawCursor();
+            spriteBatch.End();
         }
 
     }

@@ -44,6 +44,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ContentLoader.cs" />
+    <Compile Include="Control.cs" />
+    <Compile Include="InteractionController.cs" />
     <Compile Include="Renderer\DrawPrimitives.cs" />
     <Compile Include="GameMain.cs" />
     <Compile Include="Renderer\Renderer.cs" />
