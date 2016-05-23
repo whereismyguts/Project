@@ -33,7 +33,7 @@ namespace GameCore {
             }
         }
 
-        public static StateEnum State { get; } = StateEnum.MainMenu;
+        public static StateEnum State { get; set; } = StateEnum.MainMenu;
 
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);

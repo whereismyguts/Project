@@ -21,16 +21,7 @@ namespace MonoGameDirectX {
         }
 
 
-        float time;
-        // duration of time to show each frame
-        float frameTime = 0.1f;
-        // an index of the current frame being shown
-        int frameIndex;
-        // total number of frames in our spritesheet
-        const int totalFrames = 10;
-        // define the size of our animation frame
-        int frameHeight = 64;
-        int frameWidth = 64;
+      
 
         protected override void Draw(GameTime gameTime) {
 
@@ -49,13 +40,19 @@ namespace MonoGameDirectX {
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice);
             MainCore.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            InitializeMainMenu();
+            InitializeUI();
             base.Initialize();
         }
-        
-         void InitializeMainMenu() {
+        // TODO dictionary with game screens
+         void InitializeUI() {
             AddControl(new Label(100, 100, 200, 30, "main title"));
-            AddControl(new Button(100, 200, 75, 20, "start"));
+            Button start = new Button(100, 200, 75, 20, "start");
+            start.Click += Start_Click;
+            AddControl(start);
+        }
+
+        private void Start_Click(object sender, EventArgs e) {
+            MainCore.State = MainCore.State == StateEnum.MainMenu ? StateEnum.Space : StateEnum.MainMenu;
         }
 
         void AddControl(Control control) {
@@ -78,12 +75,12 @@ namespace MonoGameDirectX {
 
 
             ProcessInput();
-
+            if(MainCore.State == StateEnum.Space)
+                MainCore.Instance.Update();
             base.Update(gameTime);
         }
 
         private static void ProcessInput() {
-            MainCore.Instance.Update();
             if(Keyboard.GetState().IsKeyDown(Keys.Z))
                 MainCore.Instance.Viewport.ZoomIn();
             if(Keyboard.GetState().IsKeyDown(Keys.X))
