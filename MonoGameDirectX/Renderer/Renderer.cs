@@ -36,7 +36,7 @@ namespace MonoGameDirectX {
             miniMapBorder = new Rectangle(graphicsDevice.Viewport.Width - 100, graphicsDevice.Viewport.Height - 100, 90, 90);
         }
         public void Render(GameTime gameTime) {
-            graphicsDevice.Clear(Color.White);
+            graphicsDevice.Clear(Color.Gray);
 
 
             time += (float)gameTime.ElapsedGameTime.TotalSeconds;
