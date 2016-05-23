@@ -10,31 +10,22 @@ namespace MonoGameDirectX {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class GameMain: Microsoft.Xna.Framework.Game {
+    public class GameMain : Microsoft.Xna.Framework.Game {
         GraphicsDeviceManager graphics;
         Renderer renderer;
-        public InteractionController Controller { get; } = new InteractionController();
-        List<Control> controls = new List<Control>();
+        
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
 
-      
+
 
         protected override void Draw(GameTime gameTime) {
 
-
-            switch(MainCore.State) {
-                case (StateEnum.MainMenu):
-                renderer.RenderMenu(controls);
-                    break;
-                case (StateEnum.Space):
+            
                     renderer.Render(gameTime);
-                    break;
-            }
-
             base.Draw(gameTime);
         }
         protected override void Initialize() {
@@ -44,39 +35,56 @@ namespace MonoGameDirectX {
             base.Initialize();
         }
         // TODO dictionary with game screens
-         void InitializeUI() {
-            AddControl(new Label(100, 100, 200, 30, "main title"));
+        void InitializeUI() {
+            Dictionary<GameState, List<InteractiveObject>> intrefaces = new Dictionary<GameState, List<InteractiveObject>>();
+            AddControl(new Label(100, 100, 200, 30, "main title"), GameState.MainMenu);
             Button start = new Button(100, 200, 75, 20, "start");
-            start.Click += Start_Click;
-            AddControl(start);
-            AddControl(new Button(100,180,75,20,"test"));
+            start.ButtonClick += SwitchState;
+            AddControl(start, GameState.MainMenu);
+            AddControl(new Button(100, 180, 75, 20, "test"), GameState.MainMenu);
+            Button gotomenu = new Button(10, 10, 100, 50, "menu");
+            gotomenu.ButtonClick += SwitchState;
+            AddControl(gotomenu, GameState.Space);
         }
 
-        private void Start_Click(object sender, EventArgs e) {
-            MainCore.State = MainCore.State == StateEnum.MainMenu ? StateEnum.Space : StateEnum.MainMenu;
+        private void SwitchState(object sender, EventArgs e) {
+            State = State == GameState.MainMenu ? GameState.Space : GameState.MainMenu;
+        }
+        GameState State
+        {
+            get { return MainCore.State; }
+            set
+            {
+                if(MainCore.State == value)
+                    return;
+                MainCore.State = value;
+                Controller.UpdateState(MainCore.State);
+            }
         }
 
-        void AddControl(Control control) {
-            Controller.Add(control as InteractiveObject);
-            controls.Add(control);
+        public InteractionController Controller { get { return MainCore.Instance.Controller; } }
+
+        void AddControl(Control control, GameState state) {
+            Controller.Add(control as InteractiveObject, state);
+
         }
 
         protected override void LoadContent() {
             WinAdapter.LoadContent(Content, GraphicsDevice);
             renderer.Font = Content.Load<SpriteFont>("Arial");
-            
+
         }
         protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
         }
         protected override void Update(GameTime gameTime) {
-            
 
-            Controller.HitTest(Mouse.GetState());
+
+            Controller.HitTest(Mouse.GetState().LeftButton == ButtonState.Pressed, Mouse.GetState().Position);
 
 
             ProcessInput();
-            if(MainCore.State == StateEnum.Space)
+            if(MainCore.State == GameState.Space)
                 MainCore.Instance.Update();
             base.Update(gameTime);
         }

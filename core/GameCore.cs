@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GameCore {
-    public enum StateEnum { MainMenu, Space, Pause, Inventory, Landing };
+    public enum GameState { MainMenu, Space, Pause, Inventory, Landing };
     public class MainCore {
         static MainCore instance;
 
@@ -11,6 +11,8 @@ namespace GameCore {
             get { return GetAllObjects().ToList(); }
         }
         List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
+
+        public InteractionController Controller { get; } = new InteractionController();
 
         public static MainCore Instance {
             get {
@@ -33,7 +35,7 @@ namespace GameCore {
             }
         }
 
-        public static StateEnum State { get; set; } = StateEnum.MainMenu;
+        public static GameState State { get; set; } = GameState.MainMenu;
 
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);

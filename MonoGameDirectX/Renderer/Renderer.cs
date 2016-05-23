@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MonoGameDirectX {
     public class Renderer {
@@ -26,6 +27,7 @@ namespace MonoGameDirectX {
         int frameHeight = 64;
         int frameWidth = 64;
         #endregion
+
 
         public SpriteFont Font { get; set; }
 
@@ -71,6 +73,7 @@ namespace MonoGameDirectX {
             DrawObjects(gameTime);
             DrawMiniMap();
             DrawVisualInfo();
+            DrawMenu();
             DrawCursor();
             WriteDebugInformation();
             spriteBatch.End();
@@ -117,17 +120,15 @@ namespace MonoGameDirectX {
         void WriteDebugInformation() {
             spriteBatch.DrawString(Font, MainCore.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
         }
-        public void RenderMenu(List<Control> controls) {
+        public void DrawMenu( ) {
+            IEnumerable<Control> controls = MainCore.Instance.Controller.GetActualInterface().Cast<Control>();
             graphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin();
             foreach(Control c in controls) { 
                 primitiveDrawer.DrawRect(c.Rectangle, spriteBatch, 1, c.BorderColor, c.FillColor);
                 Label l = c as Label;
                 if(l!=null)
                     spriteBatch.DrawString(Font, l.Text, l.Rectangle.Location.ToVector2()+new Vector2(1,1), l.TextColor);
             }
-            DrawCursor();
-            spriteBatch.End();
         }
 
     }
