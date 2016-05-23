@@ -7,64 +7,78 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace MonoGameDirectX {
-    
+
     public class InteractionController {
         List<InteractiveObject> objects = new List<InteractiveObject>();
-        
+
         public void Add(InteractiveObject obj) {
             if(!objects.Contains(obj))
                 objects.Add(obj);
         }
+        int pressCoolDown = 0;
+        private ButtonState oldState;
+
         public void HitTest(MouseState state) {
-            foreach(InteractiveObject obj in objects)
-                if(obj.Contains(state.Position)) {
-                    if(state.LeftButton == ButtonState.Pressed) {
-                        obj.HandleMouseClick();
-                        obj.IsSelected = true;
+            if(pressCoolDown < 0)
+                pressCoolDown++;
+            else
+                foreach(InteractiveObject obj in objects)
+                    if(obj.Contains(state.Position)) {
+                        if(state.LeftButton == ButtonState.Released && oldState == ButtonState.Pressed) {
+                            obj.HandleMouseClick();
+                            obj.IsSelected = true;
+                            pressCoolDown = -10;
+                        }
+                        else {
+                            obj.HandleMouseHover();
+                            obj.IsHighlited = true;
+                        }
                     }
                     else {
-                        obj.HandleMouseHover();
-                        obj.IsHighlited = true;
+                        obj.IsHighlited = false;
+                        if(state.LeftButton == ButtonState.Released && oldState == ButtonState.Pressed)
+                            obj.IsSelected = false;
                     }
-                }
-                else {
-                    obj.IsHighlited = false;
-                    if(state.LeftButton == ButtonState.Pressed)
-                        obj.IsSelected = false;
-                }
-                    
+            oldState = state.LeftButton;
         }
+
     }
 
     public abstract class InteractiveObject {
         bool isSelected;
-        public virtual bool IsSelected {
-            get {
+        public virtual bool IsSelected
+        {
+            get
+            {
                 return isSelected;
             }
-            set {
+            set
+            {
                 isSelected = value;
                 SelectedChanged();
             }
         }
 
         protected virtual void SelectedChanged() {
-           
+
         }
 
         bool isHighligted;
-        public virtual bool IsHighlited {
-            get {
+        public virtual bool IsHighlited
+        {
+            get
+            {
                 return isHighligted;
             }
-            set {
+            set
+            {
                 isHighligted = value;
                 HighligtedChanged();
             }
         }
 
         protected virtual void HighligtedChanged() {
-            
+
         }
 
         public event EventHandler Click;

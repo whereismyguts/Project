@@ -39,6 +39,8 @@ namespace MonoGameDirectX {
         }
 
         protected override void HighligtedChanged() {
+            if(IsSelected)
+                return;
             FillColor = IsHighlited ? Color.Red : Color.White;
             BorderColor = IsHighlited ? Color.Blue : Color.Black;
         }

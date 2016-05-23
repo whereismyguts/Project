@@ -61,7 +61,7 @@ namespace MonoGameDirectX {
             // Draw the current frame.
             spriteBatch.Draw(WinAdapter.GetTexture("Celebrate"), position, source, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
 
-            primitiveDrawer.DrawRect(new Rectangle((position-origin).ToPoint(), new Point(frameWidth, frameHeight)), spriteBatch, 1, Color.Red);
+            //primitiveDrawer.DrawRect(new Rectangle((position-origin).ToPoint(), new Point(frameWidth, frameHeight)), spriteBatch, 1, Color.Red);
 
 
 
@@ -124,7 +124,7 @@ namespace MonoGameDirectX {
                 primitiveDrawer.DrawRect(c.Rectangle, spriteBatch, 1, c.BorderColor, c.FillColor);
                 Label l = c as Label;
                 if(l!=null)
-                    spriteBatch.DrawString(Font, l.Text, l.Rectangle.Location.ToVector2()+new Vector2(10,10), l.TextColor);
+                    spriteBatch.DrawString(Font, l.Text, l.Rectangle.Location.ToVector2()+new Vector2(1,1), l.TextColor);
             }
             DrawCursor();
             spriteBatch.End();

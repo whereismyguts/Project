@@ -49,6 +49,7 @@ namespace MonoGameDirectX {
             Button start = new Button(100, 200, 75, 20, "start");
             start.Click += Start_Click;
             AddControl(start);
+            AddControl(new Button(100,180,75,20,"test"));
         }
 
         private void Start_Click(object sender, EventArgs e) {
