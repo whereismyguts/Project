@@ -4,6 +4,7 @@ using GameCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace MonoGameDirectX {
     /// <summary>
@@ -12,7 +13,8 @@ namespace MonoGameDirectX {
     public class GameMain: Microsoft.Xna.Framework.Game {
         GraphicsDeviceManager graphics;
         Renderer renderer;
-
+        public InteractionController Controller { get; } = new InteractionController();
+        List<Control> controls = new List<Control>();
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -33,18 +35,34 @@ namespace MonoGameDirectX {
         protected override void Draw(GameTime gameTime) {
 
 
-            
+            switch(MainCore.State) {
+                case (StateEnum.MainMenu):
+                renderer.RenderMenu(controls);
+                    break;
+                case (StateEnum.Space):
+                    renderer.Render(gameTime);
+                    break;
+            }
 
-
-            renderer.Render(gameTime);
             base.Draw(gameTime);
         }
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice);
             MainCore.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-
+            InitializeMainMenu();
             base.Initialize();
         }
+        
+         void InitializeMainMenu() {
+            AddControl(new Label(100, 100, 200, 30, "main title"));
+            AddControl(new Button(100, 200, 75, 20, "start"));
+        }
+
+        void AddControl(Control control) {
+            Controller.Add(control as InteractiveObject);
+            controls.Add(control);
+        }
+
         protected override void LoadContent() {
             WinAdapter.LoadContent(Content, GraphicsDevice);
             renderer.Font = Content.Load<SpriteFont>("Arial");
@@ -54,6 +72,17 @@ namespace MonoGameDirectX {
             // TODO: Unload any non ContentManager content here
         }
         protected override void Update(GameTime gameTime) {
+            
+
+            Controller.HitTest(Mouse.GetState());
+
+
+            ProcessInput();
+
+            base.Update(gameTime);
+        }
+
+        private static void ProcessInput() {
             MainCore.Instance.Update();
             if(Keyboard.GetState().IsKeyDown(Keys.Z))
                 MainCore.Instance.Viewport.ZoomIn();
@@ -75,8 +104,6 @@ namespace MonoGameDirectX {
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(10, 0);
             //if(Keyboard.GetState().IsKeyDown(Keys.Left))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
-
-            base.Update(gameTime);
         }
     }
 }

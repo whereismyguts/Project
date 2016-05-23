@@ -6,9 +6,11 @@ using System.Linq;
 
 namespace MonoGameDirectX {
     public class DrawPrimitives: IDisposable {
+        Color defaultFillColor = Color.Transparent;
+
         GraphicsDevice graphDevice;
         Texture2D t;
-
+        
         public DrawPrimitives(GraphicsDevice gd) {
             graphDevice = gd;
             t = new Texture2D(gd, 1, 1);
@@ -38,15 +40,21 @@ namespace MonoGameDirectX {
                 SpriteEffects.None,
                 0);
         }
-        public void DrawRect(Rectangle rect, SpriteBatch spBatch, int width, Color color) {
+        public void DrawRect(Rectangle rect, SpriteBatch spBatch, int width, Color borderColor, Color fillColor) {
+            spBatch.Draw(t, rect, null, fillColor, 0f, new Vector2(), SpriteEffects.None, 0f);
+              
+              
             var lt = new Vector2(rect.Left, rect.Top);
             var lb = new Vector2(rect.Left, rect.Bottom);
             var rt = new Vector2(rect.Right, rect.Top);
             var rb = new Vector2(rect.Right, rect.Bottom);
-            DrawLine(lt, rt, spBatch, width, color);
-            DrawLine(rt, rb, spBatch, width, color);
-            DrawLine(rb, lb, spBatch, width, color);
-            DrawLine(lb, lt, spBatch, width, color);
+            DrawLine(lt, rt, spBatch, width, borderColor);
+            DrawLine(rt, rb, spBatch, width, borderColor);
+            DrawLine(rb, lb, spBatch, width, borderColor);
+            DrawLine(lb, lt, spBatch, width, borderColor);
+        }
+        public void DrawRect(Rectangle rect, SpriteBatch spBatch, int strokeWidth, Color borderColor) {
+            DrawRect(rect, spBatch, strokeWidth, borderColor, defaultFillColor);
         }
 
         public void DrawPixel(Vector2 point, SpriteBatch spBatch, Color color) {
