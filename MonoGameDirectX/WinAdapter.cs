@@ -17,7 +17,7 @@ namespace MonoGameDirectX {
                 Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
                 Rectangle boundsRect = WinAdapter.Bounds2Rectangle(spriteInfo.ScreenBounds);
                 Rectangle textureRect = new Rectangle(boundsRect.Location + new Point(boundsRect.Width / 2, boundsRect.Height / 2), boundsRect.Size);
-                renderObject.AddSprite(texture, textureRect, origin, contentLoader.GetColorMask(spriteInfo.ContentString), 10);
+                renderObject.AddSprite(texture, textureRect, origin, contentLoader.GetColorMask(spriteInfo.ContentString), 1);
             }
             return renderObject;
         }

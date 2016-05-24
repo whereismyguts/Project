@@ -19,10 +19,8 @@ namespace MonoGameDirectX {
             this.element = element;
         }
         public void AddSprite(Texture2D texture, Rectangle textureRect, Vector2 origin, Color color, int frameCount) {
-            if(frameCount == 1)
                 sprites.Add(new Sprite(texture, textureRect, origin, color));
-            else
-                sprites.Add(new SpriteAnimation(texture, textureRect, origin, color, frameCount));
+                //sprites.Add(new SpriteAnimation(texture, textureRect, origin, color, frameCount));
         }
         public override string ToString() {
             return element.ToString();
@@ -56,8 +54,6 @@ namespace MonoGameDirectX {
 
     }
     class SpriteAnimation: Sprite {
-
-        Rectangle source;
 
         #region animation
         float time;

@@ -11,34 +11,32 @@ namespace MonoGameDirectX {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class GameMain : Microsoft.Xna.Framework.Game {
+    public class GameMain: Microsoft.Xna.Framework.Game {
         GraphicsDeviceManager graphics;
         Renderer renderer;
-        
+
+        int ScreenWidth { get { return renderer.ScreenWidth; } }
+        int ScreenHeight { get { return renderer.ScreenHeight; } }
+
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
-
-
-
         protected override void Draw(GameTime gameTime) {
-
-            
-                    renderer.Render(gameTime);
+            renderer.Render(gameTime);
             base.Draw(gameTime);
         }
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice);
-            MainCore.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            MainCore.Instance.Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             InitializeUI();
             base.Initialize();
         }
         // TODO dictionary with game screens
         void InitializeUI() {
             Dictionary<GameState, List<InteractiveObject>> intrefaces = new Dictionary<GameState, List<InteractiveObject>>();
-            AddControl(new Label(100, 100, 200, 30, "main title"), GameState.MainMenu);
+            AddControl(new Label(ScreenWidth / 2 - 100, 50, 200, 30, "main title"), GameState.MainMenu);
             Button start = new Button(100, 200, 75, 20, "start");
             start.ButtonClick += SwitchState;
             AddControl(start, GameState.MainMenu);
@@ -51,16 +49,9 @@ namespace MonoGameDirectX {
         private void SwitchState(object sender, EventArgs e) {
             State = State == GameState.MainMenu ? GameState.Space : GameState.MainMenu;
         }
-        GameState State
-        {
+        GameState State {
             get { return MainCore.State; }
-            set
-            {
-                if(MainCore.State == value)
-                    return;
-                MainCore.State = value;
-                Controller.UpdateState(MainCore.State);
-            }
+            set { MainCore.State = value; }
         }
 
         public InteractionController Controller { get { return MainCore.Instance.Controller; } }
@@ -79,14 +70,9 @@ namespace MonoGameDirectX {
             // TODO: Unload any non ContentManager content here
         }
         protected override void Update(GameTime gameTime) {
-
-
             Controller.HitTest(Mouse.GetState().LeftButton == ButtonState.Pressed, Mouse.GetState().Position);
-
-
             ProcessInput();
-            if(MainCore.State == GameState.Space)
-                MainCore.Instance.Update();
+            MainCore.Instance.Update();
             base.Update(gameTime);
         }
 

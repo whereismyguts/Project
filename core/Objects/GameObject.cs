@@ -7,7 +7,6 @@ namespace GameCore {
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
         protected internal abstract Bounds Bounds { get; }
-        protected internal abstract string ContentString { get; }
         protected internal virtual CoordPoint Location { get; set; }
         protected internal float Mass { get; set; }
         protected internal abstract float Rotation { get; }
@@ -22,7 +21,7 @@ namespace GameCore {
             SpriteInfo info = new SpriteInfo() {
                 ScreenBounds = screenBounds,
                 MiniMapBounds = IsMinimapVisible ? screenBounds / 10f : null,
-                ContentString = ContentString,
+                ContentString = "item_string",
                 Rotation = Rotation
             };
             return new SpriteInfo[] { info };

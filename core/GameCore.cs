@@ -54,14 +54,15 @@ namespace GameCore {
                     yield return obj;
             foreach(Ship s in ships) {
                 yield return s;
-                yield return s.Weapon;
             }
         }
 
         public void Update() {
-            foreach(GameObject obj in Objects)
-                obj.Step();
-            Viewport.Centerpoint = ships[0].Location;
+            if(State == GameState.Space) {
+                foreach(GameObject obj in Objects)
+                    obj.Step();
+                Viewport.Centerpoint = ships[0].Location;
+            }
         }
         static Random rnd = new Random();
         List<Ship> ships = new List<Ship>();

@@ -14,68 +14,32 @@ namespace MonoGameDirectX {
         GraphicsDevice graphicsDevice;
         SpriteBatch spriteBatch;
 
-
-        #region animation
-        float time;
-        // duration of time to show each frame
-        float frameTime = 0.1f;
-        // an index of the current frame being shown
-        int frameIndex;
-        // total number of frames in our spritesheet
-        const int totalFrames = 10;
-        // define the size of our animation frame
-        int frameHeight = 64;
-        int frameWidth = 64;
-        #endregion
-
-
+        GameState GameState { get { return MainCore.State; } }
+        public int ScreenWidth { get { return graphicsDevice.Viewport.Width; } }
+        public int ScreenHeight { get { return graphicsDevice.Viewport.Height; } }
         public SpriteFont Font { get; set; }
 
         public Renderer(GraphicsDevice gd) {
             graphicsDevice = gd;
             spriteBatch = new SpriteBatch(graphicsDevice);
             primitiveDrawer = new DrawPrimitives(graphicsDevice);
-            miniMapBorder = new Rectangle(graphicsDevice.Viewport.Width - 100, graphicsDevice.Viewport.Height - 100, 90, 90);
+            miniMapBorder = new Rectangle(ScreenWidth - 100, ScreenHeight - 100, 90, 90);
         }
-        public void Render(GameTime gameTime) {
+        InteractionController Controller { get { return MainCore.Instance.Controller; } }
+        public void Render(GameTime gameTime) { 
             graphicsDevice.Clear(Color.Gray);
-
-
-            time += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if(time > frameTime) {
-                // Play the next frame in the SpriteSheet
-                frameIndex++;
-
-                // reset elapsed time
-                time = 0f;
-            }
-            if(frameIndex > totalFrames) frameIndex = 1;
-
-            // Calculate the source rectangle of the current frame.
-            Rectangle source = new Rectangle(frameIndex * frameWidth, 0, frameWidth, frameHeight);
-
-            // Calculate position and origin to draw in the center of the screen
-            Vector2 position = new Vector2(100,100);
-            Vector2 origin = new Vector2(frameWidth / 2.0f, frameHeight);
-
             spriteBatch.Begin();
 
-            // Draw the current frame.
-            spriteBatch.Draw(WinAdapter.GetTexture("Celebrate"), position, source, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
-
-            //primitiveDrawer.DrawRect(new Rectangle((position-origin).ToPoint(), new Point(frameWidth, frameHeight)), spriteBatch, 1, Color.Red);
-
-
-
-            
             WinAdapter.UpdateRenderObjects(ref renderObjects);
-
-            DrawObjects(gameTime);
-            DrawMiniMap();
-            DrawVisualInfo();
-            DrawMenu();
+            if(GameState == GameState.Space) {
+                DrawObjects(gameTime);
+                DrawMiniMap();
+                DrawVisualInfo();
+            }
+            DrawInterface(Controller.GetActualInterface().Cast<Control>());
             DrawCursor();
             WriteDebugInformation();
+
             spriteBatch.End();
         }
         void DrawCursor() {
@@ -86,6 +50,7 @@ namespace MonoGameDirectX {
         void DrawObjects(GameTime gameTime) {
             foreach(RenderObject renderObject in renderObjects) {
                 renderObject.Draw(spriteBatch, gameTime);
+                primitiveDrawer.DrawRect(WinAdapter.Bounds2Rectangle(renderObject.Bounds), spriteBatch, 1, Color.Green, Color.White);
                 if(!string.IsNullOrEmpty(renderObject.Name))
                     spriteBatch.DrawString(Font, renderObject.Name, WinAdapter.CoordPoint2Vector(renderObject.Bounds.LeftTop), Color.Red);
             }
@@ -120,14 +85,16 @@ namespace MonoGameDirectX {
         void WriteDebugInformation() {
             spriteBatch.DrawString(Font, MainCore.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
         }
-        public void DrawMenu( ) {
-            IEnumerable<Control> controls = MainCore.Instance.Controller.GetActualInterface().Cast<Control>();
-            graphicsDevice.Clear(Color.Black);
+        public void DrawInterface(IEnumerable<Control> controls) {
             foreach(Control c in controls) { 
-                primitiveDrawer.DrawRect(c.Rectangle, spriteBatch, 1, c.BorderColor, c.FillColor);
+                primitiveDrawer.DrawRect(c.Rectangle, spriteBatch, 1, c.ActualBorderColor, c.ActualFillColor);
                 Label l = c as Label;
-                if(l!=null)
-                    spriteBatch.DrawString(Font, l.Text, l.Rectangle.Location.ToVector2()+new Vector2(1,1), l.TextColor);
+                if(l != null) {
+                    Vector2 textSize = Font.MeasureString(l.Text);
+                    Vector2 panSize = l.Rectangle.Size.ToVector2();
+                    Vector2 textLocation = l.Rectangle.Location.ToVector2()+ (panSize - textSize) / 2;
+                    spriteBatch.DrawString(Font, l.Text, textLocation, l.TextColor);
+                }
             }
         }
 

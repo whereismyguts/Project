@@ -9,16 +9,10 @@ namespace GameCore {
         float accselerationUp;
         AIController controller;
         GameObject targetObject;
-        WeaponBase weapon;
 
         protected internal override Bounds Bounds {
             get {
-                return new Bounds(Location - new CoordPoint(50, 50), Location + new CoordPoint(500, 500));
-            }
-        }
-        protected internal override string ContentString {
-            get {
-                return "ship1";
+                return new Bounds(Location - new CoordPoint(50, 50), Location + new CoordPoint(50, 50));
             }
         }
         protected internal override float Rotation { get { return (Direction.Angle); } }
@@ -29,17 +23,14 @@ namespace GameCore {
         public CoordPoint Direction { get { return direction; } }
         public bool IsBot { get { return controller != null; } }
         public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
-        public GameObject TargetObject { get { return IsBot ? targetObject : this; } }
+        
         public CoordPoint Velosity { get { return velosity; } }
-
-        public WeaponBase Weapon { get { return weapon; } }
 
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
             Location = location;
             Mass = 1;
             Color = RndService.GetColor();
             targetObject = target;
-            weapon = new DefaultCannon(this);
             controller = new AIController(this, target, TaskType.Peersuit);
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 3f;

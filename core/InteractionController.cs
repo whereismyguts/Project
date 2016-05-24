@@ -7,7 +7,7 @@ using System.Linq;
 namespace GameCore {
 
     public class InteractionController {
-        GameState gameState;
+        GameState GameState { get { return MainCore.State; } }
         bool oldMousePressed;
         Dictionary<GameState, List<InteractiveObject>> interfaces = new Dictionary<GameState, List<InteractiveObject>>();
         int pressCoolDown = 0;
@@ -20,15 +20,15 @@ namespace GameCore {
         }
 
         public List<InteractiveObject> GetActualInterface() {
-            return interfaces.ContainsKey(gameState) ? interfaces[gameState] : new List<InteractiveObject>();
+            return interfaces.ContainsKey(GameState) ? interfaces[GameState] : new List<InteractiveObject>();
         }
 
         public void HitTest(bool pressed, object position) {
             if(pressCoolDown < 0)
                 pressCoolDown++;
             else
-                if(interfaces.ContainsKey(gameState))
-                foreach(InteractiveObject obj in interfaces[gameState])
+                if(interfaces.ContainsKey(GameState))
+                foreach(InteractiveObject obj in interfaces[GameState])
                     if(obj.Contains(position)) if(!pressed && oldMousePressed) {
                             obj.HandleMouseClick();
                             obj.IsSelected = true;
@@ -44,10 +44,6 @@ namespace GameCore {
                             obj.IsSelected = false;
                     }
             oldMousePressed = pressed;
-        }
-
-        public void UpdateState(GameState state) {
-            gameState = state;
         }
     }
 }

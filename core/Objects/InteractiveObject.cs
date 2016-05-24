@@ -12,7 +12,6 @@ namespace Core.Objects {
                 if(isHighlighted == value)
                     return;
                 isHighlighted = value;
-                HighligtedChanged();
             }
         }
         public virtual bool IsSelected {
@@ -21,15 +20,14 @@ namespace Core.Objects {
                 if(isSelected == value)
                     return;
                 isSelected = value;
-                SelectedChanged();
             }
         }
 
         protected event EventHandler Click;
         protected event EventHandler Hover;
 
-        protected virtual void HighligtedChanged() { }
-        protected virtual void SelectedChanged() { }
+        //protected virtual void HighligtedChanged() { }
+        //protected virtual void SelectedChanged() { }
         protected internal virtual void HandleMouseClick() {
             if(Click != null)
                 Click(this, EventArgs.Empty);

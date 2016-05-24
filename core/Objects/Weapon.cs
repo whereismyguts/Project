@@ -12,7 +12,6 @@ namespace GameCore {
                 return new Bounds(Owner.Location - Origin, Owner.Location - Origin + new CoordPoint(Size.Width, Size.Height));
             }
         }
-        protected internal override string ContentString { get { return "weapon"; } }
         protected internal override float Rotation { get { return rotation + Owner.Rotation; } }
 
         internal override bool IsMinimapVisible { get { return false; } }

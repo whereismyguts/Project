@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace GameCore {
     public class Body: GameObject {
-        string ImageName;
         float radius;
         float selfRotation;
 
@@ -12,18 +11,16 @@ namespace GameCore {
                 return new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius));
             }
         }
-        protected internal override string ContentString { get { return ImageName; } }
         protected internal override float Rotation { get { return selfRotation; } }
 
         internal override bool IsMinimapVisible { get { return true; } }
 
         public float Radius { get { return radius; } }
 
-        public Body(CoordPoint location, float radius, string imageName, StarSystem system) : base(system) {
+        public Body(CoordPoint location, float radius, StarSystem system) : base(system) {
             this.radius = radius;
             Location = location;
             Mass = radius;
-            ImageName = imageName;
         }
 
         protected internal override void Step() {
@@ -42,14 +39,14 @@ namespace GameCore {
 
         public override string Name { get; } = NameGenerator.Generate();
 
-        public Planet(CoordPoint location, float diameter, float rotation, string imageName, bool clockwise, StarSystem system)
-            : base(location, diameter, imageName, system) {
+        public Planet(CoordPoint location, float diameter, float rotation, bool clockwise, StarSystem system)
+            : base(location, diameter, system) {
             this.starRotation = rotation;
 
             this.clockwise = clockwise;
 
-            for(int i = 0; i < 100; i++)
-                System.Diagnostics.Debug.WriteLine(NameGenerator.Generate());
+            //for(int i = 0; i < 100; i++)
+            //    System.Diagnostics.Debug.WriteLine(NameGenerator.Generate());
 
         }
 
