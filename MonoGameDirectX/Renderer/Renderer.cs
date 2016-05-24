@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MonoGameDirectX {
     public class Renderer {
@@ -27,6 +28,7 @@ namespace MonoGameDirectX {
         int frameWidth = 64;
         #endregion
 
+
         public SpriteFont Font { get; set; }
 
         public Renderer(GraphicsDevice gd) {
@@ -36,7 +38,7 @@ namespace MonoGameDirectX {
             miniMapBorder = new Rectangle(graphicsDevice.Viewport.Width - 100, graphicsDevice.Viewport.Height - 100, 90, 90);
         }
         public void Render(GameTime gameTime) {
-            graphicsDevice.Clear(Color.White);
+            graphicsDevice.Clear(Color.Gray);
 
 
             time += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -61,7 +63,7 @@ namespace MonoGameDirectX {
             // Draw the current frame.
             spriteBatch.Draw(WinAdapter.GetTexture("Celebrate"), position, source, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
 
-            primitiveDrawer.DrawRect(new Rectangle((position-origin).ToPoint(), new Point(frameWidth, frameHeight)), spriteBatch, 1, Color.Red);
+            //primitiveDrawer.DrawRect(new Rectangle((position-origin).ToPoint(), new Point(frameWidth, frameHeight)), spriteBatch, 1, Color.Red);
 
 
 
@@ -71,6 +73,7 @@ namespace MonoGameDirectX {
             DrawObjects(gameTime);
             DrawMiniMap();
             DrawVisualInfo();
+            DrawMenu();
             DrawCursor();
             WriteDebugInformation();
             spriteBatch.End();
@@ -117,17 +120,15 @@ namespace MonoGameDirectX {
         void WriteDebugInformation() {
             spriteBatch.DrawString(Font, MainCore.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
         }
-        public void RenderMenu(List<Control> controls) {
+        public void DrawMenu( ) {
+            IEnumerable<Control> controls = MainCore.Instance.Controller.GetActualInterface().Cast<Control>();
             graphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin();
             foreach(Control c in controls) { 
                 primitiveDrawer.DrawRect(c.Rectangle, spriteBatch, 1, c.BorderColor, c.FillColor);
                 Label l = c as Label;
                 if(l!=null)
-                    spriteBatch.DrawString(Font, l.Text, l.Rectangle.Location.ToVector2()+new Vector2(10,10), l.TextColor);
+                    spriteBatch.DrawString(Font, l.Text, l.Rectangle.Location.ToVector2()+new Vector2(1,1), l.TextColor);
             }
-            DrawCursor();
-            spriteBatch.End();
         }
 
     }

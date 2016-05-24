@@ -10,80 +10,86 @@ namespace MonoGameDirectX {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class GameMain: Microsoft.Xna.Framework.Game {
+    public class GameMain : Microsoft.Xna.Framework.Game {
         GraphicsDeviceManager graphics;
         Renderer renderer;
-        public InteractionController Controller { get; } = new InteractionController();
-        List<Control> controls = new List<Control>();
+        
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
 
-        float time;
-        // duration of time to show each frame
-        float frameTime = 0.1f;
-        // an index of the current frame being shown
-        int frameIndex;
-        // total number of frames in our spritesheet
-        const int totalFrames = 10;
-        // define the size of our animation frame
-        int frameHeight = 64;
-        int frameWidth = 64;
+
 
         protected override void Draw(GameTime gameTime) {
 
-
-            switch(MainCore.State) {
-                case (StateEnum.MainMenu):
-                renderer.RenderMenu(controls);
-                    break;
-                case (StateEnum.Space):
+            
                     renderer.Render(gameTime);
-                    break;
-            }
-
             base.Draw(gameTime);
         }
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice);
             MainCore.Instance.Viewport.SetViewportSize(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            InitializeMainMenu();
+            InitializeUI();
             base.Initialize();
         }
-        
-         void InitializeMainMenu() {
-            AddControl(new Label(100, 100, 200, 30, "main title"));
-            AddControl(new Button(100, 200, 75, 20, "start"));
+        // TODO dictionary with game screens
+        void InitializeUI() {
+            Dictionary<GameState, List<InteractiveObject>> intrefaces = new Dictionary<GameState, List<InteractiveObject>>();
+            AddControl(new Label(100, 100, 200, 30, "main title"), GameState.MainMenu);
+            Button start = new Button(100, 200, 75, 20, "start");
+            start.ButtonClick += SwitchState;
+            AddControl(start, GameState.MainMenu);
+            AddControl(new Button(100, 180, 75, 20, "test"), GameState.MainMenu);
+            Button gotomenu = new Button(10, 10, 100, 50, "menu");
+            gotomenu.ButtonClick += SwitchState;
+            AddControl(gotomenu, GameState.Space);
         }
 
-        void AddControl(Control control) {
-            Controller.Add(control as InteractiveObject);
-            controls.Add(control);
+        private void SwitchState(object sender, EventArgs e) {
+            State = State == GameState.MainMenu ? GameState.Space : GameState.MainMenu;
+        }
+        GameState State
+        {
+            get { return MainCore.State; }
+            set
+            {
+                if(MainCore.State == value)
+                    return;
+                MainCore.State = value;
+                Controller.UpdateState(MainCore.State);
+            }
+        }
+
+        public InteractionController Controller { get { return MainCore.Instance.Controller; } }
+
+        void AddControl(Control control, GameState state) {
+            Controller.Add(control as InteractiveObject, state);
+
         }
 
         protected override void LoadContent() {
             WinAdapter.LoadContent(Content, GraphicsDevice);
             renderer.Font = Content.Load<SpriteFont>("Arial");
-            
+
         }
         protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
         }
         protected override void Update(GameTime gameTime) {
-            
 
-            Controller.HitTest(Mouse.GetState());
+
+            Controller.HitTest(Mouse.GetState().LeftButton == ButtonState.Pressed, Mouse.GetState().Position);
 
 
             ProcessInput();
-
+            if(MainCore.State == GameState.Space)
+                MainCore.Instance.Update();
             base.Update(gameTime);
         }
 
         private static void ProcessInput() {
-            MainCore.Instance.Update();
             if(Keyboard.GetState().IsKeyDown(Keys.Z))
                 MainCore.Instance.Viewport.ZoomIn();
             if(Keyboard.GetState().IsKeyDown(Keys.X))

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using GameCore;
 
 namespace MonoGameDirectX {
     public class Control : InteractiveObject {
@@ -14,8 +15,8 @@ namespace MonoGameDirectX {
             BorderColor = Color.Brown;
         }
 
-        public override bool Contains(Point position) {
-            return Rectangle.Contains(position);
+        public override bool Contains(object position) {
+            return Rectangle.Contains((Point)position);
         }
     }
     public class Label: Control {
@@ -28,10 +29,10 @@ namespace MonoGameDirectX {
         }
     }
     public class Button: Label {
-        event EventHandler ButtonClick;
-        public override void HandleMouseClick() {
-            if(ButtonClick != null)
-                ButtonClick(this, EventArgs.Empty);
+        public event EventHandler ButtonClick;
+        
+        protected override void HandleMouseClick() {
+            ButtonClick?.Invoke(this, EventArgs.Empty);
             base.HandleMouseClick();
         }
         public Button(int x, int y, int w, int h, string text) : base (x, y, w, h, text) { 
@@ -39,6 +40,8 @@ namespace MonoGameDirectX {
         }
 
         protected override void HighligtedChanged() {
+            if(IsSelected)
+                return;
             FillColor = IsHighlited ? Color.Red : Color.White;
             BorderColor = IsHighlited ? Color.Blue : Color.Black;
         }

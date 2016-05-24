@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="InteractionController.cs" />
     <Compile Include="Objects\AIController.cs" />
     <Compile Include="CoordSystem\Size.cs" />
     <Compile Include="Objects\Weapon.cs" />

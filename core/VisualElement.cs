@@ -18,7 +18,10 @@ namespace GameCore {
         internal VisualElement(GameObject obj) {
             foreach(var item in obj.GetSpriteInfos())
                 sprites.Add(item);
-            
+            ScreenBounds = sprites[0].ScreenBounds;
+            MiniMapBounds = sprites[0].MiniMapBounds;
+            Rotation = sprites[0].Rotation;
+            ContentString = sprites[0].ContentString;
             Name = obj.Name;
         }
 
