@@ -26,6 +26,8 @@ namespace GameCore {
                 return ships;
             }
         }
+
+        public static GameState State { get; set; } = GameState.MainMenu;
         public Viewport Viewport { get; set; }
         public IEnumerable<VisualElement> VisualElements {
             get {
@@ -34,8 +36,6 @@ namespace GameCore {
                         yield return new VisualElement(obj);
             }
         }
-
-        public static GameState State { get; set; } = GameState.MainMenu;
 
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);

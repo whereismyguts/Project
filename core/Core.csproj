@@ -37,6 +37,7 @@
     <Compile Include="InteractionController.cs" />
     <Compile Include="Objects\AIController.cs" />
     <Compile Include="CoordSystem\Size.cs" />
+    <Compile Include="Objects\InteractiveObject.cs" />
     <Compile Include="Objects\Weapon.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\Body.cs" />

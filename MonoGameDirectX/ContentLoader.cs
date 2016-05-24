@@ -35,8 +35,14 @@ namespace MonoGameDirectX {
             SetTexture(key, Color.White);
         }
         internal void SetTexture(string key, Color mask) {
-            var texture = content.Load<Texture2D>(key);
-            if(textures == null)
+            Texture2D texture;
+            try {
+                texture = content.Load<Texture2D>(key);
+            }
+            catch {
+                texture = dummyTexture;
+            }
+           if(textures == null)
                 textures = new Dictionary<string, Texture2D>();
             textures[key] = texture;
 

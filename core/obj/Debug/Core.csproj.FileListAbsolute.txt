@@ -23,3 +23,8 @@ E:\coding\newRepo\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cac
 E:\coding\newRepo\Project\core\obj\Debug\Core.dll
 E:\coding\newRepo\Project\core\obj\Debug\Core.pdb
 D:\local\other\default repository\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
+D:\local\other\default repository\ActualProject\Project\core\obj\Debug\Core.dll
+D:\local\other\default repository\ActualProject\Project\core\obj\Debug\Core.pdb
+D:\local\other\default repository\ActualProject\Project\bin\Core.dll
+D:\local\other\default repository\ActualProject\Project\bin\Core.pdb
+D:\local\other\default repository\ActualProject\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
