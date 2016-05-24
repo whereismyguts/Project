@@ -7,51 +7,49 @@ using System.Collections.Generic;
 namespace MonoGameDirectX {
     internal class RenderObject {
         public Bounds MiniMapBounds { get; internal set; }
-        public Bounds Bounds { get; internal set; }
         public string Name { get; internal set; }
         List<Sprite> sprites = new List<Sprite>();
         VisualElement element;
 
+        public Bounds Bounds {get { return element.ScreenBounds; }} // TODO remove
+
         public RenderObject(VisualElement element) {
-            Bounds = element.ScreenBounds;
             MiniMapBounds = element.MiniMapBounds;
             Name = element.Name;
             this.element = element;
         }
-        public void AddSprite(Texture2D texture, Rectangle textureRect, Vector2 origin, Color color, int frameCount) {
-                sprites.Add(new Sprite(texture, textureRect, origin, color));
+        public void AddSprite(Texture2D texture, Rectangle destRect, Vector2 origin, Color color, int frameCount, float rotation) {
+                sprites.Add(new Sprite(texture, destRect, origin, color, rotation));
                 //sprites.Add(new SpriteAnimation(texture, textureRect, origin, color, frameCount));
         }
         public override string ToString() {
             return element.ToString();
         }
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
-            foreach(var sp in sprites)
-                sp.Draw(spriteBatch, time);
+            foreach(var sprite in sprites)
+                sprite.Draw(spriteBatch, time);
         }
     }
     class Sprite {
-        private Rectangle textureRect;
-        private Color color;
 
-        public Sprite(Texture2D texture, Rectangle textureRect, Vector2 origin, Color color) {
+        public Sprite(Texture2D texture, Rectangle destinationRect, Vector2 origin, Color color, float rotation) {
             Texture = texture;
-            this.textureRect = textureRect;
+            Center = destinationRect;
             Origin = origin;
-            this.color = color;
+            ColorMask = color;
+            Rotation = rotation;
         }
 
         protected Texture2D Texture { get; set; }
-        public Rectangle Rect { get; set; }
+        public Rectangle Center { get; set; }
         public Color ColorMask { get; set; }
         public Vector2 Origin { get; set; }
         public float Rotation { get; set; }
 
 
         protected internal virtual void Draw(SpriteBatch batch, GameTime gameTime) {
-            batch.Draw(Texture, Rect, null, ColorMask, Rotation, Origin, SpriteEffects.None, 0);
+            batch.Draw(Texture, Center, null, ColorMask, Rotation, Origin, SpriteEffects.None, 0);
         }
-
     }
     class SpriteAnimation: Sprite {
 
@@ -68,7 +66,7 @@ namespace MonoGameDirectX {
         int frameWidth = 64;
         #endregion
 
-        public SpriteAnimation(Texture2D texture, Rectangle rect, Vector2 origin, Color color, int frames) : base(texture, rect, origin, color) {
+        public SpriteAnimation(Texture2D texture, Rectangle rect, Vector2 origin, Color color, int frames, float rotation) : base(texture, rect, origin, color, rotation) {
             totalFrames = frames;
             frameHeight = texture.Height;
             frameWidth = texture.Width / frames;
@@ -90,8 +88,8 @@ namespace MonoGameDirectX {
             // Calculate position and origin to draw in the center of the screen
             //Vector2 position = new Vector2(100, 100);
             //Vector2 origin = new Vector2(frameWidth / 2.0f, frameHeight);
-            batch.Draw(Texture, Rect, sourceRect, ColorMask, Rotation, Origin, SpriteEffects.None, 0f);
-            batch.Draw(Texture, Rect.Location.ToVector2(), sourceRect, ColorMask, 0.0f, Origin, 1.0f, SpriteEffects.None, Rotation);
+            batch.Draw(Texture, Center, sourceRect, ColorMask, Rotation, Origin, SpriteEffects.None, 0f);
+            batch.Draw(Texture, Center.Location.ToVector2(), sourceRect, ColorMask, 0.0f, Origin, 1.0f, SpriteEffects.None, Rotation);
         }
 
     }

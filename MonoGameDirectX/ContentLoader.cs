@@ -50,5 +50,11 @@ namespace MonoGameDirectX {
                 masks = new Dictionary<string, Color>();
             masks[key] = mask;
         }
+
+        internal void Unload() {
+            dummyTexture.Dispose();
+            dummyTexture = null;
+            content.Unload();
+        }
     }
 }

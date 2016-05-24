@@ -68,12 +68,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <MonoGameContentReference Include="Content\Content.mgcb" />
-    <Content Include="Content\Arial.xnb">
+    <Content Include="Content\256tile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\font.png">
+    <Content Include="Content\Arial.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

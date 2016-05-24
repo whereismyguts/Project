@@ -8,7 +8,6 @@ namespace GameCore {
         float accselerationDown;
         float accselerationUp;
         AIController controller;
-        GameObject targetObject;
 
         protected internal override Bounds Bounds {
             get {
@@ -30,7 +29,6 @@ namespace GameCore {
             Location = location;
             Mass = 1;
             Color = RndService.GetColor();
-            targetObject = target;
             controller = new AIController(this, target, TaskType.Peersuit);
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 3f;

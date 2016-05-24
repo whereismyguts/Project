@@ -16,12 +16,12 @@ namespace GameCore {
         public StarSystem CurrentSystem { get; }
 
         protected internal IEnumerable<SpriteInfo> GetSpriteInfos() {
-            //foreach in all iternal items (weapons, effects, clouds, engines) :
+            //TODO foreach in all iternal items (weapons, effects, clouds, engines) :
             var screenBounds = GetScreenBounds();
             SpriteInfo info = new SpriteInfo() {
                 ScreenBounds = screenBounds,
                 MiniMapBounds = IsMinimapVisible ? screenBounds / 10f : null,
-                ContentString = "item_string",
+                ContentString = "256tile.png",
                 Rotation = Rotation
             };
             return new SpriteInfo[] { info };

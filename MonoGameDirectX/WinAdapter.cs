@@ -14,10 +14,9 @@ namespace MonoGameDirectX {
             var renderObject = new RenderObject( element);
             foreach(SpriteInfo spriteInfo in element.SpriteInfoList) {
                 Texture2D texture = contentLoader.GetTexture(spriteInfo.ContentString);
-                Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
-                Rectangle boundsRect = WinAdapter.Bounds2Rectangle(spriteInfo.ScreenBounds);
-                Rectangle textureRect = new Rectangle(boundsRect.Location + new Point(boundsRect.Width / 2, boundsRect.Height / 2), boundsRect.Size);
-                renderObject.AddSprite(texture, textureRect, origin, contentLoader.GetColorMask(spriteInfo.ContentString), 1);
+                Rectangle boundsRect = WinAdapter.Bounds2Rectangle(spriteInfo.ScreenBounds+ spriteInfo.ScreenBounds.Size/2f);
+                Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);// TODO actual sprite origin from Core
+                renderObject.AddSprite(texture, boundsRect, origin, contentLoader.GetColorMask(spriteInfo.ContentString), 1, spriteInfo.Rotation);
             }
             return renderObject;
         }
@@ -33,8 +32,8 @@ namespace MonoGameDirectX {
         }
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);
-
-            contentLoader.SetTexture("Celebrate");
+            
+            contentLoader.SetTexture("world_png256.png");
             contentLoader.SetTexture("ship1");
             contentLoader.SetTexture("planet1");
             contentLoader.SetTexture("planet2");
@@ -43,7 +42,10 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("planet5");
             contentLoader.SetTexture("star", new Color(100, 100, 100, 100));
         }
+        internal static void Unload() {
 
+            contentLoader.Unload();
+        }
         internal static Texture2D GetTexture(string key) {
             return contentLoader.GetTexture(key);
         }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using GameCore;
-using Microsoft.Xna.Framework;
 using Core.Objects;
+using Microsoft.Xna.Framework;
 
 namespace MonoGameDirectX {
     public class Control: InteractiveObject {
         protected Color BorderColor { get; }
         protected Color FillColor { get; }
+
         public virtual Color ActualBorderColor { get { return BorderColor; } }
         public virtual Color ActualFillColor { get { return FillColor; } }
         public Rectangle Rectangle { get; }
@@ -32,23 +32,25 @@ namespace MonoGameDirectX {
         }
     }
     public class Button: Label {
-        public Button(int x, int y, int w, int h, string text) : base(x, y, w, h, text) {
-        }
-
-        public event EventHandler ButtonClick;
-        protected override void HandleMouseClick() {
-            ButtonClick?.Invoke(this, EventArgs.Empty);
-            base.HandleMouseClick();
+        public override Color ActualBorderColor {
+            get {
+                return IsSelected ? Color.AntiqueWhite : IsHighlighted ? Color.FloralWhite : BorderColor;
+            }
         }
         public override Color ActualFillColor {
             get {
                 return IsSelected ? Color.DarkGray : IsHighlighted ? Color.LightGray : FillColor;
             }
         }
-        public override Color ActualBorderColor {
-            get {
-                return IsSelected ? Color.AntiqueWhite : IsHighlighted ? Color.FloralWhite : BorderColor;
-            }
+
+        public Button(int x, int y, int w, int h, string text) : base(x, y, w, h, text) {
+        }
+
+        public event EventHandler ButtonClick;
+
+        protected override void HandleMouseClick() {
+            ButtonClick?.Invoke(this, EventArgs.Empty);
+            base.HandleMouseClick();
         }
 
     }
