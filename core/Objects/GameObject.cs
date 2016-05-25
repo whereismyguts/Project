@@ -7,6 +7,7 @@ namespace GameCore {
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
         protected internal abstract Bounds Bounds { get; }
+        
         protected internal virtual CoordPoint Location { get; set; }
         protected internal float Mass { get; set; }
         protected internal abstract float Rotation { get; }
@@ -15,17 +16,10 @@ namespace GameCore {
 
         public StarSystem CurrentSystem { get; }
 
-        protected internal IEnumerable<SpriteInfo> GetSpriteInfos() {
-            //TODO foreach in all iternal items (weapons, effects, clouds, engines) :
-            var screenBounds = GetScreenBounds();
-            SpriteInfo info = new SpriteInfo() {
-                ScreenBounds = screenBounds,
-                MiniMapBounds = IsMinimapVisible ? screenBounds / 10f : null,
-                ContentString = "256tile.png",
-                Rotation = Rotation
-            };
-            return new SpriteInfo[] { info };
-        }
+
+        protected internal abstract IEnumerable<SpriteInfo> GetSpriteInfos();    //TODO foreach in all iternal items (weapons, effects, clouds, engines) 
+        
+        
 
         public virtual string Name { get { return string.Empty; } }
 

@@ -9,23 +9,36 @@ namespace GameCore {
         float accselerationUp;
         AIController controller;
 
+        #region inventory
+        protected List<Item> ActiveItems { get; set; } = new List<Item>();
+        protected internal ShipHull Hull { get; set; }
+        #endregion
+         
+        protected internal override IEnumerable<SpriteInfo> GetSpriteInfos() {
+            foreach(Item item in new List<Item>(ActiveItems) { Hull }) {
+                SpriteInfo info = new SpriteInfo(item.GetScreenBounds(), item.ContentString, item.Rotation, item.Origin);
+                yield return info;
+            }
+        }
         protected internal override Bounds Bounds {
             get {
-                return new Bounds(Location - new CoordPoint(50, 50), Location + new CoordPoint(50, 50));
+                return new Bounds(Location - Hull.Origin, Location - Hull.Origin + Hull.Size);//new Bounds(Location - new CoordPoint(50, 50), Location + new CoordPoint(50, 50));
             }
         }
         protected internal override float Rotation { get { return (Direction.Angle); } }
 
         internal override bool IsMinimapVisible { get { return true; } }
-
-        public ColorCore Color { get; }
+        public ColorCore Color { get; } // TODO remove
         public CoordPoint Direction { get { return direction; } }
         public bool IsBot { get { return controller != null; } }
         public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
         
         public CoordPoint Velosity { get { return velosity; } }
 
+
+
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
+            Hull = new ShipHull(this);
             Location = location;
             Mass = 1;
             Color = RndService.GetColor();

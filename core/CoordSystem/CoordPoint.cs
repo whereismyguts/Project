@@ -68,6 +68,11 @@ namespace GameCore {
             X = (float)newX;
             Y = (float)newY;
         }
+        internal CoordPoint GetRotated(float angle) {
+            CoordPoint res = new CoordPoint(X, Y);
+            res.Rotate(angle);
+            return res;
+        }
 
         public float AngleTo(CoordPoint vector) {
             var x2 = vector.X;

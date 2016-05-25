@@ -26,6 +26,11 @@ namespace GameCore {
         protected internal override void Step() {
             selfRotation += .001f;
         }
+
+        protected internal override IEnumerable<SpriteInfo> GetSpriteInfos() {
+            return new SpriteInfo[] { new SpriteInfo(GetScreenBounds(), "256tile.png", selfRotation, new CoordPoint(radius,radius)) };
+
+        }
     }
 
     public class Planet: Body {

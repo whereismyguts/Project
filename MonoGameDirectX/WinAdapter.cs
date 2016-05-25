@@ -14,8 +14,8 @@ namespace MonoGameDirectX {
             var renderObject = new RenderObject( element);
             foreach(SpriteInfo spriteInfo in element.SpriteInfoList) {
                 Texture2D texture = contentLoader.GetTexture(spriteInfo.ContentString);
-                Rectangle boundsRect = WinAdapter.Bounds2Rectangle(spriteInfo.ScreenBounds+ spriteInfo.ScreenBounds.Size/2f);
-                Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);// TODO actual sprite origin from Core
+                Rectangle boundsRect = WinAdapter.Bounds2Rectangle(spriteInfo.ScreenBounds);
+                Vector2 origin = CoordPoint2Vector( spriteInfo.Origin);//  new Vector2(texture.Width / 2f, texture.Height / 2f);// TODO actual sprite origin from Core
                 renderObject.AddSprite(texture, boundsRect, origin, contentLoader.GetColorMask(spriteInfo.ContentString), 1, spriteInfo.Rotation);
             }
             return renderObject;

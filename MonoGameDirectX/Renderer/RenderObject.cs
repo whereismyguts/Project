@@ -11,7 +11,7 @@ namespace MonoGameDirectX {
         List<Sprite> sprites = new List<Sprite>();
         VisualElement element;
 
-        public Bounds Bounds {get { return element.ScreenBounds; }} // TODO remove
+        //public Bounds Bounds {get { return element.ScreenBounds; }} // TODO remove
 
         public RenderObject(VisualElement element) {
             MiniMapBounds = element.MiniMapBounds;
@@ -38,6 +38,7 @@ namespace MonoGameDirectX {
             Origin = origin;
             ColorMask = color;
             Rotation = rotation;
+            
         }
 
         protected Texture2D Texture { get; set; }
@@ -45,7 +46,6 @@ namespace MonoGameDirectX {
         public Color ColorMask { get; set; }
         public Vector2 Origin { get; set; }
         public float Rotation { get; set; }
-
 
         protected internal virtual void Draw(SpriteBatch batch, GameTime gameTime) {
             batch.Draw(Texture, Center, null, ColorMask, Rotation, Origin, SpriteEffects.None, 0);
