@@ -14,9 +14,14 @@ namespace MonoGameDirectX {
             var renderObject = new RenderObject( element);
             foreach(SpriteInfo spriteInfo in element.SpriteInfoList) {
                 Texture2D texture = contentLoader.GetTexture(spriteInfo.ContentString);
-                Rectangle boundsRect = WinAdapter.Bounds2Rectangle(spriteInfo.ScreenBounds);
-                Vector2 origin = CoordPoint2Vector( spriteInfo.Origin);//  new Vector2(texture.Width / 2f, texture.Height / 2f);// TODO actual sprite origin from Core
-                renderObject.AddSprite(texture, boundsRect, origin, contentLoader.GetColorMask(spriteInfo.ContentString), 1, spriteInfo.Rotation);
+                Rectangle boundsRect = Bounds2Rectangle(spriteInfo.ScreenBounds); // it might be a mono bug - location used like a center by mono draw() , so I do it:
+                boundsRect.Location = boundsRect.Center;
+                //--
+                float xFactor =   spriteInfo.Origin.X/ boundsRect.Width;
+                float yFactor =    spriteInfo.Origin.Y/ boundsRect.Height;
+                Vector2 textureOrigin = new Vector2(texture.Width *xFactor, texture.Height*yFactor);
+              //  Vector2 origin =  textureOrigin;//  new Vector2(texture.Width / 2f, texture.Height / 2f);// TODO actual sprite origin from Core
+                renderObject.AddSprite(texture, boundsRect, textureOrigin, contentLoader.GetColorMask(spriteInfo.ContentString), 1, spriteInfo.Rotation);
             }
             return renderObject;
         }
@@ -32,7 +37,7 @@ namespace MonoGameDirectX {
         }
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);
-            
+            contentLoader.SetTexture("256tile.png");
             contentLoader.SetTexture("world_png256.png");
             contentLoader.SetTexture("ship1");
             contentLoader.SetTexture("planet1");

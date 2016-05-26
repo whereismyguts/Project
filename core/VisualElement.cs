@@ -3,12 +3,13 @@ using System.Collections.Generic;
 
 namespace GameCore {
     public class VisualElement {
-        //public string ContentString { get; set; }
+        
         public Bounds MiniMapBounds { get; set; }
         public string Name { get; set; }
         //public float Rotation { get; set; }
        // public Bounds ScreenBounds { get; set; }
         List<SpriteInfo> sprites = new List<SpriteInfo>();
+        public GameObject Obj { get; }
         public List<SpriteInfo> SpriteInfoList {
             get {
                 return sprites;
@@ -16,6 +17,7 @@ namespace GameCore {
         }
 
         internal VisualElement(GameObject obj) {
+            Obj = obj;
             foreach(var info in obj.GetSpriteInfos())
                 sprites.Add(info);
             //ScreenBounds = sprites[0].ScreenBounds;
@@ -26,13 +28,13 @@ namespace GameCore {
         }
     }
     public class SpriteInfo {
-
+        float CurrentScale { get { return MainCore.Instance.Viewport.Scale; } }
 
         public SpriteInfo(Bounds screenBounds, string content, float rotation, CoordPoint origin) {
             ScreenBounds = screenBounds;
             ContentString = content;
             Rotation = rotation;
-            Origin = origin;
+            Origin = origin / CurrentScale;
         }
 
         public string ContentString { get; set; }

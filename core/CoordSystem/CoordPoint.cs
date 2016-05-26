@@ -25,6 +25,9 @@ namespace GameCore {
             X = vector.X;
             Y = vector.Y;
         }
+
+        
+
         public CoordPoint(float x, float y) {
             X = x;
             Y = y;
@@ -45,6 +48,9 @@ namespace GameCore {
         }
         public static CoordPoint operator *(CoordPoint vector, float factor) {
             return new CoordPoint(vector.X * factor, vector.Y * factor);
+        }
+        public static CoordPoint operator *(float factor, CoordPoint vector) {
+            return vector*factor;
         }
         public static CoordPoint operator /(CoordPoint vector, float factor) {
             return new CoordPoint(vector.X / factor, vector.Y / factor);

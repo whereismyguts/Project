@@ -15,6 +15,11 @@ namespace GameCore {
             RightBottom = rb;
         }
 
+        public Bounds(float x, float y, float w, float h) {
+            LeftTop = new CoordPoint(x, y);
+            RightBottom = new CoordPoint(x + w, y + h);
+        }
+
         public static Bounds operator -(Bounds p1, Bounds p2) {
             return new Bounds(p1.LeftTop - p2.LeftTop, p1.RightBottom - p2.RightBottom);
         }

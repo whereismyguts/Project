@@ -52,7 +52,7 @@ namespace MonoGameDirectX {
                 theta += step;
             }
         }
-        public void DrawDottedLine(Vector2 start, Vector2 end, SpriteBatch spBatch, int width, Color color) {
+        public void DrawLineDotted(Vector2 start, Vector2 end, SpriteBatch spBatch, int width, Color color) {
             Vector2 v = end - start;
             int count = (int)(v.Length());
             v.Normalize();
@@ -82,6 +82,21 @@ namespace MonoGameDirectX {
         public void DrawPixel(Vector2 point, SpriteBatch spBatch, Color color) {
             DrawPixel(point, spBatch, color, Rectangle.Empty);
         }
+
+        internal void DrawRectDotted(Rectangle rect, SpriteBatch spBatch, int width, Color borderColor) {
+            spBatch.Draw(t, rect, null, defaultFillColor, 0f, new Vector2(), SpriteEffects.None, 0f);
+
+
+            var lt = new Vector2(rect.Left, rect.Top);
+            var lb = new Vector2(rect.Left, rect.Bottom);
+            var rt = new Vector2(rect.Right, rect.Top);
+            var rb = new Vector2(rect.Right, rect.Bottom);
+            DrawLineDotted(lt, rt, spBatch, width, borderColor);
+            DrawLineDotted(rt, rb, spBatch, width, borderColor);
+            DrawLineDotted(rb, lb, spBatch, width, borderColor);
+            DrawLineDotted(lb, lt, spBatch, width, borderColor);
+        }
+
         public void DrawPixel(Vector2 point, SpriteBatch spBatch, Color color, Rectangle border) {
             DrawPixel(point, spBatch, color, border);
         }

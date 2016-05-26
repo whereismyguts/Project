@@ -11,7 +11,7 @@ namespace MonoGameDirectX {
         List<Sprite> sprites = new List<Sprite>();
         VisualElement element;
 
-        //public Bounds Bounds {get { return element.ScreenBounds; }} // TODO remove
+        public Bounds Bounds { get { return element.Obj.GetScreenBounds(); }} // TODO remove
 
         public RenderObject(VisualElement element) {
             MiniMapBounds = element.MiniMapBounds;

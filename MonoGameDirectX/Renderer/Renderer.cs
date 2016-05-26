@@ -35,20 +35,21 @@ namespace MonoGameDirectX {
         }
         void DrawDebugInfo() {
             foreach(Ship ship in MainCore.Instance.Ships) {
+                Bounds shipBounds = ship.GetScreenBounds();
                 primitiveDrawer.DrawLine(
-                    WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
-                    (WinAdapter.CoordPoint2Vector((ship.GetScreenBounds() + ship.Direction * 20).Center)),
+                    WinAdapter.CoordPoint2Vector(shipBounds.Center),
+                    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Direction * 20).Center)),
                     spriteBatch, 1, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
 
                 //primitiveDrawer.DrawLine(
-                //    WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
+                //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
                 //    WinAdapter.CoordPoint2Vector(ship.TargetObject.GetScreenBounds().Center),
                 //    spriteBatch, Color.Yellow);
 
                 if(ship.Reactive.Length > 0)
                     primitiveDrawer.DrawLine(
-                    WinAdapter.CoordPoint2Vector(ship.GetScreenBounds().Center),
-                    (WinAdapter.CoordPoint2Vector((ship.GetScreenBounds() + ship.Reactive).Center)),
+                    WinAdapter.CoordPoint2Vector(shipBounds.Center),
+                    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Reactive).Center)),
                     spriteBatch, 1, Color.Yellow);
             }
         }
@@ -64,7 +65,7 @@ namespace MonoGameDirectX {
         void DrawObjects(GameTime gameTime) {
             foreach(RenderObject renderObject in renderObjects) {
                 renderObject.Draw(spriteBatch, gameTime);
-              //  primitiveDrawer.DrawRect(WinAdapter.Bounds2Rectangle(renderObject.Bounds), spriteBatch, 2, Color.Yellow); // TODO remove
+                primitiveDrawer.DrawRectDotted(WinAdapter.Bounds2Rectangle(renderObject.Bounds), spriteBatch, 2, Color.Yellow); // TODO remove
                 // if(!string.IsNullOrEmpty(renderObject.Name))
                 //     spriteBatch.DrawString(Font, renderObject.Name, WinAdapter.CoordPoint2Vector(renderObject.Bounds.LeftTop), Color.Red);
             }
