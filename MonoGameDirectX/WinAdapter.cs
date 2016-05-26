@@ -38,14 +38,6 @@ namespace MonoGameDirectX {
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);
             contentLoader.SetTexture("256tile.png");
-            contentLoader.SetTexture("world_png256.png");
-            contentLoader.SetTexture("ship1");
-            contentLoader.SetTexture("planet1");
-            contentLoader.SetTexture("planet2");
-            contentLoader.SetTexture("planet3");
-            contentLoader.SetTexture("planet4");
-            contentLoader.SetTexture("planet5");
-            contentLoader.SetTexture("star", new Color(100, 100, 100, 100));
         }
         internal static void Unload() {
 

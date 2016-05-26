@@ -10,19 +10,19 @@ namespace GameCore {
         AIController controller;
 
         #region inventory
-        protected List<Item> ActiveItems { get; set; } = new List<Item>();
+        protected List<Item> ActiveItems { get {return  new List<Item>(Hull.Slots.Select(p => p.AttachedItem).Where(i=>i!=null).ToList()) { Hull}; }  }
         protected internal ShipHull Hull { get; set; }
         #endregion
          
         protected internal override IEnumerable<SpriteInfo> GetSpriteInfos() {
-            foreach(Item item in new List<Item>(ActiveItems) { Hull }) {
+            foreach(Item item in ActiveItems) {
                 SpriteInfo info = new SpriteInfo(item.GetScreenBounds(), item.ContentString, item.Rotation, item.Origin);
                 yield return info;
             }
         }
         protected internal override Bounds Bounds {
             get {
-                return new Bounds(Location - Hull.Origin, Location - Hull.Origin + Hull.Size);//new Bounds(Location - new CoordPoint(50, 50), Location + new CoordPoint(50, 50));
+                return Hull.Bounds;//new Bounds(Location - new CoordPoint(50, 50), Location + new CoordPoint(50, 50));
             }
         }
         protected internal override float Rotation { get { return (Direction.Angle); } }
@@ -35,14 +35,20 @@ namespace GameCore {
         
         public CoordPoint Velosity { get { return velosity; } }
 
-
+        public override string Name {
+            get {
+                return "Ship";
+            }
+        }
 
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
-            Hull = new ShipHull(this);
+            Hull = new ShipHull() { Owner = this };
+            Hull.Attach(new Attached(), Hull.Slots[0]);
+
             Location = location;
             Mass = 1;
             Color = RndService.GetColor();
-            controller = new AIController(this, target, TaskType.Peersuit);
+         //   controller = new AIController(this, target, TaskType.Peersuit);
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 3f;
         }

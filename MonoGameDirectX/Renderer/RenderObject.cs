@@ -48,7 +48,7 @@ namespace MonoGameDirectX {
         public float Rotation { get; set; }
 
         protected internal virtual void Draw(SpriteBatch batch, GameTime gameTime) {
-            batch.Draw(Texture, Center, null, ColorMask, Rotation, Origin, SpriteEffects.None, 0);
+            batch.Draw(Texture, Center, null, new Color(ColorMask, 100), Rotation, Origin, SpriteEffects.None, 0);
         }
     }
     class SpriteAnimation: Sprite {

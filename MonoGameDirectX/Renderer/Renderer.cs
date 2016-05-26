@@ -65,7 +65,7 @@ namespace MonoGameDirectX {
         void DrawObjects(GameTime gameTime) {
             foreach(RenderObject renderObject in renderObjects) {
                 renderObject.Draw(spriteBatch, gameTime);
-                primitiveDrawer.DrawRectDotted(WinAdapter.Bounds2Rectangle(renderObject.Bounds), spriteBatch, 2, Color.Yellow); // TODO remove
+             //   primitiveDrawer.DrawRectDotted(WinAdapter.Bounds2Rectangle(renderObject.Bounds), spriteBatch, 2, Color.Yellow); // TODO remove
                 // if(!string.IsNullOrEmpty(renderObject.Name))
                 //     spriteBatch.DrawString(Font, renderObject.Name, WinAdapter.CoordPoint2Vector(renderObject.Bounds.LeftTop), Color.Red);
             }
