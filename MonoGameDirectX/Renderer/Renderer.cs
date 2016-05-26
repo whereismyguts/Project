@@ -56,16 +56,16 @@ namespace MonoGameDirectX {
         void DrawMiniMap() {
             primitiveDrawer.DrawRect(miniMapBorder, spriteBatch, 3, Color.GhostWhite, Color.Green);
             foreach(RenderObject renderObject in renderObjects)
-                if(renderObject.MiniMapBounds != null) {
-                    Vector2 objLocation = miniMapBorder.Location.ToVector2() + WinAdapter.CoordPoint2Vector(renderObject.MiniMapBounds.Center);
-                    primitiveDrawer.DrawCircle(objLocation, renderObject.MiniMapBounds.Width / 2f, spriteBatch, Color.Yellow, miniMapBorder);
+                if(renderObject.MiniMapLocation != null) {
+                    Vector2 objLocation = miniMapBorder.Center.ToVector2() + renderObject.MiniMapLocation;
+                    primitiveDrawer.DrawCircle(objLocation, 3, spriteBatch, Color.Yellow, miniMapBorder);
                 }
-            primitiveDrawer.DrawRect(miniMapBorder, spriteBatch, 3, Color.Black);
         }
         void DrawObjects(GameTime gameTime) {
+            WinAdapter.UpdateRenderObjects(ref renderObjects);
             foreach(RenderObject renderObject in renderObjects) {
                 renderObject.Draw(spriteBatch, gameTime);
-             //   primitiveDrawer.DrawRectDotted(WinAdapter.Bounds2Rectangle(renderObject.Bounds), spriteBatch, 2, Color.Yellow); // TODO remove
+                primitiveDrawer.DrawRectDotted(WinAdapter.Bounds2Rectangle(renderObject.GameObject.GetScreenBounds()), spriteBatch, 2, Color.Yellow); // TODO remove
                 // if(!string.IsNullOrEmpty(renderObject.Name))
                 //     spriteBatch.DrawString(Font, renderObject.Name, WinAdapter.CoordPoint2Vector(renderObject.Bounds.LeftTop), Color.Red);
             }
@@ -92,7 +92,7 @@ namespace MonoGameDirectX {
 
             
             if(GameState == GameState.Space) {
-                WinAdapter.UpdateRenderObjects(ref renderObjects);
+                
                 DrawObjects(gameTime);
                 DrawMiniMap();
                 DrawDebugInfo();

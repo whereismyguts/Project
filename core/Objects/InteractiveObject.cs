@@ -6,6 +6,7 @@ namespace Core.Objects {
 
         bool isHighlighted;
         bool isSelected;
+
         public virtual bool IsHighlighted {
             get { return isHighlighted; }
             set {
@@ -26,8 +27,6 @@ namespace Core.Objects {
         protected event EventHandler Click;
         protected event EventHandler Hover;
 
-        //protected virtual void HighligtedChanged() { }
-        //protected virtual void SelectedChanged() { }
         protected internal virtual void HandleMouseClick() {
             if(Click != null)
                 Click(this, EventArgs.Empty);
@@ -36,6 +35,7 @@ namespace Core.Objects {
             if(Hover != null)
                 Hover(this, EventArgs.Empty);
         }
+
         public abstract bool Contains(object position);
     }
 }

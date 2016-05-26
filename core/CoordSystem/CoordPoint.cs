@@ -26,7 +26,7 @@ namespace GameCore {
             Y = vector.Y;
         }
 
-        
+
 
         public CoordPoint(float x, float y) {
             X = x;
@@ -50,7 +50,7 @@ namespace GameCore {
             return new CoordPoint(vector.X * factor, vector.Y * factor);
         }
         public static CoordPoint operator *(float factor, CoordPoint vector) {
-            return vector*factor;
+            return vector * factor;
         }
         public static CoordPoint operator /(CoordPoint vector, float factor) {
             return new CoordPoint(vector.X / factor, vector.Y / factor);
@@ -66,6 +66,12 @@ namespace GameCore {
             return new CoordPoint(p1.X + p2.X, p1.Y + p2.Y);
         }
 
+        internal CoordPoint GetRotated(float angle) {
+            CoordPoint res = new CoordPoint(X, Y);
+            res.Rotate(angle);
+            return res;
+        }
+
         internal void Rotate(float angle) {
             if(angle == 0)
                 return;
@@ -73,11 +79,6 @@ namespace GameCore {
             var newY = X * Math.Sin(angle) + Y * Math.Cos(angle);
             X = (float)newX;
             Y = (float)newY;
-        }
-        internal CoordPoint GetRotated(float angle) {
-            CoordPoint res = new CoordPoint(X, Y);
-            res.Rotate(angle);
-            return res;
         }
 
         public float AngleTo(CoordPoint vector) {

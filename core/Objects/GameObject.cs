@@ -6,9 +6,6 @@ namespace GameCore {
         protected string Image { get; set; }
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
-        protected internal abstract Bounds Bounds { get; }
-        
-        protected internal virtual CoordPoint Location { get; set; }
         protected internal float Mass { get; set; }
         protected internal abstract float Rotation { get; }
 
@@ -16,12 +13,10 @@ namespace GameCore {
 
         public StarSystem CurrentSystem { get; }
 
-
-        protected internal abstract IEnumerable<SpriteInfo> GetSpriteInfos();    //TODO foreach in all iternal items (weapons, effects, clouds, engines) 
-        
-        
-
         public virtual string Name { get { return string.Empty; } }
+
+        public abstract Bounds ObjectBounds { get; }
+        public virtual CoordPoint Position { get; set; }
 
         public GameObject(StarSystem system) {
             CurrentSystem = system;
@@ -29,8 +24,10 @@ namespace GameCore {
 
         protected internal abstract void Step();
 
+        public abstract IEnumerable<Item> GetItems();    //TODO foreach in all iternal items (weapons, effects, clouds, engines) 
+
         public Bounds GetScreenBounds() {
-            return Viewport.World2ScreenBounds(Bounds);
+            return Viewport.World2ScreenBounds(ObjectBounds);
         }
     }
 }

@@ -9,11 +9,11 @@ namespace GameCore {
         public const float RotationInertia = .8f;
 
         public static float CalcGravitationForce(GameObject obj1, GameObject obj2) {
-            return Gravitation * obj1.Mass * obj2.Mass / CoordPoint.Distance(obj1.Location, obj2.Location);
+            return Gravitation * obj1.Mass * obj2.Mass / CoordPoint.Distance(obj1.Position, obj2.Position);
         }
         public static CoordPoint GravitationForceVector(GameObject obj1, GameObject obj2) {
             float force = CalcGravitationForce(obj1, obj2);
-            var direction = (obj2.Location - obj1.Location).UnaryVector;
+            var direction = (obj2.Position - obj1.Position).UnaryVector;
             return direction * force;
         }
     }

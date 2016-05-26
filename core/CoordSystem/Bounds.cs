@@ -5,8 +5,8 @@ namespace GameCore {
     public class Bounds {
         public CoordPoint Center { get { return (LeftTop + RightBottom) / 2f; } }
         public float Height { get { return Math.Abs(RightBottom.Y - LeftTop.Y); } }
-        public float Width { get { return Math.Abs(RightBottom.X - LeftTop.X); } }
         public CoordPoint Size { get { return new CoordPoint(Width, Height); } }
+        public float Width { get { return Math.Abs(RightBottom.X - LeftTop.X); } }
 
         public Bounds() { }
 

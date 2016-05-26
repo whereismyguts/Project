@@ -7,9 +7,6 @@ namespace GameCore {
     public class MainCore {
         static MainCore instance;
 
-        List<GameObject> Objects {
-            get { return GetAllObjects().ToList(); }
-        }
         List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
 
         public InteractionController Controller { get; } = new InteractionController();
@@ -21,21 +18,14 @@ namespace GameCore {
                 return instance;
             }
         }
-        public List<Ship> Ships {
-            get {
-                return ships;
-            }
+
+        public List<GameObject> Objects {
+            get { return GetAllObjects().ToList(); }
         }
+        public List<Ship> Ships { get { return ships; } }
 
         public static GameState State { get; set; } = GameState.MainMenu;
         public Viewport Viewport { get; set; }
-        public IEnumerable<VisualElement> VisualElements {
-            get {
-                foreach(GameObject obj in Objects)
-                    if(Viewport.Contains(obj))
-                        yield return new VisualElement(obj);
-            }
-        }
 
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);
@@ -52,16 +42,14 @@ namespace GameCore {
             foreach(StarSystem sys in StarSystems)
                 foreach(GameObject obj in sys.Objects)
                     yield return obj;
-            foreach(Ship s in ships) {
-                yield return s;
-            }
+            foreach(Ship s in ships) yield return s;
         }
 
         public void Update() {
             if(State == GameState.Space) {
                 foreach(GameObject obj in Objects)
                     obj.Step();
-                Viewport.Centerpoint = ships[0].Location;
+                Viewport.Centerpoint = ships[0].Position;
             }
         }
         static Random rnd = new Random();

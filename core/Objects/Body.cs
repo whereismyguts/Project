@@ -3,33 +3,35 @@ using System.Collections.Generic;
 
 namespace GameCore {
     public class Body: GameObject {
+        Item planetItem;
         float radius;
         float selfRotation;
 
-        protected internal override Bounds Bounds {
-            get {
-                return new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius));
-            }
-        }
         protected internal override float Rotation { get { return selfRotation; } }
 
         internal override bool IsMinimapVisible { get { return true; } }
+
+        public override Bounds ObjectBounds {
+            get {
+                return new Bounds(Position - new CoordPoint(radius, radius), Position + new CoordPoint(radius, radius));
+            }
+        }
 
         public float Radius { get { return radius; } }
 
         public Body(CoordPoint location, float radius, StarSystem system) : base(system) {
             this.radius = radius;
-            Location = location;
+            Position = location;
             Mass = radius;
+            planetItem = new SpaceBodyItem(this);
         }
 
         protected internal override void Step() {
             selfRotation += .001f;
         }
 
-        protected internal override IEnumerable<SpriteInfo> GetSpriteInfos() {
-            return new SpriteInfo[] { new SpriteInfo(GetScreenBounds(), "256tile.png", selfRotation, new CoordPoint(radius,radius)) };
-
+        public override IEnumerable<Item> GetItems() {
+            return new Item[] { planetItem };
         }
     }
 
@@ -37,7 +39,7 @@ namespace GameCore {
         bool clockwise;
         float selfRotation;
 
-        float DistanceToSun { get { return CoordPoint.Distance(RotateCenter.Location, Location); } }
+        float DistanceToSun { get { return CoordPoint.Distance(RotateCenter.Position, Position); } }
         Body RotateCenter { get { return CurrentSystem.Star; } }
 
         protected internal override float Rotation { get { return selfRotation; } }
@@ -49,16 +51,12 @@ namespace GameCore {
             this.starRotation = rotation;
 
             this.clockwise = clockwise;
-
-            //for(int i = 0; i < 100; i++)
-            //    System.Diagnostics.Debug.WriteLine(NameGenerator.Generate());
-
         }
 
         protected internal override void Step() {
             if(starRotation >= 2 * Math.PI)
                 starRotation = 0;
-            Location = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Location.Y));
+            Position = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Position.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Position.Y));
 
             starRotation += clockwise ? .0001f : -.0001f;
             selfRotation += .005f;

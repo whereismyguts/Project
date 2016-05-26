@@ -9,52 +9,43 @@ namespace GameCore {
         float accselerationUp;
         AIController controller;
 
-        #region inventory
-        protected List<Item> ActiveItems { get {return  new List<Item>(Hull.Slots.Select(p => p.AttachedItem).Where(i=>i!=null).ToList()) { Hull}; }  }
-        protected internal ShipHull Hull { get; set; }
-        #endregion
-         
-        protected internal override IEnumerable<SpriteInfo> GetSpriteInfos() {
-            foreach(Item item in ActiveItems) {
-                SpriteInfo info = new SpriteInfo(item.GetScreenBounds(), item.ContentString, item.Rotation, item.Origin);
-                yield return info;
-            }
-        }
-        protected internal override Bounds Bounds {
-            get {
-                return Hull.Bounds;//new Bounds(Location - new CoordPoint(50, 50), Location + new CoordPoint(50, 50));
-            }
-        }
         protected internal override float Rotation { get { return (Direction.Angle); } }
 
         internal override bool IsMinimapVisible { get { return true; } }
+
         public ColorCore Color { get; } // TODO remove
         public CoordPoint Direction { get { return direction; } }
         public bool IsBot { get { return controller != null; } }
-        public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
-        
-        public CoordPoint Velosity { get { return velosity; } }
 
         public override string Name {
             get {
                 return "Ship";
             }
         }
+        public override Bounds ObjectBounds {
+            get {
+                return new Bounds(Position - Hull.Size / 2f, Position + Hull.Size / 2f); //TODO use origin, because ship posiotion may be no in center of the ship
+            }
+        }
+        public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
+
+        public CoordPoint Velosity { get { return velosity; } }
 
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
             Hull = new ShipHull() { Owner = this };
-            Hull.Attach(new Attached(), Hull.Slots[0]);
+            Hull.Attach(new AttachedItem(), Hull.Slots[0]);
+            Hull.Attach(new AttachedItem(), Hull.Slots[1]);
 
-            Location = location;
+            Position = location;
             Mass = 1;
             Color = RndService.GetColor();
-         //   controller = new AIController(this, target, TaskType.Peersuit);
+            //   controller = new AIController(this, target, TaskType.Peersuit);
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 3f;
         }
 
         void Death() {
-            Location = new CoordPoint(-101000, 101000);
+            Position = new CoordPoint(-101000, 101000);
             acceleration = 0;
             direction = new CoordPoint(1, 0);
             velosity = new CoordPoint();
@@ -70,7 +61,7 @@ namespace GameCore {
 
         protected internal override void Step() {
             foreach(Body obj in CurrentSystem.Objects)
-                if(CoordPoint.Distance(obj.Location, Location) <= obj.Radius)
+                if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius)
                     Death();
             if(IsBot) {
                 List<Action> actions = controller.Step();
@@ -79,7 +70,7 @@ namespace GameCore {
             }
 
             velosity += Direction * acceleration + GetSummaryAttractingForce();
-            Location += velosity;
+            Position += velosity;
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
 
@@ -91,6 +82,11 @@ namespace GameCore {
                 acceleration = acceleration + accselerationUp;
             else
                 acceleration = accelerationMax;
+        }
+
+        public override IEnumerable<Item> GetItems() {
+            foreach(Item item in ActiveItems)
+                yield return item;
         }
         public void LowEngine() {
             if(acceleration - accselerationDown >= 0)
@@ -110,6 +106,12 @@ namespace GameCore {
                 controller = null;
             else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
         }
+
+        #region inventory
+        protected List<Item> ActiveItems { get { return new List<Item>(Hull.Slots.Select(p => p.AttachedItem).Where(i => i != null).ToList()) { Hull }; } }
+        protected internal ShipHull Hull { get; set; }
+        #endregion
+
         float acceleration = 0;
         float accelerationMax = 0.7f;
         float angleSpeed = 0;

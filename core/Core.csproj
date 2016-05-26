@@ -40,7 +40,6 @@
     <Compile Include="Objects\Items\Item.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\Body.cs" />
-    <Compile Include="VisualElement.cs" />
     <Compile Include="RndService.cs" />
     <Compile Include="Objects\StarSystem.cs" />
     <Compile Include="CoordSystem\Bounds.cs" />

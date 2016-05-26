@@ -47,9 +47,6 @@ namespace GameCore {
                 lockTime--;
         }
 
-        public bool Contains(GameObject obj) {
-            return Bounds.Intersect(obj.Bounds);
-        }
         public CoordPoint Screen2WorldPoint(CoordPoint scrPoint) {
             double pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
             double pixelFactorY = PxlHeight > 0 ? Bounds.Width / PxlWidth : 0;
