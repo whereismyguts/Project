@@ -9,7 +9,7 @@ namespace GameCore {
         protected internal abstract CoordPoint Position { get; }
         protected internal CoordPoint Size { get; }
 
-        public virtual string ContentString { get { return string.Empty; } }
+        public abstract SpriteInfo SpriteInfo { get; }
         public CoordPoint PositionScreen { get { return Viewport.World2ScreenPoint(Position); } }
 
         public abstract float Rotation { get; }
@@ -54,6 +54,12 @@ namespace GameCore {
 
         public override float Rotation { get { return body.Rotation; } }
 
+        public override SpriteInfo SpriteInfo {
+            get {
+                return new SpriteInfo("planet.png", 1);
+            }
+        }
+
         public SpaceBodyItem(Body body) : base(new CoordPoint(body.Radius * 2f, body.Radius * 2f), new CoordPoint(body.Radius, body.Radius)) {
             this.body = body;
         }
@@ -62,18 +68,18 @@ namespace GameCore {
         protected internal Ship Owner { get; set; }
         protected internal override CoordPoint Position { get { return Owner.Position; } }
 
-        public override string ContentString {
+        public override SpriteInfo SpriteInfo {
             get {
-                return "256tile.png";
+                return new SpriteInfo("player_1_straight_idle.gif", 1);
             }
         }
         public override float Rotation { get { return Owner.Rotation; } }
 
         public List<Slot> Slots { get { return slots; } }
 
-        public ShipHull() : base(new CoordPoint(100, 100), new CoordPoint(50, 50)) {
-            slots.Add(new Slot(new CoordPoint(25, -50), this));
-            slots.Add(new Slot(new CoordPoint(-25, -50), this));
+        public ShipHull() : base(new CoordPoint(60, 100), new CoordPoint(30, 15)) {
+            slots.Add(new Slot(new CoordPoint(-15, 30), this));
+            slots.Add(new Slot(new CoordPoint(15, 30), this));
         }
 
         public void Attach(AttachedItem item, Slot slot) {
@@ -97,12 +103,25 @@ namespace GameCore {
 
         public override float Rotation {
             get {
-                return 0 + Slot.Hull.Rotation; // TODO set rotation external
+                return (float)(-Math.PI / 2f) + Slot.Hull.Rotation; // TODO set rotation external
             }
         }
 
-        public AttachedItem() : base(new CoordPoint(20, 40), new CoordPoint(10, 40)) {
+        public AttachedItem() : base(new CoordPoint(50, 50), new CoordPoint(25, 25)) {
 
         }
+        public override SpriteInfo SpriteInfo {
+            get {
+                return new SpriteInfo( "flame_sprite.png", 6);
+            }
+        }
+    }
+    public struct SpriteInfo {
+        public SpriteInfo(string c, int f) {
+            Content = c;
+            Framecount = f;
+        }
+        public string Content;
+        public int Framecount;
     }
 }

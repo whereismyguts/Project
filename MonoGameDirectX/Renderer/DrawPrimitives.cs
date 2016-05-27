@@ -12,7 +12,7 @@ namespace MonoGameDirectX {
         public DrawPrimitives(GraphicsDevice gd) {
             graphDevice = gd;
             t = new Texture2D(gd, 1, 1);
-            t.SetData<Color>(new Color[] { Color.White });
+            t.SetData(new Color[] { Color.White });
         }
 
         void DrawPixel(double x, double y, SpriteBatch spBatch, Color color, Rectangle border) {

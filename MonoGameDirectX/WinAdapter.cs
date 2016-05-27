@@ -30,6 +30,9 @@ namespace MonoGameDirectX {
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);
             contentLoader.SetTexture("256tile.png");
+            contentLoader.SetTexture("flame_sprite.png");
+            contentLoader.SetTexture("player_1_straight_idle.gif");
+            contentLoader.SetTexture("planet.png");
         }
         internal static void Unload() {
 
@@ -39,10 +42,12 @@ namespace MonoGameDirectX {
         internal static void UpdateRenderObjects(ref List<RenderObject> renderObjects) {
             if(renderObjects == null)
                 renderObjects = new List<RenderObject>();
-            else renderObjects.Clear();
 
-            foreach(GameObject obj in MainCore.Instance.Objects)
-                renderObjects.Add(CreateRenderObject(obj));
+            if(renderObjects.Count == 0)
+                foreach(GameObject obj in MainCore.Instance.Objects)
+                    renderObjects.Add(CreateRenderObject(obj));
+            else foreach(RenderObject obj in renderObjects)
+                    obj.Update();
         }
     }
 }
