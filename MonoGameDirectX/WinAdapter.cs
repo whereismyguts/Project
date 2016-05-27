@@ -33,6 +33,7 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("flame_sprite.png");
             contentLoader.SetTexture("player_1_straight_idle.gif");
             contentLoader.SetTexture("planet.png");
+            contentLoader.SetTexture("emptyslot.png");
         }
         internal static void Unload() {
 
@@ -44,10 +45,13 @@ namespace MonoGameDirectX {
                 renderObjects = new List<RenderObject>();
 
             if(renderObjects.Count == 0)
-                foreach(GameObject obj in MainCore.Instance.Objects)
+                foreach(GameObject obj in MainCore.Instance.Objects) 
                     renderObjects.Add(CreateRenderObject(obj));
+
             else foreach(RenderObject obj in renderObjects)
+
                     obj.Update();
         }
+        
     }
 }

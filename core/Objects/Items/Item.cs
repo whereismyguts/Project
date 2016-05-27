@@ -26,12 +26,14 @@ namespace GameCore {
         private CoordPoint relativeLocation;
 
         protected internal ShipHull Hull { get; set; }
-
-        public Item AttachedItem { get; internal set; }
+        Item attachedItem;
+        public Item AttachedItem { get { return attachedItem == null ? new EmptySlotItem(this) : attachedItem; } set { attachedItem = value; } }
 
         public bool IsEmpty { get { return AttachedItem == null; } }
 
         public CoordPoint RelativePosition { get { return relativeLocation.GetRotated(Hull.Rotation); } }
+
+
 
         public Slot(CoordPoint relativeLocation, ShipHull hull) {
             this.relativeLocation = relativeLocation;
@@ -77,9 +79,9 @@ namespace GameCore {
 
         public List<Slot> Slots { get { return slots; } }
 
-        public ShipHull() : base(new CoordPoint(60, 100), new CoordPoint(30, 15)) {
-            slots.Add(new Slot(new CoordPoint(-15, 30), this));
-            slots.Add(new Slot(new CoordPoint(15, 30), this));
+        public ShipHull() : base(new CoordPoint(60, 100), new CoordPoint(30, 30)) {
+            slots.Add(new Slot(new CoordPoint(-15, 15), this));
+            slots.Add(new Slot(new CoordPoint(15, 15), this));
         }
 
         public void Attach(AttachedItem item, Slot slot) {
@@ -99,7 +101,7 @@ namespace GameCore {
             }
         }
 
-        protected internal Slot Slot { get; set; }
+        protected internal virtual Slot Slot { get; set; }
 
         public override float Rotation {
             get {
@@ -107,12 +109,12 @@ namespace GameCore {
             }
         }
 
-        public AttachedItem() : base(new CoordPoint(50, 50), new CoordPoint(25, 25)) {
+        public AttachedItem(CoordPoint size, CoordPoint origin) : base(size , origin) {
 
         }
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo( "flame_sprite.png", 6);
+                return new SpriteInfo("flame_sprite.png", 6);
             }
         }
     }
@@ -123,5 +125,18 @@ namespace GameCore {
         }
         public string Content;
         public int Framecount;
+    }
+    public class EmptySlotItem: AttachedItem {
+
+        public override SpriteInfo SpriteInfo {
+            get {
+                return new SpriteInfo("emptyslot.png", 1);
+            }
+        }
+        public EmptySlotItem(Slot slot):base(new CoordPoint(10, 10), new CoordPoint(5, 5)) {
+            Slot = slot;
+
+        }
+
     }
 }

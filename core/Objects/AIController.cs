@@ -21,9 +21,9 @@ namespace GameCore {
             return angle > 0 ? 1 : -1;
         }
         Body GetDangerZone() {
-            foreach(Body obj in owner.CurrentSystem.Objects)
-                if(CoordPoint.Distance(obj.Position, owner.Position) <= 1.5 * obj.Radius)
-                    return obj;
+            for(int i = 0; i < owner.CurrentSystem.Objects.Count; i++)
+                if(CoordPoint.Distance(owner.CurrentSystem.Objects[i].Position, owner.Position) <= 1.5 * owner.CurrentSystem.Objects[i].Radius)
+                    return owner.CurrentSystem.Objects[i];
             return null;
         }
         List<Action> GetPeersuitActions() {

@@ -33,13 +33,13 @@ namespace GameCore {
 
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
             Hull = new ShipHull() { Owner = this };
-            Hull.Attach(new AttachedItem(), Hull.Slots[0]);
-            Hull.Attach(new AttachedItem(), Hull.Slots[1]);
+         //   Hull.Attach(new AttachedItem(), Hull.Slots[0]);
+           // Hull.Attach(new AttachedItem(), Hull.Slots[1]);
 
             Position = location;
             Mass = 1;
             Color = RndService.GetColor();
-            //   controller = new AIController(this, target, TaskType.Peersuit);
+               controller = new AIController(this, target, TaskType.Peersuit);
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 3f;
         }
@@ -85,8 +85,9 @@ namespace GameCore {
         }
 
         public override IEnumerable<Item> GetItems() {
-            foreach(Item item in ActiveItems)
-                yield return item;
+            for(int i = 0; i < Hull.Slots.Count; i++)
+                yield return Hull.Slots[i].AttachedItem;
+            yield return Hull;
         }
         public void LowEngine() {
             if(acceleration - accselerationDown >= 0)
@@ -108,7 +109,7 @@ namespace GameCore {
         }
 
         #region inventory
-        protected List<Item> ActiveItems { get { return new List<Item>(Hull.Slots.Select(p => p.AttachedItem).Where(i => i != null).ToList()) { Hull }; } }
+        //protected List<Item> ActiveItems { get { return new Item[](Hull.Slots.Select(p => p.AttachedItem).Where(i => i != null)) { Hull }; } }
         protected internal ShipHull Hull { get; set; }
         #endregion
 

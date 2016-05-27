@@ -39,6 +39,7 @@ namespace GameCore {
             ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
         }
         IEnumerable<GameObject> GetAllObjects() {
+            
             foreach(StarSystem sys in StarSystems)
                 foreach(GameObject obj in sys.Objects)
                     yield return obj;

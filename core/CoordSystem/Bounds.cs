@@ -46,15 +46,17 @@ namespace GameCore {
         public bool Contains(CoordPoint p) {
             return this.LeftTop.X <= p.X && LeftTop.Y <= p.Y && RightBottom.X >= p.X && RightBottom.Y > p.Y;
         }
-        public IEnumerable<CoordPoint> GetPoints() {
-            yield return this.LeftTop;
-            yield return this.LeftTop + new CoordPoint(this.Width, 0);
-            yield return this.RightBottom;
-            yield return this.RightBottom + new CoordPoint(0, this.Height);
+        public CoordPoint[] GetPoints() {
+            return new CoordPoint[] {
+                LeftTop,
+                LeftTop + new CoordPoint(Width, 0),
+                RightBottom,
+                RightBottom + new CoordPoint(0, Height) };
         }
         public bool Intersect(Bounds bounds) {
-            foreach(CoordPoint p in bounds.GetPoints())
-                if(bounds.Contains(p))
+            var points = bounds.GetPoints();
+            for(int i = 0; i < points.Length; i++)
+                if(bounds.Contains(points[i]))
                     return true;
             return false;
         }
