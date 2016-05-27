@@ -82,6 +82,7 @@ namespace GameCore {
         public ShipHull() : base(new CoordPoint(60, 100), new CoordPoint(30, 30)) {
             slots.Add(new Slot(new CoordPoint(-15, 15), this));
             slots.Add(new Slot(new CoordPoint(15, 15), this));
+            slots.Add(new Slot(new CoordPoint(0, -20), this));
         }
 
         public void Attach(AttachedItem item, Slot slot) {

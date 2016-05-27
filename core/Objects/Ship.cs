@@ -33,8 +33,8 @@ namespace GameCore {
 
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
             Hull = new ShipHull() { Owner = this };
-         //   Hull.Attach(new AttachedItem(), Hull.Slots[0]);
-           // Hull.Attach(new AttachedItem(), Hull.Slots[1]);
+            Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10,10)), Hull.Slots[0]);
+            Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10, 10)), Hull.Slots[1]);
 
             Position = location;
             Mass = 1;
