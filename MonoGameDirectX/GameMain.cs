@@ -30,19 +30,30 @@ namespace MonoGameDirectX {
         void AddControl(Control control, GameState state) {
             Controller.Add(control as InteractiveObject, state);
         }
-        void InitializeUI() {  
-            AddControl(new Label(ScreenWidth / 2 - 100, 50, 200, 30, "main title"), GameState.MainMenu);
+        Label label;
+        void InitializeUI() {
+            label = new Label(ScreenWidth / 2 - 100, 50, 200, 30, "main title", renderer.Font);
+            AddControl(label, GameState.MainMenu);
 
-            AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test"), GameState.MainMenu);
+            AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test", renderer.Font), GameState.MainMenu);
 
-            Button start = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start");
+            Button start = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start", renderer.Font);
             start.ButtonClick += SwitchState;
             AddControl(start, GameState.MainMenu);
 
-            Button gotomenu = new Button(10, 10, 100, 50, "menu");
+            Button gotomenu = new Button(10, 10, 100, 50, "menu", renderer.Font);
             gotomenu.ButtonClick += SwitchState;
             AddControl(gotomenu, GameState.Space);
+            ListBox lb = new ListBox(new Point(300, 300), renderer.Font, "text1", "long long text2", "text3");
+            lb.ItemClick += Lb_ItemClick;
+             AddControl(lb, GameState.MainMenu);
+
         }
+
+        private void Lb_ItemClick(object sender, EventArgs e) {
+            label.Text = (sender as Label).Text;
+        }
+
         void ProcessInput() {
             if(Keyboard.GetState().IsKeyDown(Keys.Z))
                 MainCore.Instance.Viewport.ZoomIn();
@@ -74,14 +85,14 @@ namespace MonoGameDirectX {
             base.Draw(gameTime);
         }
         protected override void Initialize() {
-            renderer = new Renderer(GraphicsDevice);
+            renderer = new Renderer(GraphicsDevice) { Font = Content.Load<SpriteFont>("Arial") };
             MainCore.Instance.Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             InitializeUI();
             base.Initialize();
         }
         protected override void LoadContent() {
             WinAdapter.LoadContent(Content, GraphicsDevice);
-            renderer.Font = Content.Load<SpriteFont>("Arial");
+            
 
         }
         protected override void UnloadContent() {

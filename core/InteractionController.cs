@@ -30,12 +30,12 @@ namespace GameCore {
                 if(interfaces.ContainsKey(GameState))
                 foreach(InteractiveObject obj in interfaces[GameState])
                     if(obj.Contains(position)) if(!pressed && oldMousePressed) {
-                            obj.HandleMouseClick();
+                            obj.HandleMouseClick(position);
                             obj.IsSelected = true;
                             pressCoolDown = -10;
                         }
                         else {
-                            obj.HandleMouseHover();
+                            obj.HandleMouseHover(position);
                             obj.IsHighlighted = true;
                         }
                     else {

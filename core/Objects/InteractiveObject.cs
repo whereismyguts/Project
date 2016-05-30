@@ -27,13 +27,13 @@ namespace Core.Objects {
         protected event EventHandler Click;
         protected event EventHandler Hover;
 
-        protected internal virtual void HandleMouseClick() {
+        protected internal virtual void HandleMouseClick(object position) {
             if(Click != null)
-                Click(this, EventArgs.Empty);
+                Click(position, EventArgs.Empty);
         }
-        protected internal virtual void HandleMouseHover() {
+        protected internal virtual void HandleMouseHover(object position) {
             if(Hover != null)
-                Hover(this, EventArgs.Empty);
+                Hover(position, EventArgs.Empty);
         }
 
         public abstract bool Contains(object position);

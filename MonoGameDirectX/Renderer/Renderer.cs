@@ -75,16 +75,9 @@ namespace MonoGameDirectX {
         }
 
         public void DrawInterface(IEnumerable<Control> controls) {
-            foreach(Control c in controls) {
-                primitiveDrawer.DrawRect(c.Rectangle, spriteBatch, 1, c.ActualBorderColor, c.ActualFillColor);
-                Label l = c as Label;
-                if(l != null) {
-                    Vector2 textSize = Font.MeasureString(l.Text);
-                    Vector2 panSize = l.Rectangle.Size.ToVector2();
-                    Vector2 textLocation = l.Rectangle.Location.ToVector2() + (panSize - textSize) / 2;
-                    spriteBatch.DrawString(Font, l.Text, textLocation, l.TextColor);
-                }
-            }
+            foreach(Control c in controls) 
+                c.Draw(primitiveDrawer, spriteBatch);
+            
         }
         public void Render(GameTime gameTime) {
             graphicsDevice.Clear(Color.Gray);
