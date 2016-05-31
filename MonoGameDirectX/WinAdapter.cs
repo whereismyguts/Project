@@ -34,6 +34,7 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("player_1_straight_idle.gif");
             contentLoader.SetTexture("planet.png");
             contentLoader.SetTexture("emptyslot.png");
+            contentLoader.SetTexture("engine.png");
         }
         internal static void Unload() {
 

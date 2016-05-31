@@ -2,7 +2,7 @@
 using System.Linq;
 using GameCore;
 
-namespace Core {
+namespace GameCore {
     public static class RndService {
         static internal ColorCore GetColor() {
             return new ColorCore(rnd.Next(100, 255), rnd.Next(100, 255), rnd.Next(100, 255));

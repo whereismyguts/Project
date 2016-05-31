@@ -16,6 +16,7 @@ namespace MonoGameDirectX {
 
         InteractionController Controller { get { return MainCore.Instance.Controller; } }
         GameState GameState { get { return MainCore.State; } }
+        GameCore.Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
         public SpriteFont Font { get; set; }
         public int ScreenHeight { get { return graphicsDevice.Viewport.Height; } }
@@ -46,11 +47,11 @@ namespace MonoGameDirectX {
                 //    WinAdapter.CoordPoint2Vector(ship.TargetObject.GetScreenBounds().Center),
                 //    spriteBatch, Color.Yellow);
 
-                if(ship.Reactive.Length > 0)
-                    primitiveDrawer.DrawLine(
-                    WinAdapter.CoordPoint2Vector(shipBounds.Center),
-                    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Reactive).Center)),
-                    spriteBatch, 1, Color.Yellow);
+                //if(ship.Reactive.Length > 0)
+                //    primitiveDrawer.DrawLine(
+                //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
+                //    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Reactive).Center)),
+                //    spriteBatch, 1, Color.Yellow);
             }
         }
         void DrawMiniMap() {
@@ -69,9 +70,9 @@ namespace MonoGameDirectX {
                     primitiveDrawer.DrawRectDotted(WinAdapter.Bounds2Rectangle(renderObject.GameObject.GetScreenBounds()), spriteBatch, 2, Color.Yellow); // TODO remove
                 }
         }
-        GameCore.Viewport Viewport { get { return MainCore.Instance.Viewport; } }
+       
         void WriteDebugInfo() {
-            spriteBatch.DrawString(Font, MainCore.Instance.Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
+            spriteBatch.DrawString(Font, Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
         }
 
         public void DrawInterface(IEnumerable<Control> controls) {

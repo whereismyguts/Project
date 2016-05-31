@@ -2,12 +2,22 @@
 using System.Collections.Generic;
 
 namespace GameCore {
+    public interface IStorable {
+        string Name { get; }
+        int Volume { get; }
+        void Activate();
+    }
     public abstract class Item {
-        Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
+        Viewport Viewport { get { return MainCore.Instance.Viewport; } }
+        public virtual void Step() {
+
+        }
         protected internal CoordPoint Origin { get; }
         protected internal abstract CoordPoint Position { get; }
         protected internal CoordPoint Size { get; }
+        public virtual string Name { get; }
+        public virtual int Volume { get {return 10; } }
 
         public abstract SpriteInfo SpriteInfo { get; }
         public CoordPoint PositionScreen { get { return Viewport.World2ScreenPoint(Position); } }
@@ -16,39 +26,18 @@ namespace GameCore {
         public CoordPoint ScreenOrigin { get { return Viewport.World2ScreenBounds(new Bounds(0, 0, Origin.X, Origin.Y)).Size; } }
         public CoordPoint ScreenSize { get { return Viewport.World2ScreenBounds(new Bounds(0, 0, Size.X, Size.Y)).Size; } }
 
+
+
         public Item(CoordPoint size, CoordPoint origin) { //TODO implement in children
             Size = size;
             Origin = origin;
         }
+
+        public abstract void Activate();
+        public abstract void Deactivate();
     }
 
-    public class Slot {
-        private CoordPoint relativeLocation;
 
-        protected internal ShipHull Hull { get; set; }
-        Item attachedItem;
-        public Item AttachedItem { get { return attachedItem == null ? new EmptySlotItem(this) : attachedItem; } set { attachedItem = value; } }
-
-        public bool IsEmpty { get { return AttachedItem == null; } }
-
-        public CoordPoint RelativePosition { get { return relativeLocation.GetRotated(Hull.Rotation); } }
-
-
-
-        public Slot(CoordPoint relativeLocation, ShipHull hull) {
-            this.relativeLocation = relativeLocation;
-            Hull = hull;
-        }
-
-        internal void Attach(AttachedItem item) {
-            AttachedItem = item;
-            item.Slot = this;
-        }
-
-        internal void Detach() {
-            AttachedItem = null;
-        }
-    }
     public class SpaceBodyItem: Item {
         private Body body;
 
@@ -65,11 +54,15 @@ namespace GameCore {
         public SpaceBodyItem(Body body) : base(new CoordPoint(body.Radius * 2f, body.Radius * 2f), new CoordPoint(body.Radius, body.Radius)) {
             this.body = body;
         }
+
+        public override void Activate() { }
+        public override void Deactivate() { }
     }
     public class ShipHull: Item {
         protected internal Ship Owner { get; set; }
         protected internal override CoordPoint Position { get { return Owner.Position; } }
-
+        int capacity = 100;
+        public override int Volume { get { return capacity; } }
         public override SpriteInfo SpriteInfo {
             get {
                 return new SpriteInfo("player_1_straight_idle.gif", 1);
@@ -79,12 +72,14 @@ namespace GameCore {
 
         public List<Slot> Slots { get { return slots; } }
 
-        public ShipHull() : base(new CoordPoint(60, 100), new CoordPoint(30, 30)) {
-            slots.Add(new Slot(new CoordPoint(-15, 15), this));
-            slots.Add(new Slot(new CoordPoint(15, 15), this));
-            slots.Add(new Slot(new CoordPoint(0, -20), this));
-        }
 
+        public ShipHull() : base(new CoordPoint(600, 1000), new CoordPoint(300, 300)) {
+            slots.Add(new Slot(new CoordPoint(-150, 150), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new CoordPoint(150, 150), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new CoordPoint(0, -200), this, SlotType.WeaponSlot));
+        }
+        public override void Activate() { }
+        public override void Deactivate() { }
         public void Attach(AttachedItem item, Slot slot) {
             if(!slot.IsEmpty)
                 slot.Detach();
@@ -92,9 +87,20 @@ namespace GameCore {
 
         }
         List<Slot> slots = new List<Slot>();
+
+        internal IEnumerable<DefaultEngine> GetEngines() {
+            for(int i =0;i<slots.Count;i++)
+                if(slots[i].AttachedItem is DefaultEngine)
+                    yield return slots[i].AttachedItem as DefaultEngine;
+        }
     }
 
-    public class AttachedItem: Item {
+    //public abstract class StorableItem {
+    //    public abstract string Name { get; }
+    //    public abstract int Volume { get; }
+    //}
+
+    public abstract class AttachedItem: Item {
 
         protected internal override CoordPoint Position {
             get {
@@ -106,18 +112,18 @@ namespace GameCore {
 
         public override float Rotation {
             get {
-                return (float)(-Math.PI / 2f) + Slot.Hull.Rotation; // TODO set rotation external
+                return /*(float)(-Math.PI / 2f) + */Slot.Hull.Rotation; // TODO set rotation external
             }
         }
 
-        public AttachedItem(CoordPoint size, CoordPoint origin) : base(size , origin) {
+        public AttachedItem(CoordPoint size, CoordPoint origin) : base(size, origin) {
 
         }
-        public override SpriteInfo SpriteInfo {
-            get {
-                return new SpriteInfo("flame_sprite.png", 6);
-            }
-        }
+        //public abstract SpriteInfo SpriteInfo {
+        //    get {
+        //        return new SpriteInfo("flame_sprite.png", 6);
+        //    }
+        //}
     }
     public struct SpriteInfo {
         public SpriteInfo(string c, int f) {
@@ -134,10 +140,11 @@ namespace GameCore {
                 return new SpriteInfo("emptyslot.png", 1);
             }
         }
-        public EmptySlotItem(Slot slot):base(new CoordPoint(10, 10), new CoordPoint(5, 5)) {
+        public EmptySlotItem(Slot slot) : base(new CoordPoint(10, 10), new CoordPoint(5, 5)) {
             Slot = slot;
 
         }
-
+        public override void Activate() { }
+        public override void Deactivate() { }
     }
 }

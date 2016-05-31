@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Core.Objects {
+namespace GameCore {
     public abstract class InteractiveObject {
 
         bool isHighlighted;

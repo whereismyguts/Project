@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Core.Objects;
 using GameCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,15 +12,17 @@ namespace MonoGameDirectX {
     public class GameMain: Microsoft.Xna.Framework.Game {
         GraphicsDeviceManager graphics;
         Renderer renderer;
-
+        Ship Player { get { return Instance.Ships[0]; } }
         int ScreenHeight { get { return renderer.ScreenHeight; } }
         int ScreenWidth { get { return renderer.ScreenWidth; } }
         GameState State {
             get { return MainCore.State; }
             set { MainCore.State = value; }
         }
+        GameCore.Viewport Viewport { get { return Instance.Viewport; } }
+        InteractionController Controller { get { return Instance.Controller; } }
 
-        public InteractionController Controller { get { return MainCore.Instance.Controller; } }
+        public MainCore Instance { get { return MainCore.Instance; } }
 
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
@@ -56,16 +57,16 @@ namespace MonoGameDirectX {
 
         void ProcessInput() {
             if(Keyboard.GetState().IsKeyDown(Keys.Z))
-                MainCore.Instance.Viewport.ZoomIn();
+                Viewport.ZoomIn();
             if(Keyboard.GetState().IsKeyDown(Keys.X))
-                MainCore.Instance.Viewport.ZoomOut();
+                Viewport.ZoomOut();
             if(Keyboard.GetState().IsKeyDown(Keys.Up))
-                MainCore.Instance.Ships[0].AccselerateEngine();
+                Player.Accselerate();
 
             if(Keyboard.GetState().IsKeyDown(Keys.Left))
-                MainCore.Instance.Ships[0].RotateL();
+                Player.RotateL();
             if(Keyboard.GetState().IsKeyDown(Keys.Right))
-                MainCore.Instance.Ships[0].RotateR();
+                Player.RotateR();
 
             //if(Keyboard.GetState().IsKeyDown(Keys.Up))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, -10);
@@ -86,7 +87,7 @@ namespace MonoGameDirectX {
         }
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice) { Font = Content.Load<SpriteFont>("Arial") };
-            MainCore.Instance.Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
+            Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             InitializeUI();
             base.Initialize();
         }
@@ -103,7 +104,7 @@ namespace MonoGameDirectX {
         protected override void Update(GameTime gameTime) {
             Controller.HitTest(Mouse.GetState().LeftButton == ButtonState.Pressed, Mouse.GetState().Position);
             ProcessInput();
-            MainCore.Instance.Update();
+            Instance.Update();
             base.Update(gameTime);
         }
     }

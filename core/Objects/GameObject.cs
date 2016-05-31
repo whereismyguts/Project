@@ -23,8 +23,8 @@ namespace GameCore {
         }
 
         protected internal abstract void Step();
-
-        public abstract IEnumerable<Item> GetItems();    //TODO foreach in all iternal items (weapons, effects, clouds, engines) 
+        /// <summary>foreach in all iternal items (weapons, effects, clouds, engines)</summary>
+        public abstract IEnumerable<Item> GetItems(); 
 
         public Bounds GetScreenBounds() {
             return Viewport.World2ScreenBounds(ObjectBounds);

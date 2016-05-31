@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core;
 
 namespace GameCore {
     public class Ship: GameObject {
-        float accselerationDown;
-        float accselerationUp;
+
         AIController controller;
 
         protected internal override float Rotation { get { return (Direction.Angle); } }
@@ -27,26 +25,43 @@ namespace GameCore {
                 return new Bounds(Position - Hull.Size / 2f, Position + Hull.Size / 2f); //TODO use origin, because ship posiotion may be no in center of the ship
             }
         }
-        public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
+        //public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
 
         public CoordPoint Velosity { get { return velosity; } }
 
         public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
+
             Hull = new ShipHull() { Owner = this };
-            Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10,10)), Hull.Slots[0]);
-            Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10, 10)), Hull.Slots[1]);
+            Inventory = new Inventory(Hull);
+            var e1 = new DefaultEngine();
+                var e2 = new DefaultEngine();
+                var w1 = new DefaultWeapon();
+            Inventory.Add(e1);
+            Inventory.Add(e2);
+            Inventory.Add(w1);
+            //Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10,10)), Hull.Slots[0]);
+            //Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10, 10)), Hull.Slots[1]);
+
+            Inventory.Attach(Hull.Slots[0], e1);
+            Inventory.Attach(Hull.Slots[1], e2);
+            Inventory.Attach(Hull.Slots[2], w1);
 
             Position = location;
             Mass = 1;
             Color = RndService.GetColor();
-               controller = new AIController(this, target, TaskType.Peersuit);
-            accselerationUp = .1f;
-            accselerationDown = accselerationUp / 3f;
+            controller = new AIController(this, target, TaskType.Peersuit);
+
+        }
+
+        public void Accselerate() {
+            foreach(Slot slot in Hull.Slots)
+                if(slot.Type == SlotType.EngineSlot && !slot.IsEmpty)
+                    slot.AttachedItem.Activate();
         }
 
         void Death() {
             Position = new CoordPoint(-101000, 101000);
-            acceleration = 0;
+            //acceleration = 0;
             direction = new CoordPoint(1, 0);
             velosity = new CoordPoint();
         }
@@ -69,19 +84,23 @@ namespace GameCore {
                     a();
             }
 
-            velosity += Direction * acceleration + GetSummaryAttractingForce();
+            foreach(Item item in Inventory.Container)
+                item.Step();
+
+            velosity += Direction * GetAcceleration() + GetSummaryAttractingForce();
             Position += velosity;
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
 
-            LowEngine();
+
         }
 
-        public void AccselerateEngine() {
-            if(acceleration + accselerationUp <= accelerationMax)
-                acceleration = acceleration + accselerationUp;
-            else
-                acceleration = accelerationMax;
+        float GetAcceleration() {
+            IEnumerable<DefaultEngine> engines = Hull.GetEngines();
+            float sum = 0;
+            foreach(DefaultEngine engine in engines)
+                sum+=engine.GetAcceleration();
+            return sum;
         }
 
         public override IEnumerable<Item> GetItems() {
@@ -89,12 +108,7 @@ namespace GameCore {
                 yield return Hull.Slots[i].AttachedItem;
             yield return Hull;
         }
-        public void LowEngine() {
-            if(acceleration - accselerationDown >= 0)
-                acceleration = acceleration - accselerationDown;
-            else
-                acceleration = 0;
-        }
+
         public void RotateL() {
             angleSpeed -= .01f;
         }
@@ -110,11 +124,10 @@ namespace GameCore {
 
         #region inventory
         //protected List<Item> ActiveItems { get { return new Item[](Hull.Slots.Select(p => p.AttachedItem).Where(i => i != null)) { Hull }; } }
+        Inventory Inventory { get; set; }
         protected internal ShipHull Hull { get; set; }
         #endregion
 
-        float acceleration = 0;
-        float accelerationMax = 0.7f;
         float angleSpeed = 0;
         CoordPoint velosity = new CoordPoint();
         CoordPoint direction = new CoordPoint(1, 0);

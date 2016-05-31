@@ -44,7 +44,7 @@ namespace GameCore {
 
             switch(CheckWayToTarget()) {
                 case 0:
-                    return new List<Action>() { new Action(owner.AccselerateEngine) };
+                    return new List<Action>() { new Action(owner.Accselerate) };
                 case 1:
                     return new List<Action>() { new Action(owner.RotateL) };
                 case -1:

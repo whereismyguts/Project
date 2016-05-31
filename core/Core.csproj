@@ -37,7 +37,10 @@
     <Compile Include="InteractionController.cs" />
     <Compile Include="Objects\AIController.cs" />
     <Compile Include="Objects\InteractiveObject.cs" />
+    <Compile Include="Objects\Inventory.cs" />
+    <Compile Include="Objects\Items\DefaultItems.cs" />
     <Compile Include="Objects\Items\Item.cs" />
+    <Compile Include="Objects\Items\Slot.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\Body.cs" />
     <Compile Include="RndService.cs" />
