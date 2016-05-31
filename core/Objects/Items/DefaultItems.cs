@@ -27,9 +27,10 @@ namespace GameCore {
         float accselerationUp;
         public override float Rotation {
             get {
-                return active? base.Rotation: base.Rotation-(float)(Math.PI/2.0);
+               return base.Rotation-(float)(Math.PI/2.0);
             }
         }
+        
         public DefaultEngine() : base(new CoordPoint(80, 40), new CoordPoint(40, 20)) {
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 3f;
@@ -37,11 +38,12 @@ namespace GameCore {
         bool active = false;
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("engine.png", 1);
+                return active? new SpriteInfo("flame_sprite.png",6): new SpriteInfo("engine.png", 1);
             }
         }
         public override void Activate() {
             active = true; //TODO check fuel
+            activetimer = 5;
         }
         public override void Deactivate() {
             active = false;
@@ -51,17 +53,24 @@ namespace GameCore {
                 acceleration = acceleration + accselerationUp;
             else
                 acceleration = accelerationMax;
+           
         }
         void LowEngine() {
             if(acceleration - accselerationDown >= 0)
                 acceleration = acceleration - accselerationDown;
             else
                 acceleration = 0;
+
         }
+        int activetimer = 0;
         public override void Step() {
+
             if(active)
                 AccselerateEngine();
+            if(activetimer ==0)
+                Deactivate();
             LowEngine();
+            activetimer--;
         }
 
         internal float GetAcceleration() {
