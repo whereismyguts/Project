@@ -124,7 +124,7 @@ namespace GameCore {
 
         #region inventory
         //protected List<Item> ActiveItems { get { return new Item[](Hull.Slots.Select(p => p.AttachedItem).Where(i => i != null)) { Hull }; } }
-        Inventory Inventory { get; set; }
+        public Inventory Inventory { get; set; }
         protected internal ShipHull Hull { get; set; }
         #endregion
 

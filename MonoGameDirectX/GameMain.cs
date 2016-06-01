@@ -16,13 +16,14 @@ namespace MonoGameDirectX {
         int ScreenHeight { get { return renderer.ScreenHeight; } }
         int ScreenWidth { get { return renderer.ScreenWidth; } }
         GameState State {
-            get { return MainCore.State; }
-            set { MainCore.State = value; }
+            get { return Instance.State; }
+            set { Instance.State = value; }
         }
         GameCore.Viewport Viewport { get { return Instance.Viewport; } }
         InteractionController Controller { get { return Instance.Controller; } }
 
         public MainCore Instance { get { return MainCore.Instance; } }
+        Inventory Inventory { get { return Player.Inventory; } }
 
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
@@ -31,28 +32,37 @@ namespace MonoGameDirectX {
         void AddControl(Control control, GameState state) {
             Controller.Add(control as InteractiveObject, state);
         }
-        Label label;
+        
         void InitializeUI() {
-            label = new Label(ScreenWidth / 2 - 100, 50, 200, 30, "main title", renderer.Font);
-            AddControl(label, GameState.MainMenu);
+            // mainmenu
+         //   label = new Label(ScreenWidth / 2 - 100, 50, 200, 30, "main title", renderer.Font);
+        //    AddControl(label, GameState.MainMenu);
 
-            AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test", renderer.Font), GameState.MainMenu);
+          //  AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test", renderer.Font), GameState.MainMenu);
 
             Button start = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start", renderer.Font);
             start.ButtonClick += SwitchState;
             AddControl(start, GameState.MainMenu);
 
-            Button gotomenu = new Button(10, 10, 100, 50, "menu", renderer.Font);
+            
+            Button gotomenu = new Button(10, 10, 100, 50, "inv", renderer.Font);
             gotomenu.ButtonClick += SwitchState;
-            AddControl(gotomenu, GameState.Space);
-            ListBox lb = new ListBox(new Point(300, 300), renderer.Font, "text1", "long long text2", "text3");
-            lb.ItemClick += Lb_ItemClick;
-             AddControl(lb, GameState.MainMenu);
+            AddControl(gotomenu, GameState.MainMenu);
 
+            //space
+
+            //inventory
+            inventoryListBox = new ListBox(new Point(100, 300), renderer.Font, "");
+            inventoryListBox.ItemClick += Lb_ItemClick;
+            AddControl(inventoryListBox, GameState.Inventory);
+
+            imageBox = new ImageBox(new Rectangle(400,250,200,200));
+            AddControl(imageBox, GameState.Inventory);
         }
-
-        private void Lb_ItemClick(object sender, EventArgs e) {
-            label.Text = (sender as Label).Text;
+        ImageBox imageBox;
+        ListBox inventoryListBox;
+        void Lb_ItemClick(object sender, EventArgs e) {
+            imageBox.SetImage(((sender as Button).Tag as Item).SpriteInfo);
         }
 
         void ProcessInput() {
@@ -78,7 +88,7 @@ namespace MonoGameDirectX {
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
         }
         void SwitchState(object sender, EventArgs e) {
-            State = State == GameState.MainMenu ? GameState.Space : GameState.MainMenu;
+            State = State == GameState.MainMenu ? GameState.Inventory : GameState.MainMenu;
         }
 
         protected override void Draw(GameTime gameTime) {
@@ -89,12 +99,25 @@ namespace MonoGameDirectX {
             renderer = new Renderer(GraphicsDevice) { Font = Content.Load<SpriteFont>("Arial") };
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             InitializeUI();
+            Inventory.Changed += Inventory_Changed;
+            Instance.StateChanged += Instance_StateChanged;
             base.Initialize();
         }
+
+        private void Instance_StateChanged(object sender, StateEventArgs e) {
+            switch(e.State) {
+                case GameState.Inventory:
+                    inventoryListBox.Update(Inventory.Container.ToArray());
+                    break;
+            }
+        }
+
+        void Inventory_Changed(InventoryChangedEventArgs args) {
+            inventoryListBox.Update(args.Inv.Container.ToArray());
+        }
+
         protected override void LoadContent() {
             WinAdapter.LoadContent(Content, GraphicsDevice);
-            
-
         }
         protected override void UnloadContent() {
             WinAdapter.Unload();

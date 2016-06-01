@@ -22,7 +22,7 @@ namespace MonoGameDirectX {
 
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
             foreach(var sprite in sprites)
-                sprite.Draw(spriteBatch, time);
+                sprite.Draw(spriteBatch, time,false);
         }
 
         internal void Update() {
@@ -40,7 +40,7 @@ namespace MonoGameDirectX {
         int frameIndex;
         int frameWidth;
         Item item;
-        Vector2 location;
+
         Vector2 origin;
         float rotation;
         Texture2D texture;
@@ -50,6 +50,18 @@ namespace MonoGameDirectX {
         public Sprite(Item item) {
             this.item = item;
             Update();
+        }
+
+        public Sprite(SpriteInfo info, Rectangle rectangle) {
+            rotation = 0;
+            texture = WinAdapter.GetTexture(info.Content);
+            frames = info.Framecount;
+            destRect = rectangle;
+            origin = new Vector2();
+            if(texture == null)
+                return;
+            frameHeight = texture.Height;
+            frameWidth = texture.Width / frames;
         }
 
         void DrawAnimation(SpriteBatch spriteBatch, GameTime gameTime) {
@@ -67,13 +79,27 @@ namespace MonoGameDirectX {
             spriteBatch.Draw(texture, destRect, null, new Color(100, 100, 150, 100), rotation, origin, SpriteEffects.None, 0f);
         }
 
-        internal void Draw(SpriteBatch spBatch, GameTime t) {
+        internal void Draw(SpriteBatch spBatch, GameTime t, bool fit) {
+            if(texture == null)
+                return;
+            Rectangle temp = destRect;
+            if(fit) {
+                if(texture.Width/frames > texture.Height) {
+                    float r = destRect.X / (float)texture.Width;
+                    destRect = new Rectangle(destRect.Location, new Point(destRect.Width, (int)(destRect.Height * r)));
+                }
+                if(texture.Height > texture.Width/frames) {
+                    float r =  (float)texture.Height/ destRect.Y;
+                    destRect = new Rectangle(destRect.Location, new Point((int)(destRect.Width*r), destRect.Height));
+                }
+            }
             if(frames > 1)
                 DrawAnimation(spBatch, t);
             else DrawImage(spBatch);
+            destRect = temp;
         }
         internal void Update() {
-            location = WinAdapter.CoordPoint2Vector(item.PositionScreen);
+            Vector2 location = WinAdapter.CoordPoint2Vector(item.PositionScreen);
             rotation = item.Rotation;
             texture = WinAdapter.GetTexture(item.SpriteInfo.Content);
             frames = item.SpriteInfo.Framecount;

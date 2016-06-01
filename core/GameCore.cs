@@ -3,7 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GameCore {
+
     public enum GameState { MainMenu, Space, Pause, Inventory, Landing };
+    public class StateEventArgs: EventArgs {
+        readonly GameState state;
+        public GameState State { get { return state; } }
+
+        internal StateEventArgs(GameState state) {
+            this.state = state;
+        }
+    }
     public class MainCore {
         static MainCore instance;
 
@@ -23,8 +32,21 @@ namespace GameCore {
             get { return GetAllObjects().ToList(); }
         }
         public List<Ship> Ships { get { return ships; } }
+        GameState state = GameState.MainMenu;
+        public GameState State {
+            get { return state; }
+            set {
+                if(state == value)
+                    return;
+                state = value;
+                if(StateChanged != null)
+                    StateChanged(instance, new StateEventArgs(value));
+            }
+        }
 
-        public static GameState State { get; set; } = GameState.MainMenu;
+        public delegate void StateEventHandler(object sender, StateEventArgs e);
+        public event StateEventHandler StateChanged;
+
         public Viewport Viewport { get; set; }
 
         MainCore() {
@@ -39,7 +61,7 @@ namespace GameCore {
             ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
         }
         IEnumerable<GameObject> GetAllObjects() {
-            
+
             foreach(StarSystem sys in StarSystems)
                 foreach(GameObject obj in sys.Objects)
                     yield return obj;

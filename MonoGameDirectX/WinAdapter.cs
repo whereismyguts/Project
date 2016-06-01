@@ -25,7 +25,7 @@ namespace MonoGameDirectX {
             return contentLoader.GetTexture(string.Empty); // TODO get "cursor"
         }
         internal static Texture2D GetTexture(string key) {
-            return contentLoader.GetTexture(key);
+            return contentLoader!=null? contentLoader.GetTexture(key):null;
         }
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);

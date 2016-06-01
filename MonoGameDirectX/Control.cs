@@ -22,7 +22,7 @@ namespace MonoGameDirectX {
             Font = font;
         }
 
-        internal virtual void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch) {
+        internal virtual void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch, GameTime time) {
             primitiveDrawer.DrawRect(Rectangle, spriteBatch, 1, ActualBorderColor, ActualFillColor);
         }
 
@@ -39,8 +39,8 @@ namespace MonoGameDirectX {
             TextColor = Color.Black;
         }
 
-        internal override void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch) {
-            base.Draw(primitiveDrawer, spriteBatch);
+        internal override void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch, GameTime time) {
+            base.Draw(primitiveDrawer, spriteBatch, time);
             Vector2 textSize = Font.MeasureString(Text);
             Vector2 panSize = Rectangle.Size.ToVector2();
             Vector2 textLocation = Rectangle.Location.ToVector2() + (panSize - textSize) / 2;
@@ -58,7 +58,7 @@ namespace MonoGameDirectX {
                 return IsSelected ? Color.DarkGray : IsHighlighted ? Color.LightGray : FillColor;
             }
         }
-
+        public object Tag { get; set; }
         public Button(int x, int y, int w, int h, string text, SpriteFont font) : base(x, y, w, h, text, font) {
         }
 
@@ -69,10 +69,9 @@ namespace MonoGameDirectX {
             base.HandleMouseClick(position);
         }
     }
-
-
     public class ListBox: Control {
         List<Button> buttons = new List<Button>();
+        Point location;
         public override bool IsHighlighted {
             get {
                 return base.IsHighlighted;
@@ -87,20 +86,9 @@ namespace MonoGameDirectX {
         }
 
         public ListBox(Point location, SpriteFont font, params object[] objects) : base(new Rectangle(), font) {
-            int w = 0;
-            int h = 0;
-            int hStep = 0;
-            for(int i = 0; i < objects.Length; i++) {
-                Vector2 size = font.MeasureString(objects[i].ToString());
-                w = Math.Max((int)size.X + 10, w);
-                hStep = Math.Max((int)size.Y + 10, hStep);
-                h += (int)size.Y + 10;
-                Rectangle = new Rectangle(location, new Point(w, h));
-            }
-            for(int i = 0; i < objects.Length; i++) {
-                Button b = new Button(location.X, location.Y + hStep * i, w, hStep, objects[i].ToString(), font);
-                buttons.Add(b);
-            }
+
+            this.location = location;
+            Update(objects);
             this.Click += ListBox_Click;
 
 
@@ -115,16 +103,34 @@ namespace MonoGameDirectX {
                         ItemClick(buttons[i], EventArgs.Empty);
         }
 
+        internal void Update(object[] objects) {
+            int w = 0;
+            int h = 0;
+            int hStep = 0;
+            for(int i = 0; i < objects.Length; i++) {
+                Vector2 size = Font.MeasureString(objects[i].ToString());
+                w = Math.Max((int)size.X + 10, w);
+                hStep = Math.Max((int)size.Y + 10, hStep);
+                h += (int)size.Y + 10;
+                Rectangle = new Rectangle(location, new Point(w, h));
+            }
+            buttons.Clear();
+            for(int i = 0; i < objects.Length; i++) {
+                Button b = new Button(location.X, location.Y + hStep * i, w, hStep, objects[i].ToString(), Font) { Tag = objects[i]};
+                buttons.Add(b);
+            }
+        }
+
         protected override void HandleMouseHover(object position) {
             for(int i = 0; i < buttons.Count; i++)
                 buttons[i].IsHighlighted = buttons[i].Contains((Point)position) && IsHighlighted;
 
         }
 
-        internal override void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch) {
-            base.Draw(primitiveDrawer, spriteBatch);
+        internal override void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch, GameTime time) {
+            base.Draw(primitiveDrawer, spriteBatch, time);
             for(int i = 0; i < buttons.Count; i++)
-                buttons[i].Draw(primitiveDrawer, spriteBatch);
+                buttons[i].Draw(primitiveDrawer, spriteBatch,  time);
         }
 
         public override bool Contains(object position) {
@@ -132,6 +138,20 @@ namespace MonoGameDirectX {
                 if(buttons[i].Contains((Point)position))
                     return true;
             return false;
+        }
+    }
+    public class ImageBox: Control {
+        public ImageBox(Rectangle rect) : base(rect, null) {
+            sprite = new Sprite(new SpriteInfo(), rect);
+            
+        }
+        Sprite sprite;
+        public void SetImage(SpriteInfo info) {
+            sprite = new Sprite(info, Rectangle);
+        }
+        internal override void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch, GameTime time) {
+            base.Draw(primitiveDrawer, spriteBatch, time);
+            sprite.Draw(spriteBatch, time, true);
         }
     }
 }

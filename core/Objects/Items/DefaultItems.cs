@@ -9,7 +9,11 @@ namespace GameCore {
         public DefaultWeapon() : base(new CoordPoint(20,50), new CoordPoint(10,45)) {
 
         }
-
+        public override string Name {
+            get {
+                return "standard weapon";
+            }
+        }
         public override SpriteInfo SpriteInfo {
             get {
                 return new SpriteInfo("",1);
@@ -30,7 +34,11 @@ namespace GameCore {
                return base.Rotation-(float)(Math.PI/2.0);
             }
         }
-        
+        public override string Name {
+            get {
+                return "standard engine";
+            }
+        }
         public DefaultEngine() : base(new CoordPoint(80, 40), new CoordPoint(40, 20)) {
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 3f;

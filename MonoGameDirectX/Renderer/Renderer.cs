@@ -15,7 +15,7 @@ namespace MonoGameDirectX {
         SpriteBatch spriteBatch;
 
         InteractionController Controller { get { return MainCore.Instance.Controller; } }
-        GameState GameState { get { return MainCore.State; } }
+        GameState GameState { get { return MainCore.Instance.State; } }
         GameCore.Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
         public SpriteFont Font { get; set; }
@@ -75,9 +75,9 @@ namespace MonoGameDirectX {
             spriteBatch.DrawString(Font, Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
         }
 
-        public void DrawInterface(IEnumerable<Control> controls) {
+        public void DrawInterface(IEnumerable<Control> controls, GameTime time) {
             foreach(Control c in controls) 
-                c.Draw(primitiveDrawer, spriteBatch);
+                c.Draw(primitiveDrawer, spriteBatch, time);
             
         }
         public void Render(GameTime gameTime) {
@@ -91,7 +91,7 @@ namespace MonoGameDirectX {
                 DrawMiniMap();
                 DrawDebugInfo();
             }
-            DrawInterface(Controller.GetActualInterface().Cast<Control>());
+            DrawInterface(Controller.GetActualInterface().Cast<Control>(), gameTime);
             DrawCursor();
             WriteDebugInfo();
 

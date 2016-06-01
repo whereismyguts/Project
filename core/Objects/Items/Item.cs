@@ -35,6 +35,9 @@ namespace GameCore {
 
         public abstract void Activate();
         public abstract void Deactivate();
+        public override string ToString() {
+            return Name;
+        }
     }
 
 
@@ -125,13 +128,14 @@ namespace GameCore {
         //    }
         //}
     }
-    public struct SpriteInfo {
+    public class SpriteInfo {
         public SpriteInfo(string c, int f) {
             Content = c;
             Framecount = f;
         }
-        public string Content;
-        public int Framecount;
+        public SpriteInfo() { }
+        public string Content { get; } = string.Empty;
+        public int Framecount { get; } = 1;
     }
     public class EmptySlotItem: AttachedItem {
 

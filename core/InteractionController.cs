@@ -6,7 +6,7 @@ using System.Linq;
 namespace GameCore {
 
     public class InteractionController {
-        GameState GameState { get { return MainCore.State; } }
+        GameState GameState { get { return MainCore.Instance.State; } }
         bool oldMousePressed;
         Dictionary<GameState, List<InteractiveObject>> interfaces = new Dictionary<GameState, List<InteractiveObject>>();
         int pressCoolDown = 0;
