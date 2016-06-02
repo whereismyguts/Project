@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GameCore {
-
+ 
     public enum GameState { MainMenu, Space, Pause, Inventory, Landing };
     public class StateEventArgs: EventArgs {
         readonly GameState state;
@@ -56,9 +56,9 @@ namespace GameCore {
         }
 
         void CreatePlayers() {
-            ships.Add(new Ship(new CoordPoint(-10100, 10100), StarSystems[0].Objects[1], StarSystems[0])); // player controlled
-            ships.Add(new Ship(new CoordPoint(10100, 10100), ships[0], StarSystems[0]));
-            ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
+            ships.Add(new Ship(StarSystems[0].Objects[1], StarSystems[0])); // player controlled
+         //   ships.Add(new Ship(new CoordPoint(10100, 10100), ships[0], StarSystems[0]));
+         //   ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
         }
         IEnumerable<GameObject> GetAllObjects() {
 

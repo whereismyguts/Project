@@ -21,10 +21,10 @@ namespace GameCore {
         public StarSystem(int planetsNumber) {
             planets = new List<Body>();
             //TODO Data Driven Factory
-            star = new Body(new CoordPoint(0, 0), 55000,  this);
-            planets.Add(new Planet(new CoordPoint(96000, 96000), 15000, RndService.GetPeriod(),  true, this));
-            planets.Add(new Planet(new CoordPoint(81000, 81000), 10000, RndService.GetPeriod(),  false, this));
-            planets.Add(new Planet(new CoordPoint(100000, 100000), 20000, RndService.GetPeriod(),  true, this));
+            star = new Body(new CoordPoint(0, 0), 4000,  this);
+            planets.Add(new Planet(new CoordPoint(10600, 9600), 1400, RndService.GetPeriod(),  true, this));
+            planets.Add(new Planet(new CoordPoint(12100, 8100), 1000, RndService.GetPeriod(),  false, this));
+            planets.Add(new Planet(new CoordPoint(15000, 15000), 3000, RndService.GetPeriod(),  true, this));
 
         }
         List<Body> planets = new List<Body>();

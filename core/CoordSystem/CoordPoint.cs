@@ -49,6 +49,11 @@ namespace GameCore {
         public static CoordPoint operator *(CoordPoint vector, float factor) {
             return new CoordPoint(vector.X * factor, vector.Y * factor);
         }
+
+        internal CoordPoint Clone() {
+            return new CoordPoint(X, Y);
+        }
+
         public static CoordPoint operator *(float factor, CoordPoint vector) {
             return vector * factor;
         }

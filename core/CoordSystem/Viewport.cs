@@ -78,7 +78,7 @@ namespace GameCore {
             if(scale < 0)
                 scale = 0;
         }
-        float scale = 2f;
+        float scale = 128f;
         int lockTime = 0;
     }
 }

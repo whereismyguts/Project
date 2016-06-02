@@ -4,6 +4,8 @@ using GameCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace MonoGameDirectX {
     /// <summary>
@@ -32,19 +34,19 @@ namespace MonoGameDirectX {
         void AddControl(Control control, GameState state) {
             Controller.Add(control as InteractiveObject, state);
         }
-        
+
         void InitializeUI() {
             // mainmenu
-         //   label = new Label(ScreenWidth / 2 - 100, 50, 200, 30, "main title", renderer.Font);
-        //    AddControl(label, GameState.MainMenu);
+            //   label = new Label(ScreenWidth / 2 - 100, 50, 200, 30, "main title", renderer.Font);
+            //    AddControl(label, GameState.MainMenu);
 
-          //  AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test", renderer.Font), GameState.MainMenu);
+            //  AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test", renderer.Font), GameState.MainMenu);
 
             Button start = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start", renderer.Font);
             start.ButtonClick += SwitchState;
             AddControl(start, GameState.MainMenu);
 
-            
+
             Button gotomenu = new Button(10, 10, 100, 50, "inv", renderer.Font);
             gotomenu.ButtonClick += SwitchState;
             AddControl(gotomenu, GameState.MainMenu);
@@ -56,7 +58,7 @@ namespace MonoGameDirectX {
             inventoryListBox.ItemClick += Lb_ItemClick;
             AddControl(inventoryListBox, GameState.Inventory);
 
-            imageBox = new ImageBox(new Rectangle(400,250,200,200));
+            imageBox = new ImageBox(new Rectangle(400, 250, 200, 200));
             AddControl(imageBox, GameState.Inventory);
         }
         ImageBox imageBox;
@@ -88,6 +90,7 @@ namespace MonoGameDirectX {
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
         }
         void SwitchState(object sender, EventArgs e) {
+            //State = GameState.Space;
             State = State == GameState.MainMenu ? GameState.Inventory : GameState.MainMenu;
         }
 
@@ -101,6 +104,9 @@ namespace MonoGameDirectX {
             InitializeUI();
             Inventory.Changed += Inventory_Changed;
             Instance.StateChanged += Instance_StateChanged;
+
+
+
             base.Initialize();
         }
 
@@ -109,9 +115,13 @@ namespace MonoGameDirectX {
                 case GameState.Inventory:
                     inventoryListBox.Update(Inventory.Container.ToArray());
                     break;
+                case GameState.Space:
+                    
+                    
+                    break;
             }
         }
-
+       
         void Inventory_Changed(InventoryChangedEventArgs args) {
             inventoryListBox.Update(args.Inv.Container.ToArray());
         }
@@ -128,6 +138,8 @@ namespace MonoGameDirectX {
             Controller.HitTest(Mouse.GetState().LeftButton == ButtonState.Pressed, Mouse.GetState().Position);
             ProcessInput();
             Instance.Update();
+            State = GameState.Space;
+            renderer.TraectoryPath = Player.Calculator.Calculate();
             base.Update(gameTime);
         }
     }

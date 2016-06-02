@@ -73,10 +73,10 @@ namespace MonoGameDirectX {
             if(frameIndex >= frames)
                 frameIndex = 0;
             Rectangle source = new Rectangle(frameIndex * frameWidth, 0, frameWidth, frameHeight);
-            spriteBatch.Draw(texture, destRect, source, new Color(100, 100, 150, 100), rotation, origin, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, destRect, source, Color.White, rotation, origin, SpriteEffects.None, 0f);
         }
         void DrawImage(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(texture, destRect, null, new Color(100, 100, 150, 100), rotation, origin, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, destRect, null, Color.White, rotation, origin, SpriteEffects.None, 0f);
         }
 
         internal void Draw(SpriteBatch spBatch, GameTime t, bool fit) {

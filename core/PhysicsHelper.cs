@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GameCore {
@@ -15,6 +16,12 @@ namespace GameCore {
             float force = CalcGravitationForce(obj1, obj2);
             var direction = (obj2.Position - obj1.Position).UnaryVector;
             return direction * force;
+        }
+        public static CoordPoint GetSummaryAttractingForce(List<Body> objects, GameObject subject) {
+            var vector = new CoordPoint();
+            foreach(var obj in objects)
+                vector += GravitationForceVector(subject, obj);
+            return vector;
         }
     }
 }

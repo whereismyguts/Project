@@ -98,7 +98,7 @@ namespace MonoGameDirectX {
         }
 
         public void DrawPixel(Vector2 point, SpriteBatch spBatch, Color color, Rectangle border) {
-            DrawPixel(point, spBatch, color, border);
+            DrawPixel(point.X, point.Y, spBatch, color, border);
         }
         public void DrawRect(Rectangle rect, SpriteBatch spBatch, int strokeWidth, Color borderColor) {
             DrawRect(rect, spBatch, strokeWidth, borderColor, defaultFillColor);

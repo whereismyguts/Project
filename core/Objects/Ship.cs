@@ -27,9 +27,9 @@ namespace GameCore {
         }
         //public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
 
-        public CoordPoint Velosity { get { return velosity; } }
+        //public CoordPoint Velosity { get { return velosity; } }
 
-        public Ship(CoordPoint location, GameObject target, StarSystem system) : base(system) {
+        public Ship( GameObject target, StarSystem system) : base(system) {
 
             Hull = new ShipHull() { Owner = this };
             Inventory = new Inventory(Hull);
@@ -46,10 +46,10 @@ namespace GameCore {
             Inventory.Attach(Hull.Slots[1], e2);
             Inventory.Attach(Hull.Slots[2], w1);
 
-            Position = location;
             Mass = 1;
             Color = RndService.GetColor();
-            controller = new AIController(this, target, TaskType.Peersuit);
+            Reborn();
+            //   controller = new AIController(this, target, TaskType.Peersuit);
 
         }
 
@@ -58,26 +58,33 @@ namespace GameCore {
                 if(slot.Type == SlotType.EngineSlot && !slot.IsEmpty)
                     slot.AttachedItem.Activate();
         }
+        public override CoordPoint Position {
+            get {
+                return base.Position;
+            }
 
-        void Death() {
-            Position = new CoordPoint(-101000, 101000);
+            set {
+                base.Position = value;
+                if(Calculator!=null)
+                Calculator.Update();
+            }
+        }
+        public TrajectoryCalculator Calculator { get; set; }
+        void Reborn() {
+            Position = new CoordPoint(-12100, 12100);
             //acceleration = 0;
             direction = new CoordPoint(1, 0);
-            velosity = new CoordPoint();
+            Velosity = new CoordPoint(-50,-50);
+            Calculator= new TrajectoryCalculator(this);
         }
 
 
-        CoordPoint GetSummaryAttractingForce() {
-            var vector = new CoordPoint();
-            foreach(var obj in CurrentSystem.Objects)
-                vector += PhysicsHelper.GravitationForceVector(this, obj);
-            return vector;
-        }
+        
 
         protected internal override void Step() {
             foreach(Body obj in CurrentSystem.Objects)
                 if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius)
-                    Death();
+                    Reborn();
             if(IsBot) {
                 List<Action> actions = controller.Step();
                 foreach(Action a in actions)
@@ -87,12 +94,12 @@ namespace GameCore {
             foreach(Item item in Inventory.Container)
                 item.Step();
 
-            velosity += Direction * GetAcceleration() + GetSummaryAttractingForce();
-            Position += velosity;
+            Velosity += Direction * GetAcceleration() + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this);
+            
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
 
-
+            base.Step();
         }
 
         float GetAcceleration() {
@@ -129,7 +136,7 @@ namespace GameCore {
         #endregion
 
         float angleSpeed = 0;
-        CoordPoint velosity = new CoordPoint();
+        //public CoordPoint velosity = new CoordPoint();
         CoordPoint direction = new CoordPoint(1, 0);
     }
 

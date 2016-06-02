@@ -50,7 +50,7 @@ namespace GameCore {
 
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("planet.png", 1);
+                return body.SpriteInfo;
             }
         }
 

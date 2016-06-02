@@ -22,10 +22,12 @@ namespace GameCore {
             CurrentSystem = system;
         }
 
-        protected internal abstract void Step();
+        protected internal virtual void Step() {
+            Position += Velosity;
+        }
         /// <summary>foreach in all iternal items (weapons, effects, clouds, engines)</summary>
         public abstract IEnumerable<Item> GetItems(); 
-
+        public CoordPoint Velosity { get; set; }
         public Bounds GetScreenBounds() {
             return Viewport.World2ScreenBounds(ObjectBounds);
         }

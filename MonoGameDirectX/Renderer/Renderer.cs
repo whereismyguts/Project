@@ -22,6 +22,8 @@ namespace MonoGameDirectX {
         public int ScreenHeight { get { return graphicsDevice.Viewport.Height; } }
         public int ScreenWidth { get { return graphicsDevice.Viewport.Width; } }
 
+        public List<CoordPoint> TraectoryPath { get; internal set; }
+
         public Renderer(GraphicsDevice gd) {
             graphicsDevice = gd;
             spriteBatch = new SpriteBatch(graphicsDevice);
@@ -53,13 +55,20 @@ namespace MonoGameDirectX {
                 //    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Reactive).Center)),
                 //    spriteBatch, 1, Color.Yellow);
             }
+            if(TraectoryPath != null)
+                //foreach(var point in TraectoryPath)
+                for(int i = 0; i < TraectoryPath.Count-1; i++) {
+                    primitiveDrawer.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), spriteBatch, Color.Black);
+                    //primitiveDrawer.DrawLineDotted(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i+1])), spriteBatch, 1,Color.Violet);
+                    
+                }
         }
         void DrawMiniMap() {
             primitiveDrawer.DrawRect(miniMapBorder, spriteBatch, 3, Color.GhostWhite, Color.Green);
             foreach(RenderObject renderObject in renderObjects)
                 if(renderObject.MiniMapLocation != null) {
                     Vector2 objLocation = miniMapBorder.Center.ToVector2() + renderObject.MiniMapLocation;
-                    primitiveDrawer.DrawCircle(objLocation, 3, spriteBatch, Color.Yellow, miniMapBorder);
+                    primitiveDrawer.DrawCircle(objLocation, 3, spriteBatch, Color.Black, miniMapBorder);
                 }
         }
         void DrawObjects(GameTime gameTime) {
@@ -67,12 +76,14 @@ namespace MonoGameDirectX {
             foreach(RenderObject renderObject in renderObjects)
                 if(Viewport.Bounds.Contains(renderObject.GameObject.Position)) {
                     renderObject.Draw(spriteBatch, gameTime);
-                    primitiveDrawer.DrawRectDotted(WinAdapter.Bounds2Rectangle(renderObject.GameObject.GetScreenBounds()), spriteBatch, 2, Color.Yellow); // TODO remove
+                    if(renderObject.GameObject is Body)
+                        primitiveDrawer.DrawCircle(WinAdapter.CoordPoint2Vector(renderObject.GameObject.GetScreenBounds().Center), renderObject.GameObject.GetScreenBounds().Width / 2, spriteBatch, Color.Blue);
+                   // primitiveDrawer.DrawRectDotted(WinAdapter.Bounds2Rectangle(renderObject.GameObject.GetScreenBounds()), spriteBatch, 2, Color.Black); // TODO remove
                 }
         }
        
         void WriteDebugInfo() {
-            spriteBatch.DrawString(Font, Viewport.Scale.ToString(), new Vector2(0, 0), Color.White);
+            spriteBatch.DrawString(Font, Viewport.Scale.ToString(), new Vector2(0, 0), Color.Black);
         }
 
         public void DrawInterface(IEnumerable<Control> controls, GameTime time) {
@@ -81,7 +92,7 @@ namespace MonoGameDirectX {
             
         }
         public void Render(GameTime gameTime) {
-            graphicsDevice.Clear(Color.Gray);
+            graphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
 
 

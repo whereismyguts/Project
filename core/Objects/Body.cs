@@ -19,10 +19,12 @@ namespace GameCore {
 
         public float Radius { get { return radius; } }
 
+        public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
+
         public Body(CoordPoint location, float radius, StarSystem system) : base(system) {
             this.radius = radius;
             Position = location;
-            Mass = radius;
+            Mass = radius * 2;
             planetItem = new SpaceBodyItem(this);
         }
 
@@ -51,6 +53,7 @@ namespace GameCore {
             this.starRotation = rotation;
 
             this.clockwise = clockwise;
+            Mass *= 5;
         }
 
         protected internal override void Step() {
