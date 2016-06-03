@@ -49,12 +49,11 @@ namespace GameCore {
 
         public override string Name { get; } = NameGenerator.Generate();
 
-        public Planet(CoordPoint location, float diameter, float rotation, bool clockwise, StarSystem system)
-            : base(location, diameter, system) {
-            this.starRotation = rotation;
-
+        public Planet(float distance, float diameter, float rotation, bool clockwise, StarSystem system)
+            : base(new CoordPoint(system.Star.Position+new CoordPoint(distance, 0)), diameter, system) {
+            starRotation = rotation;
             this.clockwise = clockwise;
-            Mass *= 5;
+            Mass *= 2;
         }
 
         protected internal override void Step() {
@@ -66,7 +65,6 @@ namespace GameCore {
             selfRotation += .005f;
 
         }
-        static Random rnd = new Random();
         float starRotation = 0;
     }
 

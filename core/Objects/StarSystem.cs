@@ -22,9 +22,8 @@ namespace GameCore {
             planets = new List<Body>();
             //TODO Data Driven Factory
             star = new Body(new CoordPoint(0, 0), 4000,  this);
-            planets.Add(new Planet(new CoordPoint(10600, 9600), 1400, RndService.GetPeriod(),  true, this));
-            planets.Add(new Planet(new CoordPoint(12100, 8100), 1000, RndService.GetPeriod(),  false, this));
-            planets.Add(new Planet(new CoordPoint(15000, 15000), 3000, RndService.GetPeriod(),  true, this));
+            for(int i=0;i<10;i++)
+            planets.Add(new Planet(RndService.Get(5000, 20000), RndService.Get(500, 3000), RndService.GetPeriod(),  RndService.Bool(), this));
 
         }
         List<Body> planets = new List<Body>();
