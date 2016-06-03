@@ -65,5 +65,9 @@ namespace GameCore {
         }
         public CoordPoint LeftTop = new CoordPoint();
         public CoordPoint RightBottom = new CoordPoint();
+
+        public bool Contains(object bounds) {
+            throw new NotImplementedException();
+        }
     }
 }

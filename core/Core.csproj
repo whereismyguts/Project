@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="InteractionController.cs" />
     <Compile Include="Objects\AIController.cs" />
+    <Compile Include="Objects\Geometry.cs" />
     <Compile Include="Objects\InteractiveObject.cs" />
     <Compile Include="Objects\Inventory.cs" />
     <Compile Include="Objects\Items\DefaultItems.cs" />

@@ -26,7 +26,8 @@ namespace GameCore {
             Position += Velosity;
         }
         /// <summary>foreach in all iternal items (weapons, effects, clouds, engines)</summary>
-        public abstract IEnumerable<Item> GetItems(); 
+        public abstract IEnumerable<Item> GetItems();
+        public abstract IEnumerable<Geometry> GetPrimitives();
         public CoordPoint Velosity { get; set; }
         public Bounds GetScreenBounds() {
             return Viewport.World2ScreenBounds(ObjectBounds);

@@ -2,11 +2,6 @@
 using System.Collections.Generic;
 
 namespace GameCore {
-    public interface IStorable {
-        string Name { get; }
-        int Volume { get; }
-        void Activate();
-    }
     public abstract class Item {
 
         Viewport Viewport { get { return MainCore.Instance.Viewport; } }
@@ -41,26 +36,26 @@ namespace GameCore {
     }
 
 
-    public class SpaceBodyItem: Item {
-        private Body body;
+    //public class SpaceBodyItem: Item {
+    //    private Body body;
 
-        protected internal override CoordPoint Position { get { return body.Position; } }
+    //    protected internal override CoordPoint Position { get { return body.Position; } }
 
-        public override float Rotation { get { return body.Rotation; } }
+    //    public override float Rotation { get { return body.Rotation; } }
 
-        public override SpriteInfo SpriteInfo {
-            get {
-                return body.SpriteInfo;
-            }
-        }
+    //    public override SpriteInfo SpriteInfo {
+    //        get {
+    //            return body.SpriteInfo;
+    //        }
+    //    }
 
-        public SpaceBodyItem(Body body) : base(new CoordPoint(body.Radius * 2f, body.Radius * 2f), new CoordPoint(body.Radius, body.Radius)) {
-            this.body = body;
-        }
+    //    public SpaceBodyItem(Body body) : base(new CoordPoint(body.Radius * 2f, body.Radius * 2f), new CoordPoint(body.Radius, body.Radius)) {
+    //        this.body = body;
+    //    }
 
-        public override void Activate() { }
-        public override void Deactivate() { }
-    }
+    //    public override void Activate() { }
+    //    public override void Deactivate() { }
+    //}
     public class ShipHull: Item {
         protected internal Ship Owner { get; set; }
         protected internal override CoordPoint Position { get { return Owner.Position; } }

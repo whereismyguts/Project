@@ -22,8 +22,8 @@ namespace MonoGameDirectX {
             Font = font;
         }
 
-        internal virtual void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch, GameTime time) {
-            primitiveDrawer.DrawRect(Rectangle, spriteBatch, 1, ActualBorderColor, ActualFillColor);
+        internal virtual void Draw( SpriteBatch spriteBatch, GameTime time) {
+            DrawPrimitives.DrawRect(Rectangle, spriteBatch, 1, ActualBorderColor, ActualFillColor);
         }
 
         public override bool Contains(object position) {
@@ -39,8 +39,8 @@ namespace MonoGameDirectX {
             TextColor = Color.Black;
         }
 
-        internal override void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch, GameTime time) {
-            base.Draw(primitiveDrawer, spriteBatch, time);
+        internal override void Draw( SpriteBatch spriteBatch, GameTime time) {
+            base.Draw(spriteBatch, time);
             Vector2 textSize = Font.MeasureString(Text);
             Vector2 panSize = Rectangle.Size.ToVector2();
             Vector2 textLocation = Rectangle.Location.ToVector2() + (panSize - textSize) / 2;
@@ -127,10 +127,10 @@ namespace MonoGameDirectX {
 
         }
 
-        internal override void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch, GameTime time) {
-            base.Draw(primitiveDrawer, spriteBatch, time);
+        internal override void Draw( SpriteBatch spriteBatch, GameTime time) {
+            base.Draw( spriteBatch, time);
             for(int i = 0; i < buttons.Count; i++)
-                buttons[i].Draw(primitiveDrawer, spriteBatch,  time);
+                buttons[i].Draw( spriteBatch,  time);
         }
 
         public override bool Contains(object position) {
@@ -149,8 +149,8 @@ namespace MonoGameDirectX {
         public void SetImage(SpriteInfo info) {
             sprite = new Sprite(info, Rectangle);
         }
-        internal override void Draw(DrawPrimitives primitiveDrawer, SpriteBatch spriteBatch, GameTime time) {
-            base.Draw(primitiveDrawer, spriteBatch, time);
+        internal override void Draw( SpriteBatch spriteBatch, GameTime time) {
+            base.Draw( spriteBatch, time);
             sprite.Draw(spriteBatch, time, true);
         }
     }

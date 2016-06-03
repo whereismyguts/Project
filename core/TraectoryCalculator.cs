@@ -26,6 +26,9 @@ namespace GameCore {
             base.Step();
         }
 
+        public override IEnumerable<Geometry> GetPrimitives() {
+            return new Geometry[] { };
+        }
     }
     public class TrajectoryCalculator {
         VirtualObject virtObj;

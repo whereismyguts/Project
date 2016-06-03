@@ -100,6 +100,7 @@ namespace MonoGameDirectX {
         }
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice) { Font = Content.Load<SpriteFont>("Arial") };
+            
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             InitializeUI();
             Inventory.Changed += Inventory_Changed;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace GameCore {
     public class Body: GameObject {
-        Item planetItem;
         float radius;
         float selfRotation;
 
@@ -25,7 +24,6 @@ namespace GameCore {
             this.radius = radius;
             Position = location;
             Mass = radius * 2;
-            planetItem = new SpaceBodyItem(this);
         }
 
         protected internal override void Step() {
@@ -33,7 +31,10 @@ namespace GameCore {
         }
 
         public override IEnumerable<Item> GetItems() {
-            return new Item[] { planetItem };
+            return new Item[] { };
+        }
+        public override IEnumerable<Geometry> GetPrimitives() {
+            return new Geometry[] { new Circle(Position, Radius) };
         }
     }
 

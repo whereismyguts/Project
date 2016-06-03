@@ -49,7 +49,8 @@ namespace GameCore {
             Mass = 1;
             Color = RndService.GetColor();
             Reborn();
-            //   controller = new AIController(this, target, TaskType.Peersuit);
+            if(target!=null)
+               controller = new AIController(this, target, TaskType.Peersuit);
 
         }
 
@@ -127,6 +128,10 @@ namespace GameCore {
             if(controller != null)
                 controller = null;
             else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
+        }
+
+        public override IEnumerable<Geometry> GetPrimitives() {
+            return new Geometry[] { };
         }
 
         #region inventory
