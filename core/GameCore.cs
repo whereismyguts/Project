@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GameCore {
  
-    public enum GameState { MainMenu, Space, Pause, Inventory, Landing };
+    public enum GameState { MainMenu, Space, Pause, Inventory, Landing, Station };
     public class StateEventArgs: EventArgs {
         readonly GameState state;
         public GameState State { get { return state; } }
@@ -32,7 +32,7 @@ namespace GameCore {
             get { return GetAllObjects().ToList(); }
         }
         public List<Ship> Ships { get { return ships; } }
-        GameState state = GameState.MainMenu;
+        GameState state = GameState.Station;
         public GameState State {
             get { return state; }
             set {
@@ -48,6 +48,7 @@ namespace GameCore {
         public event StateEventHandler StateChanged;
 
         public Viewport Viewport { get; set; }
+        public static CoordPoint Cursor { get; set; }
 
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);
@@ -77,5 +78,19 @@ namespace GameCore {
         }
         static Random rnd = new Random();
         List<Ship> ships = new List<Ship>();
+
+        static int pressCoolDown = 0;
+        public static void Pressed(CoordPoint coordPoint) {
+            if(pressCoolDown < 0)
+                pressCoolDown++;
+            else
+               {
+                pressCoolDown = -10;
+                var ship = new Ship(instance.ships[0], instance.StarSystems[0]);
+                ship.Position = coordPoint;
+                instance.ships.Add(ship);
+            }
+        }
+    
     }
 }

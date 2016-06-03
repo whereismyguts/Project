@@ -28,8 +28,9 @@ namespace MonoGameDirectX {
             graphicsDevice = gd;
             spriteBatch = new SpriteBatch(graphicsDevice);
             miniMapBorder = new Rectangle(ScreenWidth - 100, ScreenHeight - 100, 90, 90);
+            cells = new StationGenerator().Generate();
         }
-
+        int[,] cells;
         void DrawCursor() {
             Point mPoint = Mouse.GetState().Position;
             DrawPrimitives.DrawRect(new Rectangle(mPoint.X, mPoint.Y, 10, 10), spriteBatch, 1, Color.White, Color.Red);
@@ -60,6 +61,8 @@ namespace MonoGameDirectX {
                     //DrawPrimitives.DrawLine(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i + 1])), spriteBatch, 1, Color.Violet);
 
                 }
+            if(MainCore.Cursor!=null)
+                DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(MainCore.Cursor)), 20, spriteBatch, Color.Red);
         }
         void DrawMiniMap() {
             DrawPrimitives.DrawRect(miniMapBorder, spriteBatch, 3, Color.GhostWhite, Color.Green);
@@ -90,6 +93,24 @@ namespace MonoGameDirectX {
         public void Render(GameTime gameTime) {
             graphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
+
+
+            if(GameState == GameState.Station) {
+                for(int i = 0; i < 400; i++)
+                    for(int j = 0; j < 400; j++) {
+                        Color c = Color.LightGray;
+                        switch(cells[i, j]) {
+                            case 1:c = Color.Red;
+                                break;
+                            case 2:c = Color.Green;
+                                break;
+                        }
+                        DrawPrimitives.DrawRect(new Rectangle(i * 2, j * 2, 2, 2), spriteBatch, 1, c, c);
+                        //DrawPrimitives.DrawPixel(new Vector2(i*2, j*2), spriteBatch, c);
+                    }
+                spriteBatch.End();
+                return;
+            }
 
 
             if(GameState == GameState.Space) {

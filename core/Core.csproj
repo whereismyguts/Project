@@ -42,6 +42,7 @@
     <Compile Include="Objects\Items\DefaultItems.cs" />
     <Compile Include="Objects\Items\Item.cs" />
     <Compile Include="Objects\Items\Slot.cs" />
+    <Compile Include="Objects\StationGenerator.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\Body.cs" />
     <Compile Include="RndService.cs" />

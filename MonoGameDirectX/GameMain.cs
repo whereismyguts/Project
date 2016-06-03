@@ -68,6 +68,9 @@ namespace MonoGameDirectX {
         }
 
         void ProcessInput() {
+            var mouseState = Mouse.GetState();
+            Controller.HitTest(mouseState.LeftButton == ButtonState.Pressed, mouseState.Position);
+
             if(Keyboard.GetState().IsKeyDown(Keys.Z))
                 Viewport.ZoomIn();
             if(Keyboard.GetState().IsKeyDown(Keys.X))
@@ -88,6 +91,10 @@ namespace MonoGameDirectX {
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(10, 0);
             //if(Keyboard.GetState().IsKeyDown(Keys.Left))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
+
+            MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
+            if(mouseState.LeftButton == ButtonState.Pressed)
+                MainCore.Pressed(new CoordPoint(mouseState.X, mouseState.Y));
         }
         void SwitchState(object sender, EventArgs e) {
             //State = GameState.Space;
@@ -136,10 +143,10 @@ namespace MonoGameDirectX {
             // TODO: Unload any non ContentManager content here
         }
         protected override void Update(GameTime gameTime) {
-            Controller.HitTest(Mouse.GetState().LeftButton == ButtonState.Pressed, Mouse.GetState().Position);
+            
             ProcessInput();
             Instance.Update();
-            State = GameState.Space;
+        //    State = GameState.Space;
             renderer.TraectoryPath = Player.Calculator.Calculate();
             base.Update(gameTime);
         }
