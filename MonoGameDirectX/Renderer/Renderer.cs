@@ -80,9 +80,9 @@ namespace MonoGameDirectX {
                 //    DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(renderObject.GameObject.GetScreenBounds().Center), renderObject.GameObject.GetScreenBounds().Width / 2, spriteBatch, Color.Blue);
             }
         }
-
+        string info = "Z,X - zooming, arrows - ship control. debug info:";
         void WriteDebugInfo() {
-            spriteBatch.DrawString(Font, Viewport.Scale.ToString(), new Vector2(0, 0), Color.Black);
+            spriteBatch.DrawString(Font,info+ Viewport.Scale.ToString(), new Vector2(0, ScreenHeight-50), Color.Black);
         }
 
         public void DrawInterface(IEnumerable<Control> controls, GameTime time) {

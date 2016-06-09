@@ -43,8 +43,8 @@ namespace GameCore {
              result.Clear();
             virtObj.IsDead = false;
             result.Add(virtObj.Position);
-            for(int i = 0; i < 500; i++) {
-                for(int j = 0; j < 9; j++) {
+            for(int i = 0; i < 100; i++) {
+                for(int j = 0; j < 20; j++) {
                     virtObj.Step();
                     if(virtObj.IsDead)
                         return result;

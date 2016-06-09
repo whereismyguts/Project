@@ -42,17 +42,16 @@ namespace MonoGameDirectX {
 
             //  AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test", renderer.Font), GameState.MainMenu);
 
-            Button start = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start", renderer.Font);
-            start.ButtonClick += SwitchState;
-            AddControl(start, GameState.MainMenu);
+            Button startButton = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start", renderer.Font);
+            startButton.ButtonClick += SetSpaceState;
+            AddControl(startButton, GameState.MainMenu);
 
-
-            Button gotomenu = new Button(10, 10, 100, 50, "inv", renderer.Font);
-            gotomenu.ButtonClick += SwitchState;
-            AddControl(gotomenu, GameState.MainMenu);
+            Button inventoryButton = new Button(10, 10, 100, 50, "inv", renderer.Font);
+            inventoryButton.ButtonClick += SetInvState;
+            AddControl(inventoryButton, GameState.Space);
 
             //space
-
+            
             //inventory
             inventoryListBox = new ListBox(new Point(100, 300), renderer.Font, "");
             inventoryListBox.ItemClick += Lb_ItemClick;
@@ -60,7 +59,22 @@ namespace MonoGameDirectX {
 
             imageBox = new ImageBox(new Rectangle(400, 250, 200, 200));
             AddControl(imageBox, GameState.Inventory);
+
+            Button backButton = new Button(10, 10, 50, 30, "<-", renderer.Font);
+            backButton.ButtonClick += BackButton;
+            AddControl(backButton, GameState.Inventory);
+
+            
         }
+
+        private void BackButton(object sender, EventArgs e) {
+            State = GameState.Space;
+        }
+
+        private void SetInvState(object sender, EventArgs e) {
+            State = GameState.Inventory;
+        }
+
         ImageBox imageBox;
         ListBox inventoryListBox;
         void Lb_ItemClick(object sender, EventArgs e) {
@@ -96,9 +110,8 @@ namespace MonoGameDirectX {
             if(mouseState.LeftButton == ButtonState.Pressed)
                 MainCore.Pressed(new CoordPoint(mouseState.X, mouseState.Y));
         }
-        void SwitchState(object sender, EventArgs e) {
-            //State = GameState.Space;
-            State = State == GameState.MainMenu ? GameState.Inventory : GameState.MainMenu;
+        void SetSpaceState(object sender, EventArgs e) {
+            State = GameState.Space;
         }
 
         protected override void Draw(GameTime gameTime) {

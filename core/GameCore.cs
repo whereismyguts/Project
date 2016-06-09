@@ -32,7 +32,7 @@ namespace GameCore {
             get { return GetAllObjects().ToList(); }
         }
         public List<Ship> Ships { get { return ships; } }
-        GameState state = GameState.Station;
+        GameState state = GameState.MainMenu;
         public GameState State {
             get { return state; }
             set {
