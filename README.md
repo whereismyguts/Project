@@ -1,5 +1,5 @@
 # 
-to investigate more OOP wisdom I have born this
+to investigate more OOP wisdom I have born this 
 space retro-futuristic rpg
 features:
   use non-gravity mechanic to planning a optimal manevours between planets
