@@ -45,6 +45,7 @@ namespace MonoGameDirectX {
             Button startButton = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start", renderer.Font);
             startButton.ButtonClick += SetSpaceState;
             AddControl(startButton, GameState.MainMenu);
+            AddControl(new TextBox(ScreenWidth / 2 - 100, 300, 200, 30, "input", renderer.Font), GameState.MainMenu);
 
             Button inventoryButton = new Button(10, 10, 100, 50, "inv", renderer.Font);
             inventoryButton.ButtonClick += SetInvState;
@@ -83,27 +84,32 @@ namespace MonoGameDirectX {
 
         void ProcessInput() {
             var mouseState = Mouse.GetState();
-            Controller.HitTest(mouseState.LeftButton == ButtonState.Pressed, mouseState.Position);
-
-            if(Keyboard.GetState().IsKeyDown(Keys.Z))
+            var keyState = Keyboard.GetState();
+            var pressedKeys = keyState.GetPressedKeys();
+            Controller.HitTest(mouseState.LeftButton == ButtonState.Pressed, mouseState.Position, pressedKeys.Length>0?(int)(pressedKeys[0]):-1);
+            
+            if (keyState.IsKeyDown(Keys.Q))
+                Exit();
+            if (keyState.IsKeyDown(Keys.Z))
                 Viewport.ZoomIn();
-            if(Keyboard.GetState().IsKeyDown(Keys.X))
+            if(keyState.IsKeyDown(Keys.X))
                 Viewport.ZoomOut();
-            if(Keyboard.GetState().IsKeyDown(Keys.Up))
+            if(keyState.IsKeyDown(Keys.Up))
                 Player.Accselerate();
-
-            if(Keyboard.GetState().IsKeyDown(Keys.Left))
-                Player.RotateL();
-            if(Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (keyState.IsKeyDown(Keys.S))
+            {
+                
+            }
+            if(keyState.IsKeyDown(Keys.Right))
                 Player.RotateR();
 
-            //if(Keyboard.GetState().IsKeyDown(Keys.Up))
+            //if(keyState.IsKeyDown(Keys.Up))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, -10);
-            //if(Keyboard.GetState().IsKeyDown(Keys.Down))
+            //if(keyState.IsKeyDown(Keys.Down))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, 10);
-            //if(Keyboard.GetState().IsKeyDown(Keys.Right))
+            //if(keyState.IsKeyDown(Keys.Right))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(10, 0);
-            //if(Keyboard.GetState().IsKeyDown(Keys.Left))
+            //if(keyState.IsKeyDown(Keys.Left))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
 
             MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
@@ -120,7 +126,15 @@ namespace MonoGameDirectX {
         }
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice) { Font = Content.Load<SpriteFont>("Arial") };
-            
+
+
+            // full screen mode:
+            //graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            //graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            //graphics.IsFullScreen = true;
+            //graphics.ApplyChanges();
+
+
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             InitializeUI();
             Inventory.Changed += Inventory_Changed;
@@ -156,7 +170,6 @@ namespace MonoGameDirectX {
             // TODO: Unload any non ContentManager content here
         }
         protected override void Update(GameTime gameTime) {
-            
             ProcessInput();
             Instance.Update();
         //    State = GameState.Space;

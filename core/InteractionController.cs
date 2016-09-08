@@ -22,12 +22,14 @@ namespace GameCore {
             return interfaces.ContainsKey(GameState) ? interfaces[GameState] : new List<InteractiveObject>();
         }
 
-        public void HitTest(bool pressed, object position) {
+        public void HitTest(bool pressed, object position, int key) {
+
             if(pressCoolDown < 0)
                 pressCoolDown++;
             else
-                if(interfaces.ContainsKey(GameState))
-                foreach(InteractiveObject obj in interfaces[GameState])
+                if(interfaces.ContainsKey(GameState)) {
+
+                foreach(InteractiveObject obj in interfaces[GameState]) {
                     if(obj.Contains(position))
                         if(!pressed && oldMousePressed) {
                             obj.HandleMouseClick(position);
@@ -43,7 +45,14 @@ namespace GameCore {
                         if(!pressed && oldMousePressed)
                             obj.IsSelected = false;
                     }
+                    if(obj.IsSelected && key > -1) {
+                        obj.HandleKeyPress(key);
+                        pressCoolDown = -10;
+                    }
+                }
+            }
             oldMousePressed = pressed;
         }
+
     }
 }

@@ -4,9 +4,10 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using GameCore;
+using System.Text;
 
 namespace MonoGameDirectX {
-    public class Control: InteractiveObject {
+    public abstract class Control: InteractiveObject {
         protected Color BorderColor { get; }
         protected Color FillColor { get; }
         protected SpriteFont Font { get; }
@@ -31,22 +32,113 @@ namespace MonoGameDirectX {
         }
     }
     public class Label: Control {
-        public string Text { get; set; }
+        public StringBuilder Text { get; set; }
         public Color TextColor { get; internal set; }
 
         public Label(int x, int y, int w, int h, string text, SpriteFont font) : base(new Rectangle(x, y, w, h), font) {
-            Text = text;
+            Text = new StringBuilder(text);
             TextColor = Color.Black;
+        }
+
+        protected virtual void TextDraw(SpriteBatch spriteBatch, string text) {
+            Vector2 textSize = Font.MeasureString(text);
+            Vector2 panSize = Rectangle.Size.ToVector2();
+            Vector2 textLocation = Rectangle.Location.ToVector2() + (panSize - textSize) / 2;
+            spriteBatch.DrawString(Font, text, textLocation, TextColor);
         }
 
         internal override void Draw( SpriteBatch spriteBatch, GameTime time) {
             base.Draw(spriteBatch, time);
-            Vector2 textSize = Font.MeasureString(Text);
-            Vector2 panSize = Rectangle.Size.ToVector2();
-            Vector2 textLocation = Rectangle.Location.ToVector2() + (panSize - textSize) / 2;
-            spriteBatch.DrawString(Font, Text, textLocation, TextColor);
+            TextDraw(spriteBatch, Text.ToString());
         }
     }
+    public class TextBox : Label
+    {
+        int caret = 0;
+        public TextBox(int x, int y, int w, int h, string text, SpriteFont font) : base(x, y, w, h, text, font)
+        {
+            KeyPress += TextBox_KeyPress;
+
+            
+                caret = text.Length;
+
+            int c = 'a';
+            for (int i = 65; i <= 90; i++)
+            {
+                letters.Add(i, (char)c);
+                c++;
+            }
+        }
+
+        //A = 65,
+        //B = 66,
+        //C = 67,
+        //D = 68,
+        //E = 69,
+        //F = 70,
+        //G = 71,
+        //H = 72,
+        //I = 73,
+        //J = 74,
+        //K = 75,
+        //L = 76,
+        //M = 77,
+        //N = 78,
+        //O = 79,
+        //P = 80,
+        //Q = 81,
+        //R = 82,
+        //S = 83,
+        //T = 84,
+        //U = 85,
+        //V = 86,
+        //W = 87,
+        //X = 88,
+        //Y = 89,
+        //Z = 90,
+
+        bool cursorBlink = true;
+        protected override void TextDraw(SpriteBatch spriteBatch, string text)
+            
+        {
+            string t = text.ToString().Insert(caret, "_");
+            base.TextDraw(spriteBatch, IsSelected && cursorBlink ? t : text.ToString());
+            cursorBlink = !cursorBlink;
+        }
+
+        private void TextBox_KeyPress(object key, EventArgs e)
+        {
+            int k = (int)key;
+            switch (k) {
+                case 39: if(caret<Text.Length) caret++;
+                    break;
+                case 37:
+                    if(caret>0) caret--;
+                    break;
+            }
+            if (k >= 65 && k <= 90)
+                AppendText(k);
+            System.Diagnostics.Debug.WriteLine(key);
+        }
+
+        Dictionary<int, char> letters = new Dictionary<int, char>();
+
+        private void AppendText(int k)
+        {
+            Text.Insert(caret, letters[k]);
+        }
+
+        public override Color ActualBorderColor
+        {
+            get
+            {
+                return IsSelected ? Color.Red : IsHighlighted ? Color.Green : BorderColor;
+            }
+        }
+
+
+    }
+
     public class Button: Label {
         public override Color ActualBorderColor {
             get {
