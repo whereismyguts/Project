@@ -26,6 +26,7 @@ namespace GameCore {
 
         protected event EventHandler Click;
         protected event EventHandler Hover;
+        protected event EventHandler KeyPress;
 
         protected internal virtual void HandleMouseClick(object position) {
             if(Click != null)
@@ -34,6 +35,11 @@ namespace GameCore {
         protected internal virtual void HandleMouseHover(object position) {
             if(Hover != null)
                 Hover(position, EventArgs.Empty);
+        }
+        protected internal virtual void HandleKeyPress(object key)
+        {
+            if (IsSelected)
+                KeyPress((int)key, EventArgs.Empty);
         }
 
         public abstract bool Contains(object position);
