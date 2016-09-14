@@ -38,14 +38,7 @@ namespace GameCore {
             pxlHeight = h;
         }
 
-        void ChangeZoom(float delta) {
-            if(lockTime == 0) {
-                scale += delta;
-                lockTime = 5;
-            }
-            else
-                lockTime--;
-        }
+        
 
         public CoordPoint Screen2WorldPoint(CoordPoint scrPoint) {
             double pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
@@ -71,13 +64,36 @@ namespace GameCore {
             return new CoordPoint((wrlPoint.X - Bounds.LeftTop.X) * unitFactorX, (wrlPoint.Y - Bounds.LeftTop.Y) * unitFactorY);
         }
         public void ZoomIn() {
-            ChangeZoom(scale);
+            ChangeZoom(scale+scale/10, scale/50f);
         }
         public void ZoomOut() {
-            ChangeZoom(-scale / 2);
+            ChangeZoom(scale-scale/10 , -scale / 50f);
+            
+        }
+
+        public void Update() {
+
+            if(Math.Abs(scale - target) > 0.1f)
+                scale += step;
+
             if(scale < 0)
                 scale = 0;
         }
+        float target = 128f;
+        float step = 12.8f;
+        void ChangeZoom(float target, float step) {
+            this.target = target;
+            this.step =Math.Sign(step) * Math.Max(0.1f, Math.Abs( step));
+        }
+        void ChangeZoom(float delta) {
+            if(lockTime == 0) {
+                scale += delta;
+                lockTime = 5;
+            }
+            else
+                lockTime--;
+        }
+
         float scale = 128f;
         int lockTime = 0;
     }

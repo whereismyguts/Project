@@ -70,16 +70,18 @@ namespace GameCore {
         }
 
         public void Update() {
-            if(State == GameState.Space && active) {
-                
-                foreach(GameObject obj in Objects)
-                    obj.Step();
-                Viewport.Centerpoint = ships[0].Position;
-                turnTime++;
-                if(turnTime == TurnLong) {
-                    turnTime = 0;
-                    active = false;
+            if(State == GameState.Space) {
+                if(active) {
+                    foreach(GameObject obj in Objects)
+                        obj.Step();
+                    Viewport.Centerpoint = ships[0].Position;
+                    turnTime++;
+                    if(turnTime == TurnLong) {
+                        turnTime = 0;
+                        active = false;
+                    }
                 }
+                Viewport.Update();
             }
         }
         static Random rnd = new Random();

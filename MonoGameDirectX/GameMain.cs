@@ -108,9 +108,16 @@ namespace MonoGameDirectX {
             {
                 
             }
+            if(mouseState.ScrollWheelValue- mouseWheel > 0) {
+                Viewport.ZoomIn();
+            }
+            if(mouseState.ScrollWheelValue- mouseWheel < 0) {
+                Viewport.ZoomOut();
+            }
+            mouseWheel = mouseState.ScrollWheelValue;
             if(keyState.IsKeyDown(Keys.Right))
                 Player.RotateR();
-
+            Debugger.Text = mouseState.ScrollWheelValue.ToString()+ " "+Viewport.Scale;
             //if(keyState.IsKeyDown(Keys.Up))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, -10);
             //if(keyState.IsKeyDown(Keys.Down))
@@ -124,6 +131,7 @@ namespace MonoGameDirectX {
             if(mouseState.LeftButton == ButtonState.Pressed)
                 MainCore.Pressed(new CoordPoint(mouseState.X, mouseState.Y));
         }
+        int mouseWheel = 0;
         void SetSpaceState(object sender, EventArgs e) {
             State = GameState.Space;
         }
