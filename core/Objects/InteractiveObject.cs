@@ -38,7 +38,7 @@ namespace GameCore {
         }
         protected internal virtual void HandleKeyPress(object key)
         {
-            if (IsSelected)
+            if (IsSelected && KeyPress!=null)
                 KeyPress((int)key, EventArgs.Empty);
         }
 

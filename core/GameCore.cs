@@ -70,10 +70,16 @@ namespace GameCore {
         }
 
         public void Update() {
-            if(State == GameState.Space) {
+            if(State == GameState.Space && active) {
+                
                 foreach(GameObject obj in Objects)
                     obj.Step();
                 Viewport.Centerpoint = ships[0].Position;
+                turnTime++;
+                if(turnTime == TurnLong) {
+                    turnTime = 0;
+                    active = false;
+                }
             }
         }
         static Random rnd = new Random();
@@ -86,11 +92,16 @@ namespace GameCore {
             else
                {
                 pressCoolDown = -10;
-                var ship = new Ship(instance.ships[0], instance.StarSystems[0]);
-                ship.Position = coordPoint;
-                instance.ships.Add(ship);
+               // var ship = new Ship(instance.ships[0], instance.StarSystems[0]);
+                //ship.Position = coordPoint;
+                //instance.ships.Add(ship);
             }
         }
-    
+        const int TurnLong = 100;
+        int turnTime = 0;
+        bool active = false;
+        public void NextTurn() {
+            active = true;
+        }
     }
 }

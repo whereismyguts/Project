@@ -22,7 +22,7 @@ namespace MonoGameDirectX {
         public int ScreenHeight { get { return graphicsDevice.Viewport.Height; } }
         public int ScreenWidth { get { return graphicsDevice.Viewport.Width; } }
 
-        public List<CoordPoint> TraectoryPath { get; internal set; }
+        //public List<CoordPoint> TraectoryPath { get; internal set; }
 
         public Renderer(GraphicsDevice gd) {
             graphicsDevice = gd;
@@ -54,13 +54,17 @@ namespace MonoGameDirectX {
                 //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
                 //    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Reactive).Center)),
                 //    spriteBatch, 1, Color.Yellow);
-            }
-            if(TraectoryPath != null)
-                for(int i = 0; i < TraectoryPath.Count - 1; i++) {
-                     DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), spriteBatch, Color.Black);
-                    //DrawPrimitives.DrawLine(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i + 1])), spriteBatch, 1, Color.Violet);
-
+                if(ship.Calculator != null) {
+                    for(int i = 0; i < ship.Calculator.Path.Count - 1; i++)
+                        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
                 }
+            }
+            //if(TraectoryPath != null)
+            //    for(int i = 0; i < TraectoryPath.Count - 1; i++) {
+            //         DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), spriteBatch, Color.Black);
+            //        //DrawPrimitives.DrawLine(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i + 1])), spriteBatch, 1, Color.Violet);
+
+            //    }
             if(MainCore.Cursor!=null)
                 DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(MainCore.Cursor)), 20, spriteBatch, Color.Red);
         }

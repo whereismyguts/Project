@@ -52,7 +52,11 @@ namespace MonoGameDirectX {
             AddControl(inventoryButton, GameState.Space);
 
             //space
-            
+
+            Button turnButton = new Button(ScreenWidth - 100, ScreenHeight - 23, 100, 23, "turn", renderer.Font);
+            turnButton.ButtonClick += TurnButton_ButtonClick;
+            AddControl(turnButton, GameState.Space);
+
             //inventory
             inventoryListBox = new ListBox(new Point(100, 300), renderer.Font, "");
             inventoryListBox.ItemClick += Lb_ItemClick;
@@ -66,6 +70,10 @@ namespace MonoGameDirectX {
             AddControl(backButton, GameState.Inventory);
 
             
+        }
+
+        private void TurnButton_ButtonClick(object sender, EventArgs e) {
+            Instance.NextTurn();
         }
 
         private void BackButton(object sender, EventArgs e) {
@@ -173,7 +181,7 @@ namespace MonoGameDirectX {
             ProcessInput();
             Instance.Update();
         //    State = GameState.Space;
-            renderer.TraectoryPath = Player.Calculator.Calculate();
+            //renderer.TraectoryPath = Player.Calculator.Calculate();
             base.Update(gameTime);
         }
     }

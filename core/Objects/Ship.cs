@@ -91,6 +91,9 @@ namespace GameCore {
                 foreach(Action a in actions)
                     a();
             }
+            else {
+                Calculator.CalculateStep();
+            }
 
             foreach(Item item in Inventory.Container)
                 item.Step();

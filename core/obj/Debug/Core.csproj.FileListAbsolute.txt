@@ -17,14 +17,14 @@ D:\local\other\default repository\Project\bin\Core.dll
 D:\local\other\default repository\Project\bin\Core.pdb
 D:\local\other\default repository\Project\core\obj\Debug\Core.dll
 D:\local\other\default repository\Project\core\obj\Debug\Core.pdb
-E:\coding\newRepo\Project\bin\Core.dll
-E:\coding\newRepo\Project\bin\Core.pdb
-E:\coding\newRepo\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
-E:\coding\newRepo\Project\core\obj\Debug\Core.dll
-E:\coding\newRepo\Project\core\obj\Debug\Core.pdb
 D:\local\other\default repository\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
 D:\local\other\default repository\ActualProject\Project\core\obj\Debug\Core.dll
 D:\local\other\default repository\ActualProject\Project\core\obj\Debug\Core.pdb
 D:\local\other\default repository\ActualProject\Project\bin\Core.dll
 D:\local\other\default repository\ActualProject\Project\bin\Core.pdb
 D:\local\other\default repository\ActualProject\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
+E:\coding\newRepo\Project\bin\Core.dll
+E:\coding\newRepo\Project\bin\Core.pdb
+E:\coding\newRepo\Project\core\obj\Debug\Core.dll
+E:\coding\newRepo\Project\core\obj\Debug\Core.pdb
+E:\coding\newRepo\Project\core\obj\Debug\Core.csprojResolveAssemblyReference.cache

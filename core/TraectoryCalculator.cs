@@ -33,25 +33,25 @@ namespace GameCore {
     public class TrajectoryCalculator {
         VirtualObject virtObj;
         GameObject realObj;
-        List<CoordPoint> result = new List<CoordPoint>();
+        public List<CoordPoint> Path { get; private set; } = new List<CoordPoint>();
         public TrajectoryCalculator(GameObject obj) {
             this.virtObj = new VirtualObject(obj.CurrentSystem, obj.Mass, obj.Position, obj.Velosity);
             realObj = obj;
         }
-        public List<CoordPoint> Calculate() {
+        public List<CoordPoint> CalculateStep() {
           
-             result.Clear();
+             Path.Clear();
             virtObj.IsDead = false;
-            result.Add(virtObj.Position);
+            Path.Add(virtObj.Position);
             for(int i = 0; i < 100; i++) {
                 for(int j = 0; j < 20; j++) {
                     virtObj.Step();
                     if(virtObj.IsDead)
-                        return result;
+                        return Path;
                 }
-                result.Add(virtObj.Position.Clone());
+                Path.Add(virtObj.Position.Clone());
             }
-            return result;
+            return Path;
         }
         internal void Update() {
             virtObj.Position = realObj.Position;
