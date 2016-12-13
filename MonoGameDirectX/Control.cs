@@ -23,7 +23,7 @@ namespace MonoGameDirectX {
             Font = font;
         }
 
-        internal virtual void Draw( SpriteBatch spriteBatch, GameTime time) {
+        internal virtual void Draw(SpriteBatch spriteBatch, GameTime time) {
             DrawPrimitives.DrawRect(Rectangle, spriteBatch, 1, ActualBorderColor, ActualFillColor);
         }
 
@@ -47,24 +47,21 @@ namespace MonoGameDirectX {
             spriteBatch.DrawString(Font, text, textLocation, TextColor);
         }
 
-        internal override void Draw( SpriteBatch spriteBatch, GameTime time) {
+        internal override void Draw(SpriteBatch spriteBatch, GameTime time) {
             base.Draw(spriteBatch, time);
             TextDraw(spriteBatch, Text.ToString());
         }
     }
-    public class TextBox : Label
-    {
+    public class TextBox: Label {
         int caret = 0;
-        public TextBox(int x, int y, int w, int h, string text, SpriteFont font) : base(x, y, w, h, text, font)
-        {
+        public TextBox(int x, int y, int w, int h, string text, SpriteFont font) : base(x, y, w, h, text, font) {
             KeyPress += TextBox_KeyPress;
 
-            
-                caret = text.Length;
+
+            caret = text.Length;
 
             int c = 'a';
-            for (int i = 65; i <= 90; i++)
-            {
+            for(int i = 65; i <= 90; i++) {
                 letters.Add(i, (char)c);
                 c++;
             }
@@ -97,41 +94,65 @@ namespace MonoGameDirectX {
         //Y = 89,
         //Z = 90,
 
-        bool cursorBlink = true;
-        protected override void TextDraw(SpriteBatch spriteBatch, string text)
-            
-        {
-            string t = text.ToString().Insert(caret, "_");
-            base.TextDraw(spriteBatch, IsSelected && cursorBlink ? t : text.ToString());
-            cursorBlink = !cursorBlink;
+
+        protected override void TextDraw(SpriteBatch spriteBatch, string text) {
+
+            if(IsSelected) {
+                text = text.ToString().Insert(caret, "|");
+            }
+            base.TextDraw(spriteBatch, text.ToUpper());
+
         }
 
-        private void TextBox_KeyPress(object key, EventArgs e)
-        {
+        private void TextBox_KeyPress(object key, EventArgs e) {
             int k = (int)key;
-            switch (k) {
-                case 39: if(caret<Text.Length) caret++;
+            switch(k) {
+                case 39:
+                    caret++;
                     break;
                 case 37:
-                    if(caret>0) caret--;
+                    caret--;
                     break;
+                case 8:
+                    RemoveCurrentSymbol();
+                    break;
+                case 46:
+                    DeleteCurrentSymbol();
+                    break;
+
             }
-            if (k >= 65 && k <= 90)
+            if(k >= 65 && k <= 90) {
                 AppendText(k);
+                caret++;
+            }
+            if(caret > Text.Length)
+                caret = Text.Length;
+            if(caret < 0)
+                caret = 0;
             System.Diagnostics.Debug.WriteLine(key);
         }
 
+     
+
         Dictionary<int, char> letters = new Dictionary<int, char>();
 
-        private void AppendText(int k)
-        {
+        private void AppendText(int k) {
             Text.Insert(caret, letters[k]);
         }
+        void RemoveCurrentSymbol() {
+            if(caret > 0) {
+                Text.Remove(caret - 1, 1);
+                caret--;
+            }
+        }
+        void DeleteCurrentSymbol() {
+            if(caret < Text.Length ) {
+                Text.Remove(caret, 1);
+            }
+        }
 
-        public override Color ActualBorderColor
-        {
-            get
-            {
+        public override Color ActualBorderColor {
+            get {
                 return IsSelected ? Color.Red : IsHighlighted ? Color.Green : BorderColor;
             }
         }
@@ -208,7 +229,7 @@ namespace MonoGameDirectX {
             }
             buttons.Clear();
             for(int i = 0; i < objects.Length; i++) {
-                Button b = new Button(location.X, location.Y + hStep * i, w, hStep, objects[i].ToString(), Font) { Tag = objects[i]};
+                Button b = new Button(location.X, location.Y + hStep * i, w, hStep, objects[i].ToString(), Font) { Tag = objects[i] };
                 buttons.Add(b);
             }
         }
@@ -219,10 +240,10 @@ namespace MonoGameDirectX {
 
         }
 
-        internal override void Draw( SpriteBatch spriteBatch, GameTime time) {
-            base.Draw( spriteBatch, time);
+        internal override void Draw(SpriteBatch spriteBatch, GameTime time) {
+            base.Draw(spriteBatch, time);
             for(int i = 0; i < buttons.Count; i++)
-                buttons[i].Draw( spriteBatch,  time);
+                buttons[i].Draw(spriteBatch, time);
         }
 
         public override bool Contains(object position) {
@@ -235,14 +256,14 @@ namespace MonoGameDirectX {
     public class ImageBox: Control {
         public ImageBox(Rectangle rect) : base(rect, null) {
             sprite = new Sprite(new SpriteInfo(), rect);
-            
+
         }
         Sprite sprite;
         public void SetImage(SpriteInfo info) {
             sprite = new Sprite(info, Rectangle);
         }
-        internal override void Draw( SpriteBatch spriteBatch, GameTime time) {
-            base.Draw( spriteBatch, time);
+        internal override void Draw(SpriteBatch spriteBatch, GameTime time) {
+            base.Draw(spriteBatch, time);
             sprite.Draw(spriteBatch, time, true);
         }
     }
