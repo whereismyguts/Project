@@ -10,7 +10,29 @@ namespace GameCore {
                 return new Bounds(Centerpoint - new CoordPoint(pxlWidth * scale / 2, pxlHeight * scale / 2), Centerpoint + new CoordPoint(pxlWidth * scale / 2, pxlHeight * scale / 2));
             }
         }
-        public CoordPoint Centerpoint { get; set; } = new CoordPoint();
+
+        CoordPoint centerPoint = new CoordPoint();
+
+        public CoordPoint Centerpoint {
+            get {
+                return centerPoint;
+            }
+            set {
+                if((centerPoint - value).Length < 5000) {
+                    centerPoint = value;
+                    return;
+                }
+                SmoothScroll(value);
+            }
+        }
+
+        void SmoothScroll(CoordPoint value) {
+          //  var step = (centerPoint - value).Length / 100f;
+            centerPoint = (value - centerPoint).UnaryVector * Math.Abs((value - centerPoint).Length/10) + centerPoint;
+        }
+
+
+
         public float MiniMapScale {
             get {
                 return 30f;
@@ -30,6 +52,9 @@ namespace GameCore {
             get {
                 return scale;
             }
+            set {
+                scale = value;
+            }
         }
 
         public Viewport(float x, float y, float w, float h) {
@@ -38,7 +63,7 @@ namespace GameCore {
             pxlHeight = h;
         }
 
-        
+
 
         public CoordPoint Screen2WorldPoint(CoordPoint scrPoint) {
             double pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
@@ -64,11 +89,11 @@ namespace GameCore {
             return new CoordPoint((wrlPoint.X - Bounds.LeftTop.X) * unitFactorX, (wrlPoint.Y - Bounds.LeftTop.Y) * unitFactorY);
         }
         public void ZoomIn() {
-            ChangeZoom(scale+scale/10, scale/50f);
+            ChangeZoom(scale + scale / 10, scale / 50f);
         }
         public void ZoomOut() {
-            ChangeZoom(scale-scale/10 , -scale / 50f);
-            
+            ChangeZoom(scale - scale / 10, -scale / 50f);
+
         }
 
         public void Update() {
@@ -83,7 +108,7 @@ namespace GameCore {
         float step = 12.8f;
         void ChangeZoom(float target, float step) {
             this.target = target;
-            this.step =Math.Sign(step) * Math.Max(0.1f, Math.Abs( step));
+            this.step = Math.Sign(step) * Math.Max(0.1f, Math.Abs(step));
         }
         void ChangeZoom(float delta) {
             if(lockTime == 0) {

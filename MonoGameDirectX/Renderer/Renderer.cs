@@ -49,15 +49,17 @@ namespace MonoGameDirectX {
                 //    WinAdapter.CoordPoint2Vector(ship.TargetObject.GetScreenBounds().Center),
                 //    spriteBatch, Color.Yellow);
 
-                //if(ship.Reactive.Length > 0)
-                //    primitiveDrawer.DrawLine(
+                //if(ship.Velosity.Length > 0)
+                //    DrawPrimitives.DrawLine(
                 //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
-                //    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Reactive).Center)),
+                //    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Velosity).Center)),
                 //    spriteBatch, 1, Color.Yellow);
-                if(ship.Calculator != null) {
-                    for(int i = 0; i < ship.Calculator.Path.Count - 1; i++)
-                        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
-                }
+
+
+                //if(ship.Calculator != null) {
+                //    for(int i = 0; i < ship.Calculator.Path.Count - 1; i++)
+                //        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
+                //}
             }
             //if(TraectoryPath != null)
             //    for(int i = 0; i < TraectoryPath.Count - 1; i++) {
@@ -65,8 +67,10 @@ namespace MonoGameDirectX {
             //        //DrawPrimitives.DrawLine(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i + 1])), spriteBatch, 1, Color.Violet);
 
             //    }
-            if(MainCore.Cursor!=null)
-                DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(MainCore.Cursor)), 20, spriteBatch, Color.Red);
+            if(MainCore.Cursor != null) {
+
+                DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(MainCore.Cursor)), 5, spriteBatch, Color.Red);
+            }
         }
         void DrawMiniMap() {
             DrawPrimitives.DrawRect(miniMapBorder, spriteBatch, 3, Color.GhostWhite, Color.Green);

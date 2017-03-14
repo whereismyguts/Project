@@ -66,17 +66,17 @@ namespace GameCore {
 
             set {
                 base.Position = value;
-                if(Calculator!=null)
-                Calculator.Update();
+              //  if(Calculator!=null)
+                //Calculator.Update();
             }
         }
-        public TrajectoryCalculator Calculator { get; set; }
+        //public TrajectoryCalculator Calculator { get; set; }
         void Reborn() {
-            Position = new CoordPoint(-12100, 12100);
+            Position =  new CoordPoint(RndService.Get(-12100, 12100), RndService.Get(-12100, 12100));
             //acceleration = 0;
             direction = new CoordPoint(1, 0);
             Velosity = new CoordPoint(-50,-50);
-            Calculator= new TrajectoryCalculator(this);
+            //Calculator= new TrajectoryCalculator(this);
         }
 
 
@@ -91,10 +91,7 @@ namespace GameCore {
                 foreach(Action a in actions)
                     a();
             }
-            else {
-                Calculator.CalculateStep();
-            }
-
+         
             foreach(Item item in Inventory.Container)
                 item.Step();
 

@@ -61,7 +61,7 @@ namespace GameCore {
                 starRotation = 0;
             Position = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Position.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Position.Y));
 
-            starRotation += clockwise ? .0001f : -.0001f;
+            starRotation += clockwise ? .01f : -.01f;
             selfRotation += .005f;
 
         }

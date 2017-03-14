@@ -31,10 +31,11 @@ namespace MonoGameDirectX {
             return Rectangle.Contains((Point)position);
         }
     }
+    public enum Align { Left, Center , Right, Top, Bottom}
     public class Label: Control {
         public StringBuilder Text { get; set; }
         public Color TextColor { get; internal set; }
-
+        public Align TextAlign { get; set; } = Align.Center;
         public Label(int x, int y, int w, int h, string text, SpriteFont font) : base(new Rectangle(x, y, w, h), font) {
             Text = new StringBuilder(text);
             TextColor = Color.Black;
@@ -43,7 +44,8 @@ namespace MonoGameDirectX {
         protected virtual void TextDraw(SpriteBatch spriteBatch, string text) {
             Vector2 textSize = Font.MeasureString(text);
             Vector2 panSize = Rectangle.Size.ToVector2();
-            Vector2 textLocation = Rectangle.Location.ToVector2() + (panSize - textSize) / 2;
+            Vector2 alignVector = TextAlign == Align.Left ?  new Vector2(5, (panSize.Y - textSize.Y) / 2) : (panSize - textSize) / 2;
+            Vector2 textLocation = Rectangle.Location.ToVector2() + alignVector;// + (panSize - textSize) / 2;
             spriteBatch.DrawString(Font, text, textLocation, TextColor);
         }
 
@@ -55,11 +57,9 @@ namespace MonoGameDirectX {
     public class TextBox: Label {
         int caret = 0;
         public TextBox(int x, int y, int w, int h, string text, SpriteFont font) : base(x, y, w, h, text, font) {
+            TextAlign = Align.Left;
             KeyPress += TextBox_KeyPress;
-
-
             caret = text.Length;
-
             int c = 'a';
             for(int i = 65; i <= 90; i++) {
                 letters.Add(i, (char)c);

@@ -43,7 +43,7 @@ namespace MonoGameDirectX {
             //  AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test", renderer.Font), GameState.MainMenu);
 
             Button startButton = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start", renderer.Font);
-            startButton.ButtonClick += SetSpaceState;
+            startButton.ButtonClick += StartBattle;
             AddControl(startButton, GameState.MainMenu);
             AddControl(new TextBox(ScreenWidth / 2 - 100, 300, 200, 30, "input", renderer.Font), GameState.MainMenu);
 
@@ -51,11 +51,12 @@ namespace MonoGameDirectX {
             inventoryButton.ButtonClick += SetInvState;
             AddControl(inventoryButton, GameState.Space);
 
+
             //space
 
-            Button turnButton = new Button(ScreenWidth - 100, ScreenHeight - 23, 100, 23, "turn", renderer.Font);
-            turnButton.ButtonClick += TurnButton_ButtonClick;
-            AddControl(turnButton, GameState.Space);
+            //Button turnButton = new Button(ScreenWidth - 100, ScreenHeight - 23, 100, 23, "turn", renderer.Font);
+            //turnButton.ButtonClick += TurnButton_ButtonClick;
+            //AddControl(turnButton, GameState.Space);
 
             //inventory
             inventoryListBox = new ListBox(new Point(100, 300), renderer.Font, "");
@@ -70,6 +71,22 @@ namespace MonoGameDirectX {
             AddControl(backButton, GameState.Inventory);
 
             
+        }
+
+
+
+
+        private void AddPlayer(object sender, EventArgs e) {
+            var location = (sender as Button).Rectangle.Location;
+
+
+
+            AddControl( new TextBox(location.X+50, location.Y + 30, 120, 30, "", renderer.Font) , GameState.CustomBattle);
+            AddControl( new Button(location.X+150, location.Y + 30, 30, 30, "x", renderer.Font), GameState.CustomBattle);
+        }
+
+        private void AddBot(object sender, EventArgs e) {
+            throw new NotImplementedException();
         }
 
         private void TurnButton_ButtonClick(object sender, EventArgs e) {
@@ -104,19 +121,18 @@ namespace MonoGameDirectX {
                 Viewport.ZoomOut();
             if(keyState.IsKeyDown(Keys.Up))
                 Player.Accselerate();
-            if (keyState.IsKeyDown(Keys.S))
-            {
-                
-            }
-            if(mouseState.ScrollWheelValue- mouseWheel > 0) {
+
+            if(mouseState.ScrollWheelValue- mouseWheel < 0) {
                 Viewport.ZoomIn();
             }
-            if(mouseState.ScrollWheelValue- mouseWheel < 0) {
+            if(mouseState.ScrollWheelValue- mouseWheel > 0) {
                 Viewport.ZoomOut();
             }
             mouseWheel = mouseState.ScrollWheelValue;
             if(keyState.IsKeyDown(Keys.Right))
                 Player.RotateR();
+            if(keyState.IsKeyDown(Keys.Left))
+                Player.RotateL();
             Debugger.Text = mouseState.ScrollWheelValue.ToString()+ " "+Viewport.Scale;
             //if(keyState.IsKeyDown(Keys.Up))
             //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, -10);
@@ -132,7 +148,7 @@ namespace MonoGameDirectX {
                 MainCore.Pressed(new CoordPoint(mouseState.X, mouseState.Y));
         }
         int mouseWheel = 0;
-        void SetSpaceState(object sender, EventArgs e) {
+        void StartBattle(object sender, EventArgs e) {
             State = GameState.Space;
         }
 

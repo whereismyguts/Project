@@ -28,8 +28,9 @@ namespace GameCore {
                 pressCoolDown++;
             else
                 if(interfaces.ContainsKey(GameState)) {
-
-                foreach(InteractiveObject obj in interfaces[GameState]) {
+                List<InteractiveObject> controls = interfaces[GameState];
+                for(int i=0;i< controls.Count;i++) {
+                    var obj = controls[i];
                     if(obj.Contains(position))
                         if(!pressed && oldMousePressed) {
                             obj.HandleMouseClick(position);

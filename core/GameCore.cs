@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GameCore {
  
-    public enum GameState { MainMenu, Space, Pause, Inventory, Landing, Station };
+    public enum GameState { MainMenu, Space, Pause, Inventory, Landing, Station, CustomBattle };
     public class StateEventArgs: EventArgs {
         readonly GameState state;
         public GameState State { get { return state; } }
@@ -59,7 +59,10 @@ namespace GameCore {
         void CreatePlayers() {
             ships.Add(new Ship(null, StarSystems[0])); // player controlled
             ships.Add(new Ship(ships[0], StarSystems[0]));
-         //   ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
+            ships.Add(new Ship(ships[0], StarSystems[0]));
+            ships.Add(new Ship(ships[0], StarSystems[0]));
+            ships.Add(new Ship(ships[0], StarSystems[0]));
+            //   ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
         }
         IEnumerable<GameObject> GetAllObjects() {
 
@@ -71,19 +74,56 @@ namespace GameCore {
 
         public void Update() {
             if(State == GameState.Space) {
-                if(active) {
+                if(turnIsActive || !turnBasedGamplay) {
                     foreach(GameObject obj in Objects)
                         obj.Step();
-                    Viewport.Centerpoint = ships[0].Position;
-                    turnTime++;
-                    if(turnTime == TurnLong) {
-                        turnTime = 0;
-                        active = false;
+                    
+
+                    if(turnBasedGamplay) {
+                        turnTime++;
+                        if(turnTime == TurnLong) {
+                            turnTime = 0;
+                            turnIsActive = false;
+                        }
                     }
                 }
-                Viewport.Update();
+
+                UpdateViewport();
+                
             }
         }
+
+        void UpdateViewport() {
+
+            //Viewport.Centerpoint = ships[0].Position;
+
+            float left = float.MaxValue;
+            float right = float.MinValue;
+            float top = float.MinValue;
+            float bottom = float.MaxValue;
+
+            CoordPoint total = new CoordPoint();
+
+            foreach(var shp in Ships) {
+                total += shp.Position;
+                if(shp.Position.X > right)
+                    right = shp.Position.X;
+                if(shp.Position.X < left)
+                    left = shp.Position.X;
+                if(shp.Position.Y > top)
+                    top = shp.Position.Y;
+                if(shp.Position.Y < bottom)
+                    bottom = shp.Position.Y;
+            }
+             Cursor = total / ships.Count;
+            var center = total / ships.Count;
+            Viewport.Centerpoint = center;
+
+            Viewport.Scale = (right - left) / 600;
+
+            Viewport.Update();
+        }
+
         static Random rnd = new Random();
         List<Ship> ships = new List<Ship>();
 
@@ -101,9 +141,10 @@ namespace GameCore {
         }
         const int TurnLong = 100;
         int turnTime = 0;
-        bool active = false;
+        bool turnIsActive = false;
+        bool turnBasedGamplay = false;
         public void NextTurn() {
-            active = true;
+            turnIsActive = true;
         }
     }
 }
