@@ -18,7 +18,7 @@ namespace GameCore {
                 return centerPoint;
             }
             set {
-                if((centerPoint - value).Length < 5000) {
+                if((centerPoint - value).Length < 10) {
                     centerPoint = value;
                     return;
                 }
@@ -53,7 +53,7 @@ namespace GameCore {
                 return scale;
             }
             set {
-                scale = value;
+                scale = 100;// value;
             }
         }
 

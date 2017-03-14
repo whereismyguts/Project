@@ -83,6 +83,8 @@ namespace GameCore {
         
 
         protected internal override void Step() {
+            if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 120000)
+                Reborn();
             foreach(Body obj in CurrentSystem.Objects)
                 if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius)
                     Reborn();
