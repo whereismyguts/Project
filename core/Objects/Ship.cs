@@ -115,7 +115,7 @@ namespace GameCore {
             foreach(Item item in Inventory.Container)
                 item.Step();
 
-            Velosity = Velosity * 0.99f + Direction * GetAcceleration() * 1.5 + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this);
+            Velosity = Velosity * 0.99f + Direction * GetAcceleration() * 1.5f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this);
 
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
