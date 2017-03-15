@@ -12,10 +12,18 @@ namespace GameCore {
                 List<Body> objs = new List<Body>();
                 objs.AddRange(planets);
                 objs.AddRange(stations);
+                
                 objs.Add(star);
                 return objs;
             }
         }
+
+        public List<GameObject> Effects {
+            get {
+                return effects;
+            }
+        }
+
         public Body Star { get { return star; } }
 
         public StarSystem(int planetsNumber) {
@@ -28,6 +36,17 @@ namespace GameCore {
         }
         List<Body> planets = new List<Body>();
         List<Body> stations = new List<Body>();
+        List<GameObject> effects = new List<GameObject>();
+
+        internal void Add(GameObject effect) {
+            effects.Add(effect);
+        }
+
+        internal void CleanObjects() {
+            planets.RemoveAll(p => p.ToRemove);
+            stations.RemoveAll(p => p.ToRemove);
+            effects.RemoveAll(p => p.ToRemove);
+        }
     }
 }
 

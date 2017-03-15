@@ -5,7 +5,7 @@ using System.Linq;
 namespace GameCore {
     public class Ship: GameObject {
 
-        AIController controller;
+      //  AIController controller;
 
         protected internal override float Rotation { get { return (Direction.Angle); } }
 
@@ -13,7 +13,6 @@ namespace GameCore {
 
         public ColorCore Color { get; } // TODO remove
         public CoordPoint Direction { get { return direction; } }
-        public bool IsBot { get { return controller != null; } }
 
         public override string Name {
             get {
@@ -29,13 +28,13 @@ namespace GameCore {
 
         //public CoordPoint Velosity { get { return velosity; } }
 
-        public Ship( GameObject target, StarSystem system) : base(system) {
+        public Ship(StarSystem system) : base(system) {
 
             Hull = new ShipHull() { Owner = this };
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
-                var e2 = new DefaultEngine();
-                var w1 = new DefaultWeapon();
+            var e2 = new DefaultEngine();
+            var w1 = new DefaultWeapon();
             Inventory.Add(e1);
             Inventory.Add(e2);
             Inventory.Add(w1);
@@ -49,8 +48,8 @@ namespace GameCore {
             Mass = 1;
             Color = RndService.GetColor();
             Reborn();
-            if(target!=null)
-               controller = new AIController(this, target, TaskType.Peersuit);
+            //if(target != null)
+            //    controller = new AIController(this, target, TaskType.Peersuit);
 
         }
 
@@ -66,39 +65,58 @@ namespace GameCore {
 
             set {
                 base.Position = value;
-              //  if(Calculator!=null)
+                //  if(Calculator!=null)
                 //Calculator.Update();
             }
         }
         //public TrajectoryCalculator Calculator { get; set; }
         void Reborn() {
-            Position =  new CoordPoint(RndService.Get(-12100, 12100), RndService.Get(-12100, 12100));
+
+
+
+            bool correctPosition = false;
+
+            while(!correctPosition) {
+                Position = new CoordPoint(RndService.Get(-25000, 25000), RndService.Get(-25000, 25000));
+                correctPosition = true;
+                foreach(Body body in CurrentSystem.Objects) {
+                    if(body.ObjectBounds.Contains(Position)) {
+                        correctPosition = false;
+                        break;
+                    }
+
+                }
+            }
             //acceleration = 0;
-            direction = new CoordPoint(1, 0);
-            Velosity = new CoordPoint(-50,-50);
+            direction = new CoordPoint(1, RndService.GetPeriod()).UnaryVector;
+            Velosity = new CoordPoint(0, 0);
             //Calculator= new TrajectoryCalculator(this);
+
         }
 
 
-        
-
         protected internal override void Step() {
-            if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 120000)
+
+            if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 25000) {
+                CurrentSystem.Add(new Explosion(CurrentSystem, Position));
                 Reborn();
-            foreach(Body obj in CurrentSystem.Objects)
-                if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius)
-                    Reborn();
-            if(IsBot) {
-                List<Action> actions = controller.Step();
-                foreach(Action a in actions)
-                    a();
             }
-         
+            foreach(Body obj in CurrentSystem.Objects)
+                if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius) {
+                    CurrentSystem.Add(new Explosion(CurrentSystem, Position));
+                    Reborn();
+                }
+            //if(IsBot) {
+            //    List<Action> actions = controller.Step();
+            //    foreach(Action a in actions)
+            //        a();
+            //}
+
             foreach(Item item in Inventory.Container)
                 item.Step();
 
-            Velosity += Direction * GetAcceleration() + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this);
-            
+            Velosity = Velosity * 0.99f + Direction * GetAcceleration() * 1.5 + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this);
+
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
 
@@ -109,7 +127,7 @@ namespace GameCore {
             IEnumerable<DefaultEngine> engines = Hull.GetEngines();
             float sum = 0;
             foreach(DefaultEngine engine in engines)
-                sum+=engine.GetAcceleration();
+                sum += engine.GetAcceleration();
             return sum;
         }
 
@@ -126,11 +144,11 @@ namespace GameCore {
             angleSpeed += .01f;
         }
 
-        public void SwitchAI() {
-            if(controller != null)
-                controller = null;
-            else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
-        }
+        //public void SwitchAI() {
+        //    if(controller != null)
+        //        controller = null;
+        //    else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
+        //}
 
         public override IEnumerable<Geometry> GetPrimitives() {
             return new Geometry[] { };

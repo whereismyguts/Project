@@ -34,8 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GeneticAnalizer.cs" />
     <Compile Include="InteractionController.cs" />
     <Compile Include="Objects\AIController.cs" />
+    <Compile Include="Objects\Explosion.cs" />
     <Compile Include="Objects\Geometry.cs" />
     <Compile Include="Objects\InteractiveObject.cs" />
     <Compile Include="Objects\Inventory.cs" />
@@ -54,6 +56,7 @@
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CoordSystem\Viewport.cs" />
+    <Compile Include="ShipController.cs" />
     <Compile Include="TraectoryCalculator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

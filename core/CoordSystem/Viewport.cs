@@ -27,11 +27,9 @@ namespace GameCore {
         }
 
         void SmoothScroll(CoordPoint value) {
-          //  var step = (centerPoint - value).Length / 100f;
-            centerPoint = (value - centerPoint).UnaryVector * Math.Abs((value - centerPoint).Length/10) + centerPoint;
+            //  var step = (centerPoint - value).Length / 100f;
+            centerPoint = (value - centerPoint).UnaryVector * (Math.Abs((value - centerPoint).Length) / 100 + 50) + centerPoint;
         }
-
-
 
         public float MiniMapScale {
             get {
@@ -53,7 +51,10 @@ namespace GameCore {
                 return scale;
             }
             set {
-                scale = 100;// value;
+                var d = value - scale;
+                if(Math.Abs(d) > 4)
+                    d /= 10;
+                scale += d;
             }
         }
 
@@ -67,7 +68,7 @@ namespace GameCore {
 
         public CoordPoint Screen2WorldPoint(CoordPoint scrPoint) {
             double pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
-            double pixelFactorY = PxlHeight > 0 ? Bounds.Width / PxlWidth : 0;
+            double pixelFactorY = PxlHeight > 0 ? Bounds.Height / pxlHeight : 0;
             return new CoordPoint(scrPoint.X * pixelFactorX + Bounds.LeftTop.X, scrPoint.Y * pixelFactorY + Bounds.LeftTop.Y);
         }
         public Bounds ScreenToWorldBounds(Bounds scrBounds) {
@@ -98,8 +99,8 @@ namespace GameCore {
 
         public void Update() {
 
-            if(Math.Abs(scale - target) > 0.1f)
-                scale += step;
+            //if(Math.Abs(scale - target) > 0.1f)
+            //    scale += step;
 
             if(scale < 0)
                 scale = 0;

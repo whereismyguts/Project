@@ -15,11 +15,16 @@ namespace GameCore {
         }
 
         internal static int Get(int v1, int v2) {
-            return rnd.Next(v1, v2);
+            return rnd.Next(v1, v2+1);
         }
 
         internal static bool Bool() {
             return rnd.Next(0, 1) == 0;
+        }
+
+        internal static float Get(float v1, float v2) {
+            var d = rnd.NextDouble() * (v2 - v1);
+            return (float)(v1 + d);
         }
     }
 }

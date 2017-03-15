@@ -47,102 +47,50 @@ namespace MonoGameDirectX {
             AddControl(startButton, GameState.MainMenu);
             AddControl(new TextBox(ScreenWidth / 2 - 100, 300, 200, 30, "input", renderer.Font), GameState.MainMenu);
 
-            Button inventoryButton = new Button(10, 10, 100, 50, "inv", renderer.Font);
-            inventoryButton.ButtonClick += SetInvState;
-            AddControl(inventoryButton, GameState.Space);
 
-
-            //space
-
-            //Button turnButton = new Button(ScreenWidth - 100, ScreenHeight - 23, 100, 23, "turn", renderer.Font);
-            //turnButton.ButtonClick += TurnButton_ButtonClick;
-            //AddControl(turnButton, GameState.Space);
-
-            //inventory
             inventoryListBox = new ListBox(new Point(100, 300), renderer.Font, "");
-            inventoryListBox.ItemClick += Lb_ItemClick;
-            AddControl(inventoryListBox, GameState.Inventory);
+
+            AddControl(inventoryListBox, GameState.MainMenu);
 
             imageBox = new ImageBox(new Rectangle(400, 250, 200, 200));
-            AddControl(imageBox, GameState.Inventory);
-
-            Button backButton = new Button(10, 10, 50, 30, "<-", renderer.Font);
-            backButton.ButtonClick += BackButton;
-            AddControl(backButton, GameState.Inventory);
-
-            
+            AddControl(imageBox, GameState.MainMenu);
         }
 
 
 
-
-        private void AddPlayer(object sender, EventArgs e) {
-            var location = (sender as Button).Rectangle.Location;
-
-
-
-            AddControl( new TextBox(location.X+50, location.Y + 30, 120, 30, "", renderer.Font) , GameState.CustomBattle);
-            AddControl( new Button(location.X+150, location.Y + 30, 30, 30, "x", renderer.Font), GameState.CustomBattle);
-        }
-
-        private void AddBot(object sender, EventArgs e) {
-            throw new NotImplementedException();
-        }
-
-        private void TurnButton_ButtonClick(object sender, EventArgs e) {
-            Instance.NextTurn();
-        }
-
-        private void BackButton(object sender, EventArgs e) {
-            State = GameState.Space;
-        }
-
-        private void SetInvState(object sender, EventArgs e) {
-            State = GameState.Inventory;
-        }
 
         ImageBox imageBox;
         ListBox inventoryListBox;
-        void Lb_ItemClick(object sender, EventArgs e) {
-            imageBox.SetImage(((sender as Button).Tag as Item).SpriteInfo);
-        }
 
         void ProcessInput() {
             var mouseState = Mouse.GetState();
             var keyState = Keyboard.GetState();
             var pressedKeys = keyState.GetPressedKeys();
-            Controller.HitTest(mouseState.LeftButton == ButtonState.Pressed, mouseState.Position, pressedKeys.Length>0?(int)(pressedKeys[0]):-1);
-            
-            if (keyState.IsKeyDown(Keys.Q))
-                Exit();
-            if (keyState.IsKeyDown(Keys.Z))
-                Viewport.ZoomIn();
-            if(keyState.IsKeyDown(Keys.X))
-                Viewport.ZoomOut();
-            if(keyState.IsKeyDown(Keys.Up))
-                Player.Accselerate();
+            Controller.HitTest(mouseState.LeftButton == ButtonState.Pressed, mouseState.Position, pressedKeys.Length > 0 ? (int)(pressedKeys[0]) : -1);
+            Controller.SetPressedKeys(keyState.GetPressedKeys().Cast<int>());
 
-            if(mouseState.ScrollWheelValue- mouseWheel < 0) {
-                Viewport.ZoomIn();
-            }
-            if(mouseState.ScrollWheelValue- mouseWheel > 0) {
-                Viewport.ZoomOut();
-            }
-            mouseWheel = mouseState.ScrollWheelValue;
-            if(keyState.IsKeyDown(Keys.Right))
-                Player.RotateR();
-            if(keyState.IsKeyDown(Keys.Left))
-                Player.RotateL();
-            Debugger.Text = mouseState.ScrollWheelValue.ToString()+ " "+Viewport.Scale;
+            //if(keyState.IsKeyDown(Keys.Q))
+            //    Exit();
+            //if(keyState.IsKeyDown(Keys.Z))
+            //    Viewport.ZoomIn();
+            //if(keyState.IsKeyDown(Keys.X))
+            //    Viewport.ZoomOut();
             //if(keyState.IsKeyDown(Keys.Up))
-            //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, -10);
-            //if(keyState.IsKeyDown(Keys.Down))
-            //    Core.Instance.Viewport.Centerpoint += new CoordPoint(0, 10);
-            //if(keyState.IsKeyDown(Keys.Right))
-            //    Core.Instance.Viewport.Centerpoint += new CoordPoint(10, 0);
-            //if(keyState.IsKeyDown(Keys.Left))
-            //    Core.Instance.Viewport.Centerpoint += new CoordPoint(-10, 0);
+            //    Player.Accselerate();
 
+            //if(mouseState.ScrollWheelValue - mouseWheel < 0) {
+            //    Viewport.ZoomIn();
+            //}
+            //if(mouseState.ScrollWheelValue - mouseWheel > 0) {
+            //    Viewport.ZoomOut();
+            //}
+            //mouseWheel = mouseState.ScrollWheelValue;
+            //if(keyState.IsKeyDown(Keys.Right))
+            //    Player.RotateR();
+            //if(keyState.IsKeyDown(Keys.Left))
+            //    Player.RotateL();
+
+            Debugger.Text = mouseState.ScrollWheelValue.ToString() + " " + Viewport.Scale;
             MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
             if(mouseState.LeftButton == ButtonState.Pressed)
                 MainCore.Pressed(new CoordPoint(mouseState.X, mouseState.Y));
@@ -159,36 +107,20 @@ namespace MonoGameDirectX {
         protected override void Initialize() {
             renderer = new Renderer(GraphicsDevice) { Font = Content.Load<SpriteFont>("Arial") };
 
-
             // full screen mode:
             //graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             //graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             //graphics.IsFullScreen = true;
             //graphics.ApplyChanges();
 
-
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             InitializeUI();
             Inventory.Changed += Inventory_Changed;
-            Instance.StateChanged += Instance_StateChanged;
-
-
 
             base.Initialize();
         }
 
-        private void Instance_StateChanged(object sender, StateEventArgs e) {
-            switch(e.State) {
-                case GameState.Inventory:
-                    inventoryListBox.Update(Inventory.Container.ToArray());
-                    break;
-                case GameState.Space:
-                    
-                    
-                    break;
-            }
-        }
-       
+
         void Inventory_Changed(InventoryChangedEventArgs args) {
             inventoryListBox.Update(args.Inv.Container.ToArray());
         }
@@ -202,9 +134,10 @@ namespace MonoGameDirectX {
             // TODO: Unload any non ContentManager content here
         }
         protected override void Update(GameTime gameTime) {
-            ProcessInput();
+            if(IsActive)
+                ProcessInput();
             Instance.Update();
-        //    State = GameState.Space;
+            //    State = GameState.Space;
             //renderer.TraectoryPath = Player.Calculator.Calculate();
             base.Update(gameTime);
         }

@@ -71,14 +71,17 @@ namespace MonoGameDirectX {
 
                 DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(MainCore.Cursor)), 5, spriteBatch, Color.Red);
             }
+            var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
+
+            DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, spriteBatch, Color.Brown);
         }
         void DrawMiniMap() {
-            DrawPrimitives.DrawRect(miniMapBorder, spriteBatch, 3, Color.GhostWhite, Color.Green);
-            foreach(RenderObject renderObject in renderObjects)
-                if(renderObject.MiniMapLocation != null) {
-                    Vector2 objLocation = miniMapBorder.Center.ToVector2() + renderObject.MiniMapLocation;
-                    DrawPrimitives.DrawCircle(objLocation, 3, spriteBatch, Color.Black, miniMapBorder);
-                }
+            //DrawPrimitives.DrawRect(miniMapBorder, spriteBatch, 3, Color.GhostWhite, Color.Green);
+            //foreach(RenderObject renderObject in renderObjects)
+            //    if(renderObject.MiniMapLocation != null) {
+            //        Vector2 objLocation = miniMapBorder.Center.ToVector2() + renderObject.MiniMapLocation;
+            //        DrawPrimitives.DrawCircle(objLocation, 3, spriteBatch, Color.Black, miniMapBorder);
+            //    }
         }
         void DrawObjects(GameTime gameTime) {
             WinAdapter.UpdateRenderObjects(ref renderObjects);
@@ -88,9 +91,9 @@ namespace MonoGameDirectX {
                 //    DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(renderObject.GameObject.GetScreenBounds().Center), renderObject.GameObject.GetScreenBounds().Width / 2, spriteBatch, Color.Blue);
             }
         }
-        
+
         void WriteDebugInfo() {
-            spriteBatch.DrawString(Font, Debugger.Text, new Vector2(0, ScreenHeight-50), Color.Black);
+            spriteBatch.DrawString(Font, Debugger.Text, new Vector2(0, ScreenHeight - 50), Color.Black);
         }
 
         public void DrawInterface(IEnumerable<Control> controls, GameTime time) {
@@ -108,9 +111,11 @@ namespace MonoGameDirectX {
                     for(int j = 0; j < 400; j++) {
                         Color c = Color.LightGray;
                         switch(cells[i, j]) {
-                            case 1:c = Color.Red;
+                            case 1:
+                                c = Color.Red;
                                 break;
-                            case 2:c = Color.Green;
+                            case 2:
+                                c = Color.Green;
                                 break;
                         }
                         DrawPrimitives.DrawRect(new Rectangle(i * 2, j * 2, 2, 2), spriteBatch, 1, c, c);

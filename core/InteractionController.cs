@@ -8,8 +8,11 @@ namespace GameCore {
     public class InteractionController {
         GameState GameState { get { return MainCore.Instance.State; } }
         bool oldMousePressed;
+        int[] keys;
         Dictionary<GameState, List<InteractiveObject>> interfaces = new Dictionary<GameState, List<InteractiveObject>>();
         int pressCoolDown = 0;
+
+        public int[] Keys { get { return keys; } }
 
         public void Add(InteractiveObject obj, GameState state) {
             if(!interfaces.ContainsKey(state))
@@ -29,7 +32,7 @@ namespace GameCore {
             else
                 if(interfaces.ContainsKey(GameState)) {
                 List<InteractiveObject> controls = interfaces[GameState];
-                for(int i=0;i< controls.Count;i++) {
+                for(int i = 0; i < controls.Count; i++) {
                     var obj = controls[i];
                     if(obj.Contains(position))
                         if(!pressed && oldMousePressed) {
@@ -55,5 +58,9 @@ namespace GameCore {
             oldMousePressed = pressed;
         }
 
+
+        public void SetPressedKeys(IEnumerable<int> keys) {
+            this.keys = keys.ToArray();
+        }
     }
 }

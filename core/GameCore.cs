@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GameCore {
- 
+
     public enum GameState { MainMenu, Space, Pause, Inventory, Landing, Station, CustomBattle };
     public class StateEventArgs: EventArgs {
         readonly GameState state;
@@ -32,7 +32,7 @@ namespace GameCore {
             get { return GetAllObjects().ToList(); }
         }
         public List<Ship> Ships { get { return ships; } }
-        GameState state = GameState.MainMenu;
+        GameState state = GameState.Space;
         public GameState State {
             get { return state; }
             set {
@@ -57,28 +57,42 @@ namespace GameCore {
         }
 
         void CreatePlayers() {
-            ships.Add(new Ship(null, StarSystems[0])); // player controlled
-            ships.Add(new Ship(ships[0], StarSystems[0]));
-            ships.Add(new Ship(ships[0], StarSystems[0]));
-            ships.Add(new Ship(ships[0], StarSystems[0]));
-            ships.Add(new Ship(ships[0], StarSystems[0]));
-            //   ships.Add(new Ship(new CoordPoint(-10100, 10100), ships[0], StarSystems[0]));
+
+            var ship = new Ship(StarSystems[0]);
+          //  ShipController.Controllers.Add(new ManualControl(ship));
+            ShipController.Controllers.Add(new AutoControl(ship));
+            ships.Add(ship);
+            //for(int i = 0; i < 3; i++)
+            //    ships.Add(new Ship(StarSystems[0]));
         }
         IEnumerable<GameObject> GetAllObjects() {
-
-            foreach(StarSystem sys in StarSystems)
+            foreach(StarSystem sys in StarSystems) {
                 foreach(GameObject obj in sys.Objects)
                     yield return obj;
+                foreach(GameObject obj in sys.Effects)
+                    yield return obj;
+            }
             foreach(Ship s in ships) yield return s;
         }
 
+        void CleanObjects() {
+
+            foreach(StarSystem sys in StarSystems) {
+                sys.CleanObjects();
+            }
+            ships.RemoveAll(s => s.ToRemove);
+        }
+
+
         public void Update() {
             if(State == GameState.Space) {
+                CleanObjects();
                 if(turnIsActive || !turnBasedGamplay) {
+                    ShipController.Step();
+
                     foreach(GameObject obj in Objects)
                         obj.Step();
                     
-
                     if(turnBasedGamplay) {
                         turnTime++;
                         if(turnTime == TurnLong) {
@@ -89,7 +103,7 @@ namespace GameCore {
                 }
 
                 UpdateViewport();
-                
+
             }
         }
 
@@ -104,7 +118,9 @@ namespace GameCore {
 
             CoordPoint total = new CoordPoint();
 
-            foreach(var shp in Ships) {
+
+
+            foreach(var shp in Objects) {
                 total += shp.Position;
                 if(shp.Position.X > right)
                     right = shp.Position.X;
@@ -115,11 +131,12 @@ namespace GameCore {
                 if(shp.Position.Y < bottom)
                     bottom = shp.Position.Y;
             }
-             Cursor = total / ships.Count;
-            var center = total / ships.Count;
-            Viewport.Centerpoint = center;
+            //Cursor = total / Objects.Count;
+            var center = total / Objects.Count;
+            // Viewport.Centerpoint = center;
+            Viewport.Centerpoint = new CoordPoint(left + (right - left) / 2, bottom + (top - bottom) / 2);
 
-            Viewport.Scale = (right - left) / 600;
+            Viewport.Scale = Math.Min(right - left, top - bottom) / 300;
 
             Viewport.Update();
         }
@@ -131,10 +148,9 @@ namespace GameCore {
         public static void Pressed(CoordPoint coordPoint) {
             if(pressCoolDown < 0)
                 pressCoolDown++;
-            else
-               {
+            else {
                 pressCoolDown = -10;
-               // var ship = new Ship(instance.ships[0], instance.StarSystems[0]);
+                // var ship = new Ship(instance.ships[0], instance.StarSystems[0]);
                 //ship.Position = coordPoint;
                 //instance.ships.Add(ship);
             }

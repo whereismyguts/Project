@@ -54,14 +54,17 @@ namespace GameCore {
             starRotation = rotation;
             this.clockwise = clockwise;
             Mass *= 2;
+            rotationSpeed = RndService.Get(.0005f, .0015f);
         }
+
+        float rotationSpeed = 0;
 
         protected internal override void Step() {
             if(starRotation >= 2 * Math.PI)
                 starRotation = 0;
             Position = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Position.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Position.Y));
 
-            starRotation += clockwise ? .01f : -.01f;
+            starRotation += clockwise ? rotationSpeed : -rotationSpeed;
             selfRotation += .005f;
 
         }

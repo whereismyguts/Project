@@ -25,7 +25,7 @@ namespace MonoGameDirectX {
             return contentLoader.GetTexture(string.Empty); // TODO get "cursor"
         }
         internal static Texture2D GetTexture(string key) {
-            return contentLoader!=null? contentLoader.GetTexture(key):null;
+            return contentLoader != null ? contentLoader.GetTexture(key) : null;
         }
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);
@@ -42,17 +42,19 @@ namespace MonoGameDirectX {
         }
 
         internal static void UpdateRenderObjects(ref List<RenderObject> renderObjects) {
-            if(renderObjects == null)
-                renderObjects = new List<RenderObject>();
+            //   if(renderObjects == null)
+            renderObjects = new List<RenderObject>();
 
-            if(renderObjects.Count == 0)
-                foreach(GameObject obj in MainCore.Instance.Objects) 
+            if(renderObjects.Count == 0) {
+                foreach(GameObject obj in MainCore.Instance.Objects)
                     renderObjects.Add(CreateRenderObject(obj));
+            }
 
-            else foreach(RenderObject obj in renderObjects)
+            else
+                foreach(RenderObject obj in renderObjects)
 
                     obj.Update();
         }
-        
+
     }
 }

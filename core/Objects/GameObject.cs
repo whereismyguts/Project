@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace GameCore {
     public abstract class GameObject {
+
         protected string Image { get; set; }
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
@@ -12,7 +13,7 @@ namespace GameCore {
         internal abstract bool IsMinimapVisible { get; }
 
         public StarSystem CurrentSystem { get; }
-
+        public bool ToRemove { get; set; } = false;
         public virtual string Name { get { return string.Empty; } }
 
         public abstract Bounds ObjectBounds { get; }

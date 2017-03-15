@@ -101,7 +101,7 @@ namespace GameCore {
             return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
         public override string ToString() {
-            return string.Format("X:{0}, Y:{1}", X, Y);
+            return string.Format("X:{0}, Y:{1}, Length:{2}", X, Y, Length);
         }
     }
 }
