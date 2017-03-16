@@ -5,18 +5,26 @@ using System.Linq;
 namespace GameCore {
     public class Ship: GameObject {
 
-      //  AIController controller;
+        //  AIController controller;
+        public event EventHandler OnDead;
 
         protected internal override float Rotation { get { return (Direction.Angle); } }
 
         internal override bool IsMinimapVisible { get { return true; } }
-
+        int fraction;
+        public int Fraction {
+            get { return fraction; }
+            set {
+                fraction = value;
+                name = NameGenerator.Generate(fraction);
+            }
+        }
         public ColorCore Color { get; } // TODO remove
         public CoordPoint Direction { get { return direction; } }
-
+        string name;
         public override string Name {
             get {
-                return "Ship";
+                return name + ", " + (Fraction == 0 ? "Glagnarian" : "Moldochivan");
             }
         }
         public override Bounds ObjectBounds {
@@ -46,11 +54,27 @@ namespace GameCore {
             Inventory.Attach(Hull.Slots[2], w1);
 
             Mass = 1;
-            Color = RndService.GetColor();
+            Color = Rnd.GetColor();
             Reborn();
             //if(target != null)
             //    controller = new AIController(this, target, TaskType.Peersuit);
 
+        }
+        int lives = 10;
+        internal void GetDamage(int d, Ship from) {
+            lives -= d;
+            if(lives <= 0)
+                Dead("shoot " + from.Name);
+        }
+
+        internal void Dead(string cause) {
+
+            if(OnDead != null)
+                OnDead(this, EventArgs.Empty);
+            CurrentSystem.Add(new Explosion(CurrentSystem, Position));
+            ToRemove = true;
+
+            MainCore.Console(Name + " is dead cause of " + cause);
         }
 
         public void Accselerate() {
@@ -72,12 +96,10 @@ namespace GameCore {
         //public TrajectoryCalculator Calculator { get; set; }
         void Reborn() {
 
-
-
             bool correctPosition = false;
 
             while(!correctPosition) {
-                Position = new CoordPoint(RndService.Get(-25000, 25000), RndService.Get(-25000, 25000));
+                Position = new CoordPoint(Rnd.Get(-25000, 25000), Rnd.Get(-25000, 25000));
                 correctPosition = true;
                 foreach(Body body in CurrentSystem.Objects) {
                     if(body.ObjectBounds.Contains(Position)) {
@@ -88,7 +110,7 @@ namespace GameCore {
                 }
             }
             //acceleration = 0;
-            direction = new CoordPoint(1, RndService.GetPeriod()).UnaryVector;
+            direction = new CoordPoint(1, Rnd.GetPeriod()).UnaryVector;
             Velosity = new CoordPoint(0, 0);
             //Calculator= new TrajectoryCalculator(this);
 
@@ -98,13 +120,11 @@ namespace GameCore {
         protected internal override void Step() {
 
             if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 25000) {
-                CurrentSystem.Add(new Explosion(CurrentSystem, Position));
-                Reborn();
+                Dead("lost in the Void");
             }
             foreach(Body obj in CurrentSystem.Objects)
                 if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius) {
-                    CurrentSystem.Add(new Explosion(CurrentSystem, Position));
-                    Reborn();
+                    Dead("impact with '" + obj.Name + "'");
                 }
             //if(IsBot) {
             //    List<Action> actions = controller.Step();
@@ -119,7 +139,8 @@ namespace GameCore {
 
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
-
+            if(fireCoolDown < 30)
+                fireCoolDown++;
             base.Step();
         }
 
@@ -131,6 +152,16 @@ namespace GameCore {
             return sum;
         }
 
+        int fireCoolDown = 0;
+
+        internal void Fire() {
+            if(fireCoolDown == 30) {
+                var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
+                CurrentSystem.Add(new Bullet(this));
+                fireCoolDown = 0;
+            }
+        }
+
         public override IEnumerable<Item> GetItems() {
             for(int i = 0; i < Hull.Slots.Count; i++)
                 yield return Hull.Slots[i].AttachedItem;
@@ -138,10 +169,10 @@ namespace GameCore {
         }
 
         public void RotateL() {
-            angleSpeed -= .01f;
+            angleSpeed -= .05f;
         }
         public void RotateR() {
-            angleSpeed += .01f;
+            angleSpeed += .05f;
         }
 
         //public void SwitchAI() {

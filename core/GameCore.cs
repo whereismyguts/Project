@@ -53,15 +53,17 @@ namespace GameCore {
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);
             StarSystems.Add(new StarSystem(3));
-            CreatePlayers();
+
         }
 
         void CreatePlayers() {
 
-            var ship = new Ship(StarSystems[0]);
-          //  ShipController.Controllers.Add(new ManualControl(ship));
-            ShipController.Controllers.Add(new AutoControl(ship));
-            ships.Add(ship);
+            for(int i = 0; i < 10; i++) {
+                var ship = new Ship(StarSystems[0]) { Fraction = i > 4 ? 1 : 0 };
+                //  ShipController.Controllers.Add(new ManualControl(ship));
+                ShipController.Controllers.Add(new AutoControl(ship));
+                ships.Add(ship);
+            }
             //for(int i = 0; i < 3; i++)
             //    ships.Add(new Ship(StarSystems[0]));
         }
@@ -75,6 +77,12 @@ namespace GameCore {
             foreach(Ship s in ships) yield return s;
         }
 
+        internal static void Console(string message) {
+            messages.Add(message);
+        }
+
+        static List<string> messages = new List<string>();
+
         void CleanObjects() {
 
             foreach(StarSystem sys in StarSystems) {
@@ -86,13 +94,24 @@ namespace GameCore {
 
         public void Update() {
             if(State == GameState.Space) {
+
+
+
+                if(ships.Count(s => s.Fraction == 0) == 0 || ships.Count(s => s.Fraction == 1) == 0) {
+                    foreach(Ship ship in ships)
+                        ship.ToRemove = true;
+                    ShipController.Controllers.Clear();
+                    CreatePlayers();
+                    messages.Clear();
+                }
                 CleanObjects();
+
                 if(turnIsActive || !turnBasedGamplay) {
                     ShipController.Step();
 
                     foreach(GameObject obj in Objects)
                         obj.Step();
-                    
+
                     if(turnBasedGamplay) {
                         turnTime++;
                         if(turnTime == TurnLong) {

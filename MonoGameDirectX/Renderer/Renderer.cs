@@ -73,6 +73,16 @@ namespace MonoGameDirectX {
             }
             var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
 
+            //foreach(var c in ShipController.Controllers) 
+            //    if(c != null && c is AutoControl) { 
+            //        DrawPrimitives.DrawLine(
+            //           WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint((c.Owner.Position))),
+            //           WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(((c as AutoControl).TargetLocation))),
+            //           spriteBatch, 1, Color.Blue);
+            //    }
+
+
+
             DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, spriteBatch, Color.Brown);
         }
         void DrawMiniMap() {

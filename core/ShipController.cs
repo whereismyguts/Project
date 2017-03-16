@@ -14,21 +14,23 @@ namespace GameCore {
         }
     }
     public abstract class BindingController {
-        public enum ShipAction { Accelerate, Left, Right }
+        public enum ShipAction { Accelerate, Left, Right, Idle }
         public BindingController(Ship ship) {
-            owner = ship;
+            Owner = ship;
         }
 
-        protected Ship owner;
+        public Ship Owner { get; set; }
+
         protected Action GetShipAction(ShipAction action) {
             switch(action) {
-                case ShipAction.Accelerate: return owner.Accselerate;
-                case ShipAction.Left: return owner.RotateL;
-                case ShipAction.Right: return owner.RotateR;
-                default: return null;
+                case ShipAction.Accelerate: return Owner.Accselerate;
+                case ShipAction.Left: return Owner.RotateL;
+                case ShipAction.Right: return Owner.RotateR;
+                default: return DoNothing;
             }
         }
         internal abstract void Step();
+        public void DoNothing() { } //TODO rewrite
     }
     public class ManualControl: BindingController {
         Dictionary<int, ShipAction> Actions = new Dictionary<int, ShipAction>();
@@ -51,47 +53,107 @@ namespace GameCore {
             }
         }
     }
-    class AutoControl: BindingController {
-        CoordPoint targetLocation;
+    public class AutoControl: BindingController {
+        public CoordPoint TargetLocation { get; private set; }
 
-        public AutoControl(Ship ship) : base(ship) { }
+        public Ship ToKill { get; set; }
+
+        double acceptableAngle = 0.24;
+        double dangerZoneMultiplier = 2;
+
+        public AutoControl(Ship ship) : base(ship) {
+
+        }
 
         Body GetDangerZone() {
-            for(int i = 0; i < owner.CurrentSystem.Objects.Count; i++)
-                if(CoordPoint.Distance(owner.CurrentSystem.Objects[i].Position, owner.Position) <= 1.5 * owner.CurrentSystem.Objects[i].Radius)
-                    return owner.CurrentSystem.Objects[i];
+            for(int i = 0; i < Owner.CurrentSystem.Objects.Count; i++)
+                if(CoordPoint.Distance(Owner.CurrentSystem.Objects[i].Position, Owner.Position) <= dangerZoneMultiplier * Owner.CurrentSystem.Objects[i].Radius)
+                    return Owner.CurrentSystem.Objects[i];
             return null;
         }
         void TaskLeaveDeathZone(GameObject obj) {
             // set target location as end of vector, normal to strait vector from center of danger obj
 
-            CoordPoint leaveVector = (owner.Position - obj.Position) * 2;
+            CoordPoint toTarget = TargetLocation == null ? new CoordPoint() : TargetLocation - Owner.Position;
+            CoordPoint leaveVector = (Owner.Position - obj.Position) * 2;
 
             CoordPoint v1 = new CoordPoint(-leaveVector.Y, leaveVector.X);
             CoordPoint v2 = new CoordPoint(leaveVector.Y, -leaveVector.X);
 
-            //float a1 = Math.Abs(v1.AngleTo(toTarget));
-            //float a2 = Math.Abs(v2.AngleTo(toTarget));
+            float a1 = Math.Abs(v1.AngleTo(toTarget));
+            float a2 = Math.Abs(v2.AngleTo(toTarget));
 
-            //CoordPoint normalVector = a1 < a2 ? v1 : v2;
+            CoordPoint normalVector = a1 < a2 ? v1 : v2;
 
-            CoordPoint normalVector = v1;
+            //CoordPoint normalVector = v1;
 
-            targetLocation = leaveVector + normalVector + owner.Position;
+            TargetLocation = leaveVector + normalVector + Owner.Position;
         }
         ShipAction CheckWayToTarget() {
-            float angle = owner.Direction.AngleTo(targetLocation - owner.Position);
-            if(angle <= Math.PI / 8 && angle > -Math.PI / 8)
+            if(TargetLocation == null)
+                return ShipAction.Idle;
+            float angle = Owner.Direction.AngleTo(TargetLocation - Owner.Position);
+            if(angle <= acceptableAngle && angle > -acceptableAngle)
                 return ShipAction.Accelerate;
             return angle > 0 ? ShipAction.Left : ShipAction.Right;
         }
 
         internal override void Step() {
             Body danger = GetDangerZone();
-            if(danger != null) {
+
+            if(ToKill == null || ToKill.ToRemove)
+                FindToKill();
+
+            if(Owner.Velosity.Length > 40)
+                TaskDecreaseSpeed();
+            else
+                if(danger != null)
                 TaskLeaveDeathZone(danger);
-                GetShipAction(CheckWayToTarget())();
+            else
+                TaskGoToGoal();
+
+
+            if(ToKill != null) {
+                FireIfCan();
             }
+
+            GetShipAction(CheckWayToTarget())();
         }
+
+        private void FindToKill() {
+            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction).OrderBy(s => CoordPoint.Distance(s.Position, Owner.Position));
+            ToKill = e.FirstOrDefault();
+        }
+
+        private void FireIfCan() {
+            float angle = Owner.Direction.AngleTo(ToKill.Position - Owner.Position);
+            if(angle <= Math.PI / 16 && angle > -Math.PI / 16)
+                Owner.Fire();
+        }
+
+        private void TaskGoToGoal() {
+            if(ToKill != null && CoordPoint.Distance(ToKill.Position, Owner.Position) > 3000)
+                TargetLocation = ToKill.Position;
+        }
+
+        private void TaskDecreaseSpeed() {
+            TargetLocation = Owner.Position - Owner.Velosity.UnaryVector * 10;
+        }
+
+        //private void SetRandomLocationGoal() {
+        //    bool correctPosition = false;
+
+        //    while(!correctPosition) {
+        //        goal = new CoordPoint(RndService.Get(-20000, 20000), RndService.Get(-20000, 20000));
+        //        correctPosition = true;
+        //        foreach(Body body in Owner.CurrentSystem.Objects) {
+        //            if(body.ObjectBounds.Contains(goal)) {
+        //                correctPosition = false;
+        //                break;
+        //            }
+
+        //        }
+        //    }
+        //}
     }
 }

@@ -47,14 +47,14 @@ namespace GameCore {
 
         protected internal override float Rotation { get { return selfRotation; } }
 
-        public override string Name { get; } = NameGenerator.Generate();
+        public override string Name { get; } = NameGenerator.Generate(Rnd.Get(0, 3));
 
         public Planet(float distance, float diameter, float rotation, bool clockwise, StarSystem system)
-            : base(new CoordPoint(system.Star.Position+new CoordPoint(distance, 0)), diameter, system) {
+            : base(new CoordPoint(system.Star.Position + new CoordPoint(distance, 0)), diameter, system) {
             starRotation = rotation;
             this.clockwise = clockwise;
             Mass *= 2;
-            rotationSpeed = RndService.Get(.0005f, .0015f);
+            rotationSpeed = Rnd.Get(.0005f, .0015f);
         }
 
         float rotationSpeed = 0;
@@ -86,14 +86,19 @@ namespace GameCore {
             return char.ToUpper(name[0]) + name.Substring(1);
         }
 
-        public static string Generate() {
-            return internalGenerate(biom1);// + " / " + internalGenerate(biom2) + " / " +internalGenerate(biom3) + " / " + internalGenerate(biom4); 
+        public static string Generate(int i) {
+            return internalGenerate(bioms[i]);// + " / " + internalGenerate(biom2) + " / " +internalGenerate(biom3) + " / " + internalGenerate(biom4); 
         }
         static List<string> baseparts = new List<string> { "za", "ke", "bre", "tho", "hu", "me", "ni", "jo", "cu", "az", "li", "eh", "unt", "ua", "hi", "che", "shi", "om", "slu" };
-        static List<string> biom1 = new List<string> { "mue", "flo", "ph", "ble", "loo", "parr", "lio", "khai", "q'lee", "oo", "rash", "kroo", "o-i", "w'e", "aml", "faul", "hua", "hue", "hui", "eh", "oh", "ah" };
-        static List<string> biom2 = new List<string> { "wlan", "xor", "tty", "stack", "izm", "tox", "vox", "pex", "mex", "sky", "zex", "row", "buff", "ling", "synt", "tic" };
-        static List<string> biom3 = new List<string> { "grog", "agrh", "gerr", "urg", "krag", "ghar", "rog", "kog", "zorg", "gnar" };
-        static List<string> biom4 = new List<string> { "plok", "plu", "qwa", "kue", "wle", "kle", "blow", "blob", "plee" };
+
+        static List<List<string>> bioms = new List<List<string>>() {
+            new List<string> { "mue", "flo", "ph", "ble", "loo", "parr", "lio", "khai", "q'lee", "oo", "rash", "kroo", "o-i", "w'e", "aml", "faul", "hua", "hue", "hui", "eh", "oh", "ah" },
+            new List<string> { "wlan", "xor", "tty", "stack", "izm", "tox", "vox", "pex", "mex", "sky", "zex", "row", "buff", "ling", "synt", "tic" },
+            new List<string> { "grog", "agrh", "gerr", "urg", "krag", "ghar", "rog", "kog", "zorg", "gnar" },
+            new List<string> { "plok", "plu", "qwa", "kue", "wle", "kle", "blow", "blob", "plee" }
+        };
         static Random rnd = new Random();
+
+
     }
 }

@@ -37,6 +37,7 @@
     <Compile Include="GeneticAnalizer.cs" />
     <Compile Include="InteractionController.cs" />
     <Compile Include="Objects\AIController.cs" />
+    <Compile Include="Objects\Bullet.cs" />
     <Compile Include="Objects\Explosion.cs" />
     <Compile Include="Objects\Geometry.cs" />
     <Compile Include="Objects\InteractiveObject.cs" />

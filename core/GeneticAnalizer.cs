@@ -7,34 +7,33 @@ using System.Threading.Tasks;
 namespace GameCore {
     public static class GeneticAnalizer {
 
-        public static List<float[]> Results = new List<float[]>();
+      
 
-        internal static void Add(float[] moveCoeffs, int liveTime) {
-            //    throw new NotImplementedException();
+        static int value = 0;
 
+        static double bestA = 0;
+        static double bestD = 0;
+        static double bestS = 0;
 
-            if(liveTime > 1) {
-                Results.Add(new float[] { moveCoeffs[0], moveCoeffs[1], moveCoeffs[2], liveTime });
-            }
+        internal static void NewGeneration(int liveTime, ref double acceptableAngle, ref double dangerZoneMultiplier, ref double speed) {
+            //if(liveTime > prevLiveTime) {
+            //    prevLiveTime = liveTime;
+            //    bestA = acceptableAngle;
+            //    bestD = dangerZoneMultiplier;
+
+            //}
+            acceptableAngle = Rnd.Get(bestA - 0.05, bestA + 0.05);
+            dangerZoneMultiplier = Rnd.Get(bestD - 0.05, bestD + 0.05);
+            speed = Rnd.Get(bestS - 10, bestS + 10);
         }
-
-        public static float[] GetNewCoeffs() {
-
-            if(Results.Count >= 100) {
-
-                var best5 = Results.OrderBy(r => r[3]).Reverse().Take(5).ToList();
-
-                var best = best5[0];
-
-                var newCoefs =  new float[] {
-                    RndService.Get(best[0] - 0.1f, best[0] + 0.1f),
-                    RndService.Get(best[1] - 0.1f, best[1] + 0.1f),
-                    RndService.Get(best[2] - 0.1f, best[2] + 0.1f)
-                };
-
-                return newCoefs;
+        internal static void AnalizeStep(int goals, int liveTime, double acceptableAngle, double dangerZoneMultiplier, double maxSpeed) {
+            if(liveTime+ goals*1000 > value ) {
+                value = liveTime+ goals * 1000;
+                bestA = acceptableAngle;
+                bestD = dangerZoneMultiplier;
+                bestS = maxSpeed;
             }
-            return new float[] { RndService.Get(0.5f, 1f), RndService.Get(0.5f, 1.5f), RndService.Get(0.5f, 1.5f) };
+
         }
     }
 }

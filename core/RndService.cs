@@ -3,7 +3,7 @@ using System.Linq;
 using GameCore;
 
 namespace GameCore {
-    public static class RndService {
+    public static class Rnd {
         static Random rnd = new Random();
 
         static internal ColorCore GetColor() {
@@ -25,6 +25,10 @@ namespace GameCore {
         internal static float Get(float v1, float v2) {
             var d = rnd.NextDouble() * (v2 - v1);
             return (float)(v1 + d);
+        }
+        internal static double Get(double v1, double v2) {
+            var d = rnd.NextDouble() * (v2 - v1);
+            return v1 + d;
         }
     }
 }

@@ -14,7 +14,6 @@ namespace MonoGameDirectX {
     public class GameMain: Microsoft.Xna.Framework.Game {
         GraphicsDeviceManager graphics;
         Renderer renderer;
-        Ship Player { get { return Instance.Ships[0]; } }
         int ScreenHeight { get { return renderer.ScreenHeight; } }
         int ScreenWidth { get { return renderer.ScreenWidth; } }
         GameState State {
@@ -25,7 +24,6 @@ namespace MonoGameDirectX {
         InteractionController Controller { get { return Instance.Controller; } }
 
         public MainCore Instance { get { return MainCore.Instance; } }
-        Inventory Inventory { get { return Player.Inventory; } }
 
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
@@ -95,7 +93,7 @@ namespace MonoGameDirectX {
             if(mouseState.LeftButton == ButtonState.Pressed)
                 MainCore.Pressed(new CoordPoint(mouseState.X, mouseState.Y));
         }
-        int mouseWheel = 0;
+        //int mouseWheel = 0;
         void StartBattle(object sender, EventArgs e) {
             State = GameState.Space;
         }
@@ -115,7 +113,6 @@ namespace MonoGameDirectX {
 
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             InitializeUI();
-            Inventory.Changed += Inventory_Changed;
 
             base.Initialize();
         }
