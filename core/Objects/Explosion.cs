@@ -30,7 +30,7 @@ namespace GameCore {
         protected internal override void Step() {
             lifeTime++;
 
-            if(lifeTime>20)
+            if(lifeTime>45)
                 ToRemove = true;
             base.Step();
         }

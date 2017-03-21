@@ -15,7 +15,7 @@ namespace MonoGameDirectX {
         public RenderObject(GameObject obj) {
             GameObject = obj;
             IEnumerable<Item> items = obj.GetItems();
-            
+
             foreach(Item item in items)
                 sprites.Add(new Sprite(item));
             MiniMapLocation = WinAdapter.CoordPoint2Vector(obj.Position / 10000f);
@@ -24,10 +24,10 @@ namespace MonoGameDirectX {
         }
 
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
-            
+
             foreach(var sprite in sprites)
                 if(sprite.DestRect.Size != new Point() && sprite.DestRect.Intersects(spriteBatch.GraphicsDevice.Viewport.Bounds))
-                    sprite.Draw(spriteBatch, time,false);
+                    sprite.Draw(spriteBatch, time, false);
             foreach(Geometry geom in primitives)
                 DrawPrimitives.DrawGeometry(geom, spriteBatch);
         }
@@ -36,17 +36,38 @@ namespace MonoGameDirectX {
             foreach(Sprite sprite in sprites)
                 sprite.Update();
             primitives = GameObject.GetPrimitives();
-           // var items = GameObject.GetItems();
-         //   MiniMapLocation = WinAdapter.CoordPoint2Vector(GameObject.Position / 10000f);
+            // var items = GameObject.GetItems();
+            //   MiniMapLocation = WinAdapter.CoordPoint2Vector(GameObject.Position / 10000f);
         }
         List<Sprite> sprites = new List<Sprite>();
         IEnumerable<Geometry> primitives = new List<Geometry>();
-        
+
+
+        public static bool Equal(RenderObject a, RenderObject b) {
+            if(a == null)
+                return b == null;
+            if(b == null)
+                return a == null;
+
+                if(a.GameObject == b.GameObject &&
+                a.sprites.Count == b.sprites.Count) {
+                    for(int i = 0; i < a.sprites.Count; i++) {
+                        if(a.sprites[i].Texture != b.sprites[i].Texture)
+                            return false;
+                    }
+                }
+                return true;
+            
+        }
+
+
     }
     class Sprite {
         const float frameTime = 0.03f;
 
         internal Rectangle DestRect { get; private set; }
+        public object Texture { get { return texture.Name; } }
+
         int frameHeight;
         int frameIndexX;
         int frameIndexY;
@@ -78,22 +99,33 @@ namespace MonoGameDirectX {
         }
 
         void DrawAnimation(SpriteBatch spriteBatch, GameTime gameTime) {
-            time += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            while(time > frameTime) {
-                if(frameIndexX < framesX)
-                    frameIndexX++;
-                else {
-                    frameIndexX = 0;
-                    frameIndexY++;
-                }
-                time = 0f;
-            }
-            if(frameIndexY >= framesY) {
-                frameIndexY = 0;
-                frameIndexX = 0;
-            }
+
             Rectangle source = new Rectangle(frameIndexX * frameWidth, frameIndexY * frameHeight, frameWidth, frameHeight);
             spriteBatch.Draw(texture, DestRect, source, Color.White, rotation, origin, SpriteEffects.None, 0f);
+            //    spriteBatch.DrawString(Renderer.Font, frameIndexX + " : " + frameIndexY, (DestRect.Center).ToVector2(), Color.Red);
+
+            time += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if(time > 0.04f) {
+                if(frameIndexX < framesX - 1) {
+                    frameIndexX++;
+                }
+                else {
+
+                    frameIndexX = 0;
+
+                    if(frameIndexY < framesY - 1) {
+                        frameIndexY++;
+                    }
+                    else
+                        frameIndexY = 0;
+                }
+
+
+
+
+                time = 0f;
+            }
         }
         void DrawImage(SpriteBatch spriteBatch) {
             spriteBatch.Draw(texture, DestRect, null, Color.White, rotation, origin, SpriteEffects.None, 0f);
@@ -112,14 +144,14 @@ namespace MonoGameDirectX {
         }
 
         void ResizeToFit() {
-                if(frameWidth > texture.Height || frameHeight > texture.Width) {
-                    float r = DestRect.X / (float)texture.Width;
-                    DestRect = new Rectangle(DestRect.Location, new Point(DestRect.Width, (int)(DestRect.Height * r)));
-                }
-                if(texture.Height > frameWidth || texture.Width>frameHeight) {
-                    float r = (float)texture.Height / DestRect.Y;
-                    DestRect = new Rectangle(DestRect.Location, new Point((int)(DestRect.Width * r), DestRect.Height));
-                }
+            if(frameWidth > texture.Height || frameHeight > texture.Width) {
+                float r = DestRect.X / (float)texture.Width;
+                DestRect = new Rectangle(DestRect.Location, new Point(DestRect.Width, (int)(DestRect.Height * r)));
+            }
+            if(texture.Height > frameWidth || texture.Width > frameHeight) {
+                float r = (float)texture.Height / DestRect.Y;
+                DestRect = new Rectangle(DestRect.Location, new Point((int)(DestRect.Width * r), DestRect.Height));
+            }
         }
 
         internal void Update() {

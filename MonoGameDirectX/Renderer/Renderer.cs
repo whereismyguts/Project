@@ -132,6 +132,7 @@ namespace MonoGameDirectX {
 
 
         public static void Render(GameTime gameTime) {
+            
             GraphicsDevice.Clear(Color.White);
             SpriteBatch.Begin();
 
@@ -159,7 +160,8 @@ namespace MonoGameDirectX {
             if(GameState == GameState.Space) {
                 DrawObjects(gameTime);
                 DrawMiniMap();
-                DrawDebugInfo();
+                if(Controller.KeysPressed.Contains(68))
+                    DrawDebugInfo();
             }
             DrawInterface(Controller.GetActualInterface().Cast<Control>(), gameTime);
             DrawCursor();

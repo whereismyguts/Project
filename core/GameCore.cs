@@ -51,7 +51,7 @@ namespace GameCore {
 
         public delegate void StateEventHandler(object sender, StateEventArgs e);
         public event StateEventHandler StateChanged;
-
+        public bool TurnBasedMode { get; private set; } = false;
         public Viewport Viewport { get; set; }
         public static CoordPoint Cursor { get; set; }
 
@@ -100,7 +100,12 @@ namespace GameCore {
 
 
         public void Update() {
-            if(State == GameState.Space) {
+
+            if(Controller.KeysUp.Contains(32))
+                TurnBasedMode = !TurnBasedMode;
+
+            //&& Controller.Keys.ToList().Contains(32)
+            if(State == GameState.Space ) {
 
 
 
@@ -113,13 +118,13 @@ namespace GameCore {
                 }
                 CleanObjects();
 
-                if(turnIsActive || !turnBasedGamplay) {
+                if(turnIsActive || !TurnBasedMode) {
                     ShipController.Step();
 
                     foreach(GameObject obj in Objects)
                         obj.Step();
 
-                    if(turnBasedGamplay) {
+                    if(TurnBasedMode) {
                         turnTime++;
                         if(turnTime == TurnLong) {
                             turnTime = 0;
@@ -184,7 +189,7 @@ namespace GameCore {
         const int TurnLong = 100;
         int turnTime = 0;
         bool turnIsActive = false;
-        bool turnBasedGamplay = false;
+        
         public void NextTurn() {
             turnIsActive = true;
         }

@@ -36,7 +36,7 @@ namespace GameCore {
     }
     public class ManualControl: BindingController {
         Dictionary<int, ShipAction> Actions = new Dictionary<int, ShipAction>();
-        protected static int[] PressedKeys { get { return MainCore.Instance.Controller.Keys; } }
+        protected static List<int> PressedKeys { get { return MainCore.Instance.Controller.KeysPressed; } }
 
         public ManualControl(Ship ship) : base(ship) {
             SetKey(ShipAction.Accelerate, 38);

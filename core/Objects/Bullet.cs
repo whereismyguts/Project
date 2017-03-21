@@ -9,7 +9,7 @@ namespace GameCore {
         public Bullet(Ship owner) : base(owner.CurrentSystem) {
 
             Position = owner.Position;
-            direction = owner.Direction;
+            direction = owner.Direction.Clone();
             this.owner = owner;
             Velosity = direction * 420;
         }
@@ -19,7 +19,7 @@ namespace GameCore {
 
         public override Bounds ObjectBounds {
             get {
-                return new Bounds(Position.X - 20, Position.Y - 20, 40, 40);
+                return new Bounds(Position.X - 800, Position.Y - 800, 1600, 1600);
             }
         }
 
@@ -35,9 +35,9 @@ namespace GameCore {
             }
         }
 
-        //public override IEnumerable<Item> GetItems() {
-        //    return new Item[] { };
-        //}
+        public override IEnumerable<Item> GetItems() {
+                          return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size/2, "slime.png", 4,2) };
+        }
 
         public override IEnumerable<Geometry> GetPrimitives() {
             return new Geometry[] { new Circle(Position, 20) };

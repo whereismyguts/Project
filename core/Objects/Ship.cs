@@ -139,7 +139,7 @@ namespace GameCore {
 
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
-            if(fireCoolDown < 30)
+            if(fireCoolDown < 120)
                 fireCoolDown++;
             base.Step();
         }
@@ -155,7 +155,7 @@ namespace GameCore {
         int fireCoolDown = 0;
 
         internal void Fire() {
-            if(fireCoolDown == 30) {
+            if(fireCoolDown == 120) {
                 var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
                 CurrentSystem.Add(new Bullet(this));
                 fireCoolDown = 0;

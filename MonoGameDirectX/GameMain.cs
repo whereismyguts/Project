@@ -91,13 +91,39 @@ namespace MonoGameDirectX {
             MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
             if(mouseState.LeftButton == ButtonState.Pressed)
                 MainCore.Pressed(new CoordPoint(mouseState.X, mouseState.Y));
+
+            if(Controller.KeysUp.Count>0)
+            if(Controller.KeysUp.Contains(70) ) {
+                graphics.IsFullScreen = !graphics.IsFullScreen;
+
+                    if(!graphics.IsFullScreen) {
+                        width = graphics.PreferredBackBufferWidth;
+                        height = graphics.PreferredBackBufferHeight;
+                    }
+
+
+                    graphics.PreferredBackBufferWidth = !graphics.IsFullScreen ? GraphicsDevice.DisplayMode.Width : width;
+                    graphics.PreferredBackBufferHeight = !graphics.IsFullScreen ? GraphicsDevice.DisplayMode.Height : height;
+
+                    graphics.ApplyChanges();
+
+
+                    Viewport.SetViewportSize(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+                }
+
         }
+
+        int width =0;
+        int height = 0;
         //int mouseWheel = 0;
         void StartBattle(object sender, EventArgs e) {
             State = GameState.Space;
         }
 
         protected override void Draw(GameTime gameTime) {
+
+         //   System.Threading.Thread.Sleep(1000);
+          //  if(Controller.Keys.ToList().Contains(32))
             Renderer.Render(gameTime);
             base.Draw(gameTime);
         }

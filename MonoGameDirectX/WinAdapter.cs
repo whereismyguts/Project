@@ -39,7 +39,8 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("exp2.png");
             contentLoader.SetTexture("explosion-sprite.png");
             contentLoader.SetTexture("spaceship.png");
-            
+            contentLoader.SetTexture("bullet.png");
+            contentLoader.SetTexture("slime.png");
         }
         internal static void Unload() {
 

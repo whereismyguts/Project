@@ -8,11 +8,11 @@ namespace GameCore {
     public class InteractionController {
         GameState GameState { get { return MainCore.Instance.State; } }
         bool oldMousePressed;
-        int[] keys;
+        public List<int> KeysUp { get; private set; } = new List<int>();
         Dictionary<GameState, List<InteractiveObject>> interfaces = new Dictionary<GameState, List<InteractiveObject>>();
         int pressCoolDown = 0;
 
-        public int[] Keys { get { return keys; } }
+        public List<int> KeysPressed { get; private set; } 
 
         public void Add(InteractiveObject obj, GameState state) {
             if(!interfaces.ContainsKey(state))
@@ -59,8 +59,13 @@ namespace GameCore {
         }
 
 
-        public void SetPressedKeys(IEnumerable<int> keys) {
-            this.keys = keys.ToArray();
+        public void SetPressedKeys(IEnumerable<int> newKeys) {
+            KeysUp.Clear();
+            foreach(var key in newKeys)
+                if(!KeysPressed.Contains(key))
+                    KeysUp.Add(key);
+
+            KeysPressed = newKeys.ToList();
         }
     }
 }
