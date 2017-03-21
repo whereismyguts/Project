@@ -56,20 +56,20 @@ namespace MonoGameDirectX {
 
         public static void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color, Rectangle clip) {
             double theta = -Math.PI;  // angle that will be increased each loop
-            double step = .01;  // amount to add to theta each time (degrees)
+                                      //    double step = .01;  // amount to add to theta each time (degrees)
 
+            //   if(radius < 1)
+            //        radius = 1;
             double c = 2 * Math.PI * radius;
-            step = Math.PI / c;
+            double step = Math.PI / c;
 
             while(theta < Math.PI) {
                 float x = (float)(center.X + radius * Math.Cos(theta));
                 float y = (float)(center.Y + radius * Math.Sin(theta));
-                float x1 = (float)(center.X + radius * Math.Cos(theta+ step));
-                float y1 = (float)(center.Y + radius * Math.Sin(theta+ step));
-               // DrawLine(new Vector2(x, y), new Vector2(x1, y1), spBatch, 1, color);
                 DrawPixel(x, y, spBatch, color, clip);
                 theta += step;
             }
+            spBatch.DrawString(Renderer.Font, radius.ToString("f2"), center + new Vector2(radius / 4, radius / 4), Color.Black);
         }
         public static void DrawLineDotted(Vector2 start, Vector2 end, SpriteBatch spBatch, int width, Color color) {
             Vector2 v = end - start;
@@ -135,6 +135,6 @@ namespace MonoGameDirectX {
             DrawLine(rb, lb, spBatch, width, borderColor);
             DrawLine(lb, lt, spBatch, width, borderColor);
         }
-        
+
     }
 }

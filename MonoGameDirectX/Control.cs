@@ -10,17 +10,15 @@ namespace MonoGameDirectX {
     public abstract class Control: InteractiveObject {
         protected Color BorderColor { get; }
         protected Color FillColor { get; }
-        protected SpriteFont Font { get; }
 
         public virtual Color ActualBorderColor { get { return BorderColor; } }
         public virtual Color ActualFillColor { get { return FillColor; } }
         public Rectangle Rectangle { get; protected set; }
 
-        public Control(Rectangle rect, SpriteFont font) {
+        public Control(Rectangle rect) {
             Rectangle = rect;
             FillColor = Color.Transparent;
             BorderColor = Color.Black;
-            Font = font;
         }
 
         internal virtual void Draw(SpriteBatch spriteBatch, GameTime time) {
@@ -36,17 +34,17 @@ namespace MonoGameDirectX {
         public StringBuilder Text { get; set; }
         public Color TextColor { get; internal set; }
         public Align TextAlign { get; set; } = Align.Center;
-        public Label(int x, int y, int w, int h, string text, SpriteFont font) : base(new Rectangle(x, y, w, h), font) {
+        public Label(int x, int y, int w, int h, string text) : base(new Rectangle(x, y, w, h)) {
             Text = new StringBuilder(text);
             TextColor = Color.Black;
         }
 
         protected virtual void TextDraw(SpriteBatch spriteBatch, string text) {
-            Vector2 textSize = Font.MeasureString(text);
+            Vector2 textSize = Renderer.Font.MeasureString(text);
             Vector2 panSize = Rectangle.Size.ToVector2();
             Vector2 alignVector = TextAlign == Align.Left ?  new Vector2(5, (panSize.Y - textSize.Y) / 2) : (panSize - textSize) / 2;
             Vector2 textLocation = Rectangle.Location.ToVector2() + alignVector;// + (panSize - textSize) / 2;
-            spriteBatch.DrawString(Font, text, textLocation, TextColor);
+            spriteBatch.DrawString(Renderer.Font, text, textLocation, TextColor);
         }
 
         internal override void Draw(SpriteBatch spriteBatch, GameTime time) {
@@ -56,7 +54,7 @@ namespace MonoGameDirectX {
     }
     public class TextBox: Label {
         int caret = 0;
-        public TextBox(int x, int y, int w, int h, string text, SpriteFont font) : base(x, y, w, h, text, font) {
+        public TextBox(int x, int y, int w, int h, string text) : base(x, y, w, h, text) {
             TextAlign = Align.Left;
             KeyPress += TextBox_KeyPress;
             caret = text.Length;
@@ -172,7 +170,7 @@ namespace MonoGameDirectX {
             }
         }
         public object Tag { get; set; }
-        public Button(int x, int y, int w, int h, string text, SpriteFont font) : base(x, y, w, h, text, font) {
+        public Button(int x, int y, int w, int h, string text) : base(x, y, w, h, text) {
         }
 
         public event EventHandler ButtonClick;
@@ -198,7 +196,7 @@ namespace MonoGameDirectX {
             }
         }
 
-        public ListBox(Point location, SpriteFont font, params object[] objects) : base(new Rectangle(), font) {
+        public ListBox(Point location, params object[] objects) : base(new Rectangle()) {
 
             this.location = location;
             Update(objects);
@@ -221,7 +219,7 @@ namespace MonoGameDirectX {
             int h = 0;
             int hStep = 0;
             for(int i = 0; i < objects.Length; i++) {
-                Vector2 size = Font.MeasureString(objects[i].ToString());
+                Vector2 size = Renderer.Font.MeasureString(objects[i].ToString());
                 w = Math.Max((int)size.X + 10, w);
                 hStep = Math.Max((int)size.Y + 10, hStep);
                 h += (int)size.Y + 10;
@@ -229,7 +227,7 @@ namespace MonoGameDirectX {
             }
             buttons.Clear();
             for(int i = 0; i < objects.Length; i++) {
-                Button b = new Button(location.X, location.Y + hStep * i, w, hStep, objects[i].ToString(), Font) { Tag = objects[i] };
+                Button b = new Button(location.X, location.Y + hStep * i, w, hStep, objects[i].ToString()) { Tag = objects[i] };
                 buttons.Add(b);
             }
         }
@@ -254,7 +252,7 @@ namespace MonoGameDirectX {
         }
     }
     public class ImageBox: Control {
-        public ImageBox(Rectangle rect) : base(rect, null) {
+        public ImageBox(Rectangle rect) : base(rect) {
             sprite = new Sprite(new SpriteInfo(), rect);
 
         }

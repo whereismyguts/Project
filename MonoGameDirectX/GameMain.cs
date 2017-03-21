@@ -13,9 +13,8 @@ namespace MonoGameDirectX {
     /// </summary>
     public class GameMain: Microsoft.Xna.Framework.Game {
         GraphicsDeviceManager graphics;
-        Renderer renderer;
-        int ScreenHeight { get { return renderer.ScreenHeight; } }
-        int ScreenWidth { get { return renderer.ScreenWidth; } }
+        int ScreenHeight { get { return Renderer.ScreenHeight; } }
+        int ScreenWidth { get { return Renderer.ScreenWidth; } }
         GameState State {
             get { return Instance.State; }
             set { Instance.State = value; }
@@ -40,15 +39,15 @@ namespace MonoGameDirectX {
 
             //  AddControl(new Button(ScreenWidth / 2 - 75, 180, 75, 20, "test", renderer.Font), GameState.MainMenu);
 
-            Button startButton = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start", renderer.Font);
+            Button startButton = new Button(ScreenWidth / 2 - 100, 200, 200, 30, "start");
             startButton.ButtonClick += StartBattle;
             AddControl(startButton, GameState.MainMenu);
-            AddControl(new TextBox(ScreenWidth / 2 - 100, 300, 200, 30, "input", renderer.Font), GameState.MainMenu);
+            AddControl(new TextBox(ScreenWidth / 2 - 100, 300, 200, 30, "input"), GameState.MainMenu);
 
 
-            inventoryListBox = new ListBox(new Point(100, 300), renderer.Font, "");
+            //inventoryListBox = new ListBox(new Point(100, 300), "");
 
-            AddControl(inventoryListBox, GameState.MainMenu);
+            //AddControl(inventoryListBox, GameState.MainMenu);
 
             imageBox = new ImageBox(new Rectangle(400, 250, 200, 200));
             AddControl(imageBox, GameState.MainMenu);
@@ -58,7 +57,7 @@ namespace MonoGameDirectX {
 
 
         ImageBox imageBox;
-        ListBox inventoryListBox;
+
 
         void ProcessInput() {
             var mouseState = Mouse.GetState();
@@ -99,11 +98,12 @@ namespace MonoGameDirectX {
         }
 
         protected override void Draw(GameTime gameTime) {
-            renderer.Render(gameTime);
+            Renderer.Render(gameTime);
             base.Draw(gameTime);
         }
         protected override void Initialize() {
-            renderer = new Renderer(GraphicsDevice) { Font = Content.Load<SpriteFont>("Arial") };
+            Renderer.Set(GraphicsDevice,Content.Load<SpriteFont>("Arial"));
+            //Renderer.SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             // full screen mode:
             //graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
@@ -115,11 +115,6 @@ namespace MonoGameDirectX {
             InitializeUI();
 
             base.Initialize();
-        }
-
-
-        void Inventory_Changed(InventoryChangedEventArgs args) {
-            inventoryListBox.Update(args.Inv.Container.ToArray());
         }
 
         protected override void LoadContent() {
