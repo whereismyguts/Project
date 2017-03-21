@@ -101,16 +101,13 @@ namespace MonoGameDirectX {
                         height = graphics.PreferredBackBufferHeight;
                     }
 
-
                     graphics.PreferredBackBufferWidth = !graphics.IsFullScreen ? GraphicsDevice.DisplayMode.Width : width;
                     graphics.PreferredBackBufferHeight = !graphics.IsFullScreen ? GraphicsDevice.DisplayMode.Height : height;
 
                     graphics.ApplyChanges();
 
-
                     Viewport.SetViewportSize(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
                 }
-
         }
 
         int width =0;

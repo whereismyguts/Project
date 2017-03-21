@@ -41,33 +41,11 @@ namespace MonoGameDirectX {
         }
         List<Sprite> sprites = new List<Sprite>();
         IEnumerable<Geometry> primitives = new List<Geometry>();
-
-
-        public static bool Equal(RenderObject a, RenderObject b) {
-            if(a == null)
-                return b == null;
-            if(b == null)
-                return a == null;
-
-                if(a.GameObject == b.GameObject &&
-                a.sprites.Count == b.sprites.Count) {
-                    for(int i = 0; i < a.sprites.Count; i++) {
-                        if(a.sprites[i].Texture != b.sprites[i].Texture)
-                            return false;
-                    }
-                }
-                return true;
-            
-        }
-
-
     }
     class Sprite {
-        const float frameTime = 0.03f;
+        const float frameTime = 0.04f;
 
         internal Rectangle DestRect { get; private set; }
-        public object Texture { get { return texture.Name; } }
-
         int frameHeight;
         int frameIndexX;
         int frameIndexY;
@@ -106,7 +84,7 @@ namespace MonoGameDirectX {
 
             time += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(time > 0.04f) {
+            if(time > frameTime) {
                 if(frameIndexX < framesX - 1) {
                     frameIndexX++;
                 }
@@ -120,9 +98,6 @@ namespace MonoGameDirectX {
                     else
                         frameIndexY = 0;
                 }
-
-
-
 
                 time = 0f;
             }
