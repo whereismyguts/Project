@@ -63,7 +63,7 @@ namespace GameCore {
         public override int Volume { get { return capacity; } }
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("player_1_straight_idle.gif", 1);
+                return new SpriteInfo("spaceship.png", 4,2);
             }
         }
         public override float Rotation { get { return Owner.Rotation; } }
@@ -71,7 +71,7 @@ namespace GameCore {
         public List<Slot> Slots { get { return slots; } }
 
 
-        public ShipHull() : base(new CoordPoint(900, 1500), new CoordPoint(450, 450)) {
+        public ShipHull(int diameter) : base(new CoordPoint(diameter, diameter), new CoordPoint(diameter / 2, diameter/2)) {
             slots.Add(new Slot(new CoordPoint(-150, 150), this, SlotType.EngineSlot));
             slots.Add(new Slot(new CoordPoint(150, 150), this, SlotType.EngineSlot));
             slots.Add(new Slot(new CoordPoint(0, -200), this, SlotType.WeaponSlot));
@@ -124,13 +124,15 @@ namespace GameCore {
         //}
     }
     public class SpriteInfo {
-        public SpriteInfo(string c, int f) {
-            Content = c;
-            Framecount = f;
+        public SpriteInfo(string content, int framesX=1, int framesY = 1) {
+            Content = content;
+            FramesX = framesX;
+            FramesY = framesY;
         }
         public SpriteInfo() { }
         public string Content { get; } = string.Empty;
-        public int Framecount { get; } = 1;
+        public int FramesX { get; } = 1;
+        public int FramesY { get; } = 1;
     }
     public class EmptySlotItem: AttachedItem {
 

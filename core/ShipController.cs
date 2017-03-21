@@ -8,6 +8,7 @@ namespace GameCore {
     public static class ShipController {
         public static List<BindingController> Controllers { get; } = new List<BindingController>();
         public static void Step() {
+            Controllers.RemoveAll(c => c.Owner == null || c.Owner.ToRemove );
             foreach(BindingController controller in Controllers) {
                 controller.Step();
             }
@@ -50,7 +51,7 @@ namespace GameCore {
 
         internal override void Step() {
             foreach(int key in Actions.Keys) {
-                if(PressedKeys.Contains(key))
+                if(PressedKeys != null && PressedKeys.Contains(key))
                     GetShipAction(Actions[key])();
             }
         }
@@ -67,10 +68,16 @@ namespace GameCore {
 
         }
 
-        Body GetDangerZone() {
+        GameObject GetDangerZone() {
             for(int i = 0; i < Owner.CurrentSystem.Objects.Count; i++)
                 if(CoordPoint.Distance(Owner.CurrentSystem.Objects[i].Position, Owner.Position) <= dangerZoneMultiplier * Owner.CurrentSystem.Objects[i].Radius)
                     return Owner.CurrentSystem.Objects[i];
+
+
+
+            foreach(Ship s in MainCore.Instance.Ships)
+                if(s != Owner && CoordPoint.Distance(Owner.Position, s.Position) < dangerZoneMultiplier * s.ObjectBounds.Width)
+                    return s;
             return null;
         }
         void TaskLeaveDeathZone(GameObject obj) {
@@ -101,12 +108,12 @@ namespace GameCore {
         }
 
         internal override void Step() {
-            Body danger = GetDangerZone();
+            GameObject danger = GetDangerZone();
 
             if(ToKill == null || ToKill.ToRemove)
                 FindToKill();
 
-            if(Owner.Velosity.Length > 40)
+            if(Owner.Velosity.Length > 100)
                 TaskDecreaseSpeed();
             else
                 if(danger != null)
@@ -122,9 +129,9 @@ namespace GameCore {
         }
 
         private void FindToKill() {
-            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction).OrderBy(s => CoordPoint.Distance(s.Position, Owner.Position)).ToList();
-            
-            ToKill = (e!=null && e.Count>0)? e[Rnd.Get(0, e.Count - 1)]: null;
+            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction && !s.ToRemove).OrderBy(s => CoordPoint.Distance(s.Position, Owner.Position)).ToList();
+
+            ToKill = (e != null && e.Count > 0) ? e[Rnd.Get(0, e.Count - 1)] : null;
         }
 
         private void FireIfCan() {

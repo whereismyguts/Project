@@ -43,13 +43,9 @@ namespace MonoGameDirectX {
                 Bounds shipBounds = ship.GetScreenBounds();
                 DrawPrimitives.DrawLine(
                     WinAdapter.CoordPoint2Vector(shipBounds.Center),
-                    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Direction * 20).Center)),
+                    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Direction * 10).Center)),
                     SpriteBatch, 1, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
 
-                //primitiveDrawer.DrawLine(
-                //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
-                //    WinAdapter.CoordPoint2Vector(ship.TargetObject.GetScreenBounds().Center),
-                //    spriteBatch, Color.Yellow);
 
                 //if(ship.Velosity.Length > 0)
                 //    DrawPrimitives.DrawLine(
@@ -62,6 +58,15 @@ namespace MonoGameDirectX {
                 //    for(int i = 0; i < ship.Calculator.Path.Count - 1; i++)
                 //        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
                 //}
+            }
+
+            foreach(var c in ShipController.Controllers) {
+                AutoControl ac = c as AutoControl;
+                if(ac != null && ac.TargetLocation!=null)
+                    DrawPrimitives.DrawLine(
+                        WinAdapter.CoordPoint2Vector(ac.Owner.GetScreenBounds().Center),
+                        WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ac.TargetLocation)),
+                        SpriteBatch, 1, new Color(ac.Owner.Color.r, ac.Owner.Color.g, ac.Owner.Color.b));
             }
             //if(TraectoryPath != null)
             //    for(int i = 0; i < TraectoryPath.Count - 1; i++) {
@@ -93,7 +98,8 @@ namespace MonoGameDirectX {
         internal static void Set(GraphicsDevice graphicsDevice, SpriteFont spriteFont) {
             GraphicsDevice = graphicsDevice;
             Font = spriteFont;
-            SpriteBatch = new SpriteBatch(graphicsDevice);
+            SpriteBatch = new SpriteBatch(graphicsDevice) ;
+            
             miniMapBorder = new Rectangle(ScreenWidth - 100, ScreenHeight - 100, 90, 90);
         }
 

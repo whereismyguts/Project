@@ -38,7 +38,7 @@ namespace GameCore {
 
         public Ship(StarSystem system) : base(system) {
 
-            Hull = new ShipHull() { Owner = this };
+            Hull = new ShipHull(2000) { Owner = this };
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
@@ -188,6 +188,9 @@ namespace GameCore {
                 Circle circle = new Circle(Position + new CoordPoint(-200 + i * 130, -450), 70);
                 geom.Add(circle);
             }
+
+            geom.Add(new Circle(Position, ObjectBounds.Width/2, Fraction ==0? ColorCore.Red : ColorCore.Blue));
+
             return geom;
         }
 
@@ -203,6 +206,7 @@ namespace GameCore {
     }
 
     public struct ColorCore {
+        
         public int b;
         public int g;
         public int r;
@@ -212,5 +216,9 @@ namespace GameCore {
             this.g = g;
             this.b = b;
         }
+
+        public  static ColorCore Black = new ColorCore() { r = 0, g = 0, b = 0 };
+        public static ColorCore Blue = new ColorCore() { r = 0, g = 0, b = 255 };
+        public static ColorCore Red = new ColorCore() { r = 255, g = 0, b = 0 };
     }
 }

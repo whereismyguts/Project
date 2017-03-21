@@ -35,6 +35,11 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("planet.png");
             contentLoader.SetTexture("emptyslot.png");
             contentLoader.SetTexture("engine.png");
+            contentLoader.SetTexture("exp.png");
+            contentLoader.SetTexture("exp2.png");
+            contentLoader.SetTexture("explosion-sprite.png");
+            contentLoader.SetTexture("spaceship.png");
+            
         }
         internal static void Unload() {
 
@@ -42,19 +47,35 @@ namespace MonoGameDirectX {
         }
 
         internal static void UpdateRenderObjects(ref List<RenderObject> renderObjects) {
-            //   if(renderObjects == null)
-            renderObjects = new List<RenderObject>();
+            if(renderObjects == null)
+                renderObjects = CreateRenderObjects();
+            else {
+                var newrenderObjects = CreateRenderObjects();
+                foreach(var newObj in newrenderObjects) {
 
-            if(renderObjects.Count == 0) {
-                foreach(GameObject obj in MainCore.Instance.Objects)
-                    renderObjects.Add(CreateRenderObject(obj));
+                    var oldObj = renderObjects.FirstOrDefault(o => o.GameObject == newObj.GameObject);
+                    if(oldObj == null)
+                        renderObjects.Add(newObj);
+                }
+
+
+                renderObjects.RemoveAll(o => newrenderObjects.FirstOrDefault(n => n.GameObject == o.GameObject) == null);
+
             }
-
-            else
                 foreach(RenderObject obj in renderObjects)
 
-                    obj.Update();
+                obj.Update();
+
+
+                
         }
 
+        private static List<RenderObject> CreateRenderObjects() {
+            var list = new List<RenderObject>();
+
+            foreach(GameObject obj in MainCore.Instance.Objects)
+                list.Add(CreateRenderObject(obj));
+            return list;
+        }
     }
 }

@@ -35,9 +35,9 @@ namespace GameCore {
             }
         }
 
-        public override IEnumerable<Item> GetItems() {
-            return new Item[] { };
-        }
+        //public override IEnumerable<Item> GetItems() {
+        //    return new Item[] { };
+        //}
 
         public override IEnumerable<Geometry> GetPrimitives() {
             return new Geometry[] { new Circle(Position, 20) };

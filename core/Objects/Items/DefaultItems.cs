@@ -41,7 +41,7 @@ namespace GameCore {
         }
         public DefaultEngine() : base(new CoordPoint(80, 40), new CoordPoint(40, 20)) {
             accselerationUp = .1f;
-            accselerationDown = accselerationUp / 3f;
+            accselerationDown = accselerationUp / 5f;
         }
         bool active = false;
         public override SpriteInfo SpriteInfo {

@@ -57,18 +57,17 @@ namespace GameCore {
 
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);
-            StarSystems.Add(new StarSystem(3));
+            StarSystems.Add(new StarSystem(2));
 
         }
 
         void CreatePlayers() {
 
-            for(int i = 0; i < 4; i++) {
-                var ship = new Ship(StarSystems[0]) { Fraction = i > 1 ? 1 : 0 };
-                //  ShipController.Controllers.Add(new ManualControl(ship));
-                if(i == 0)
-                    ShipController.Controllers.Add(new ManualControl(ship));
-                else
+            for(int i = 0; i < 6; i++) {
+                var ship = new Ship(StarSystems[0]) { Fraction = i%2 == 0 ? 1 : 0 };
+                //if(i == 0)
+                //    ShipController.Controllers.Add(new ManualControl(ship));
+                //else
                     ShipController.Controllers.Add(new AutoControl(ship));
                 ships.Add(ship);
             }
@@ -163,7 +162,7 @@ namespace GameCore {
             // Viewport.Centerpoint = center;
             Viewport.Centerpoint = new CoordPoint(left + (right - left) / 2, bottom + (top - bottom) / 2);
 
-            Viewport.Scale = Math.Min(right - left, top - bottom) / 300;
+            Viewport.Scale = Math.Max(right - left, top - bottom) / 300;
 
             Viewport.Update();
         }
