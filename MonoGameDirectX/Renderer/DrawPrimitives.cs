@@ -69,7 +69,7 @@ namespace MonoGameDirectX {
                 DrawPixel(x, y, spBatch, color, clip);
                 theta += step;
             }
-            spBatch.DrawString(Renderer.Font, radius.ToString("f2"), center + new Vector2(radius / 4, radius / 4), Color.Black);
+          //  spBatch.DrawString(Renderer.Font, radius.ToString("f2"), center + new Vector2(radius / 4, radius / 4), Color.Black);
         }
         public static void DrawLineDotted(Vector2 start, Vector2 end, SpriteBatch spBatch, int width, Color color) {
             Vector2 v = end - start;
