@@ -14,7 +14,7 @@ namespace GameCore {
         }
     }
     public abstract class BindingController {
-        public enum ShipAction { Accelerate, Left, Right, Idle }
+        public enum ShipAction { Accelerate, Left, Right, Idle, Fire }
         public BindingController(Ship ship) {
             Owner = ship;
         }
@@ -26,6 +26,7 @@ namespace GameCore {
                 case ShipAction.Accelerate: return Owner.Accselerate;
                 case ShipAction.Left: return Owner.RotateL;
                 case ShipAction.Right: return Owner.RotateR;
+                case ShipAction.Fire: return Owner.Fire;
                 default: return DoNothing;
             }
         }
@@ -40,6 +41,7 @@ namespace GameCore {
             SetKey(ShipAction.Accelerate, 38);
             SetKey(ShipAction.Left, 37);
             SetKey(ShipAction.Right, 39);
+            SetKey(ShipAction.Fire, 90);
         }
 
         public void SetKey(ShipAction action, int key) {
@@ -58,8 +60,8 @@ namespace GameCore {
 
         public Ship ToKill { get; set; }
 
-        double acceptableAngle = 0.24;
-        double dangerZoneMultiplier = 2;
+        double acceptableAngle = 0.1;
+        double dangerZoneMultiplier = 2.4;
 
         public AutoControl(Ship ship) : base(ship) {
 
@@ -121,14 +123,15 @@ namespace GameCore {
         }
 
         private void FindToKill() {
-            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction).OrderBy(s => CoordPoint.Distance(s.Position, Owner.Position));
-            ToKill = e.FirstOrDefault();
+            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction).OrderBy(s => CoordPoint.Distance(s.Position, Owner.Position)).ToList();
+            
+            ToKill = (e!=null && e.Count>0)? e[Rnd.Get(0, e.Count - 1)]: null;
         }
 
         private void FireIfCan() {
             float angle = Owner.Direction.AngleTo(ToKill.Position - Owner.Position);
             if(angle <= Math.PI / 16 && angle > -Math.PI / 16)
-                Owner.Fire();
+                GetShipAction(ShipAction.Fire)();
         }
 
         private void TaskGoToGoal() {

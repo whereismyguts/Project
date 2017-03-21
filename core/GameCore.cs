@@ -5,7 +5,7 @@ using System.Linq;
 namespace GameCore {
 
     public enum GameState { MainMenu, Space, Pause, Inventory, Landing, Station, CustomBattle };
-    public class StateEventArgs: EventArgs {
+    public class StateEventArgs : EventArgs {
         readonly GameState state;
         public GameState State { get { return state; } }
 
@@ -20,22 +20,27 @@ namespace GameCore {
 
         public InteractionController Controller { get; } = new InteractionController();
 
-        public static MainCore Instance {
-            get {
+        public static MainCore Instance
+        {
+            get
+            {
                 if(instance == null)
                     instance = new MainCore();
                 return instance;
             }
         }
 
-        public List<GameObject> Objects {
+        public List<GameObject> Objects
+        {
             get { return GetAllObjects().ToList(); }
         }
         public List<Ship> Ships { get { return ships; } }
         GameState state = GameState.Space;
-        public GameState State {
+        public GameState State
+        {
             get { return state; }
-            set {
+            set
+            {
                 if(state == value)
                     return;
                 state = value;
@@ -58,10 +63,13 @@ namespace GameCore {
 
         void CreatePlayers() {
 
-            for(int i = 0; i < 10; i++) {
-                var ship = new Ship(StarSystems[0]) { Fraction = i > 4 ? 1 : 0 };
+            for(int i = 0; i < 4; i++) {
+                var ship = new Ship(StarSystems[0]) { Fraction = i > 1 ? 1 : 0 };
                 //  ShipController.Controllers.Add(new ManualControl(ship));
-                ShipController.Controllers.Add(new AutoControl(ship));
+                if(i == 0)
+                    ShipController.Controllers.Add(new ManualControl(ship));
+                else
+                    ShipController.Controllers.Add(new AutoControl(ship));
                 ships.Add(ship);
             }
             //for(int i = 0; i < 3; i++)
@@ -139,7 +147,7 @@ namespace GameCore {
 
 
 
-            foreach(var shp in Objects) {
+            foreach(var shp in Objects.Where(o => o is Planet || o is Ship)) {
                 total += shp.Position;
                 if(shp.Position.X > right)
                     right = shp.Position.X;

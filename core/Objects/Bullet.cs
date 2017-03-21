@@ -11,7 +11,7 @@ namespace GameCore {
             Position = owner.Position;
             direction = owner.Direction;
             this.owner = owner;
-            Velosity = direction * 100;
+            Velosity = direction * 420;
         }
 
         Ship owner;
@@ -48,6 +48,7 @@ namespace GameCore {
                 ToRemove = true;
             foreach(Ship ship in MainCore.Instance.Ships.Where(s => s != owner)) {
                 if(CoordPoint.Distance(ship.Position, Position) <= ship.ObjectBounds.Width / 2) {
+                    CurrentSystem.Add(new Explosion(CurrentSystem, Position));
                     ship.GetDamage(1, owner);
                     ToRemove = true;
                     return;

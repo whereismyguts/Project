@@ -53,7 +53,7 @@ namespace GameCore {
             Inventory.Attach(Hull.Slots[1], e2);
             Inventory.Attach(Hull.Slots[2], w1);
 
-            Mass = 1;
+            Mass = 0.5f;
             Color = Rnd.GetColor();
             Reborn();
             //if(target != null)
@@ -135,7 +135,7 @@ namespace GameCore {
             foreach(Item item in Inventory.Container)
                 item.Step();
 
-            Velosity = Velosity * 0.99f + Direction * GetAcceleration() * 1.5f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this);
+            Velosity = Velosity * 0.99f + Direction * GetAcceleration() * 1.5f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this)*0.7f;
 
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
@@ -169,10 +169,10 @@ namespace GameCore {
         }
 
         public void RotateL() {
-            angleSpeed -= .05f;
+            angleSpeed -= .01f;
         }
         public void RotateR() {
-            angleSpeed += .05f;
+            angleSpeed += .01f;
         }
 
         //public void SwitchAI() {
@@ -182,7 +182,13 @@ namespace GameCore {
         //}
 
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { };
+            List<Geometry> geom = new List<Geometry>();
+
+            for(int i = 0; i < lives; i++) {
+                Circle circle = new Circle(Position + new CoordPoint(-200 + i * 130, -450), 70);
+                geom.Add(circle);
+            }
+            return geom;
         }
 
         #region inventory

@@ -71,7 +71,7 @@ namespace GameCore {
         public List<Slot> Slots { get { return slots; } }
 
 
-        public ShipHull() : base(new CoordPoint(600, 1000), new CoordPoint(300, 300)) {
+        public ShipHull() : base(new CoordPoint(900, 1500), new CoordPoint(450, 450)) {
             slots.Add(new Slot(new CoordPoint(-150, 150), this, SlotType.EngineSlot));
             slots.Add(new Slot(new CoordPoint(150, 150), this, SlotType.EngineSlot));
             slots.Add(new Slot(new CoordPoint(0, -200), this, SlotType.WeaponSlot));
