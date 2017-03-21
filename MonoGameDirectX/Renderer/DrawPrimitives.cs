@@ -18,10 +18,10 @@ namespace MonoGameDirectX {
             return texture;
         }
 
-        static void DrawPixel(double x, double y, SpriteBatch spBatch, Color color, Rectangle border) {
+        static void DrawPixel(double x, double y, SpriteBatch spBatch, Color color, Rectangle clip) {
 
-            if(!border.IsEmpty)
-                if(!border.Contains(new Point((int)x, (int)y)))
+            if(!clip.IsEmpty)
+                if(!clip.Contains(new Point((int)x, (int)y)))
                     return;
 
 
@@ -50,18 +50,24 @@ namespace MonoGameDirectX {
 
         }
 
-        private static void DrawCircle(Vector2 vector2, object radius, SpriteBatch spriteBatch, Color black) {
-            throw new NotImplementedException();
-        }
+        //private static void DrawCircle(Vector2 vector2, object radius, SpriteBatch spriteBatch, Color black) {
+        //    throw new NotImplementedException();
+        //}
 
-        public static void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color, Rectangle border) {
+        public static void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color, Rectangle clip) {
             double theta = -Math.PI;  // angle that will be increased each loop
             double step = .01;  // amount to add to theta each time (degrees)
 
+            double c = 2 * Math.PI * radius;
+            step = Math.PI / c;
+
             while(theta < Math.PI) {
-                double x = center.X + radius * Math.Cos(theta);
-                double y = center.Y + radius * Math.Sin(theta);
-                DrawPixel(x, y, spBatch, color, border);
+                float x = (float)(center.X + radius * Math.Cos(theta));
+                float y = (float)(center.Y + radius * Math.Sin(theta));
+                float x1 = (float)(center.X + radius * Math.Cos(theta+ step));
+                float y1 = (float)(center.Y + radius * Math.Sin(theta+ step));
+               // DrawLine(new Vector2(x, y), new Vector2(x1, y1), spBatch, 1, color);
+                DrawPixel(x, y, spBatch, color, clip);
                 theta += step;
             }
         }
