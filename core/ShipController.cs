@@ -114,7 +114,6 @@ namespace GameCore {
             else
                 TaskGoToGoal();
 
-
             if(ToKill != null) {
                 FireIfCan();
             }
@@ -129,9 +128,44 @@ namespace GameCore {
         }
 
         private void FireIfCan() {
-            float angle = Owner.Direction.AngleTo(ToKill.Position - Owner.Position);
-            if(angle <= Math.PI / 16 && angle > -Math.PI / 16)
-                GetShipAction(ShipAction.Fire)();
+            if(IsLookingTo(Owner, ToKill, Math.PI / 8) && !IsIntersectSomething(ToKill.Position, Owner.Position))
+                Owner.Fire();
+        }
+
+        private bool IsLookingTo(Ship owner, Ship target, double a) {
+            float angle = owner.Direction.AngleTo(target.Position - owner.Position);
+            return angle <= a / 2f && angle >= -a / 2f;
+        }
+
+        private bool IsIntersectSomething(CoordPoint p1, CoordPoint p2) {
+            foreach(var body in Owner.CurrentSystem.Objects)
+                if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Position.X, body.Position.Y, body.Radius))
+                    return true;
+            return false;
+        }
+
+        bool CommonSectionCircle(double x1, double y1, double x2, double y2, double xC, double yC, double R) {
+            x1 -= xC;
+            y1 -= yC;
+            x2 -= xC;
+            y2 -= yC;
+
+            double dx = x2 - x1;
+            double dy = y2 - y1;
+
+            //составляем коэффициенты квадратного уравнения на пересечение прямой и окружности.
+            //если на отрезке [0..1] есть отрицательные значения, значит отрезок пересекает окружность
+            double a = dx * dx + dy * dy;
+            double b = 2 * (x1 * dx + y1 * dy);
+            double c = x1 * x1 + y1 * y1 - R * R;
+
+            //а теперь проверяем, есть ли на отрезке [0..1] решения
+            if(-b < 0)
+                return (c < 0);
+            if(-b < (2 * a))
+                return ((4 * a * c - b * b) < 0);
+
+            return (a + b + c < 0);
         }
 
         private void TaskGoToGoal() {
