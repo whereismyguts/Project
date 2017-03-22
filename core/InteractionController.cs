@@ -12,7 +12,7 @@ namespace GameCore {
         Dictionary<GameState, List<InteractiveObject>> interfaces = new Dictionary<GameState, List<InteractiveObject>>();
         int pressCoolDown = 0;
 
-        public List<int> KeysPressed { get; private set; } 
+        public List<int> KeysPressed { get; private set; } = new List<int>();
 
         public void Add(InteractiveObject obj, GameState state) {
             if(!interfaces.ContainsKey(state))

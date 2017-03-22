@@ -122,5 +122,19 @@ namespace GameCore {
 
         float scale = 128f;
         int lockTime = 0;
+
+        internal void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset=2000) {
+            CoordPoint lt = new CoordPoint(left - clipOffset, top + clipOffset);
+            CoordPoint rb = new CoordPoint(right + clipOffset, bottom - clipOffset);
+            Centerpoint = lt + (rb - lt) / 2;
+
+            var scale1 = Math.Abs(((Centerpoint - lt) * 2).X / pxlWidth);
+            var scale2 = Math.Abs(((Centerpoint - lt) * 2).Y / pxlHeight);
+            var scale3 = Math.Abs(((rb - Centerpoint) * 2).X / pxlWidth);
+            var scale4 = Math.Abs(((rb - Centerpoint) * 2).Y / pxlHeight);
+
+            Scale = Math.Max(Math.Max(scale1, scale2), Math.Max(scale3, scale4));
+            //  scale  == (rb-cp)*2/(pxlWidth , pxlHeight)
+        }
     }
 }

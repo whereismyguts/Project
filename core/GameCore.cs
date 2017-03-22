@@ -139,17 +139,12 @@ namespace GameCore {
         }
 
         void UpdateViewport() {
-
-            //Viewport.Centerpoint = ships[0].Position;
-
             float left = float.MaxValue;
             float right = float.MinValue;
             float top = float.MinValue;
             float bottom = float.MaxValue;
 
             CoordPoint total = new CoordPoint();
-
-
 
             foreach(var shp in Objects.Where(o => o is Planet || o is Ship)) {
                 total += shp.Position;
@@ -163,12 +158,12 @@ namespace GameCore {
                     bottom = shp.Position.Y;
             }
             //Cursor = total / Objects.Count;
-            var center = total / Objects.Count;
+            //var center = total / Objects.Count;
             // Viewport.Centerpoint = center;
-            Viewport.Centerpoint = new CoordPoint(left + (right - left) / 2, bottom + (top - bottom) / 2);
+            //Viewport.Centerpoint = new CoordPoint(left + (right - left) / 2, bottom + (top - bottom) / 2);
 
-            Viewport.Scale = Math.Max(right - left, top - bottom) / 300;
-
+            Viewport.SetWorldBounds(left, top, right, bottom);
+            //Viewport.Scale = Math.Max(right - left, top - bottom) / 300;
             Viewport.Update();
         }
 
