@@ -86,17 +86,18 @@ namespace GameCore {
             CoordPoint toTarget = TargetLocation == null ? new CoordPoint() : TargetLocation - Owner.Position;
             CoordPoint leaveVector = (Owner.Position - obj.Position) * 2;
 
-            CoordPoint v1 = new CoordPoint(-leaveVector.Y, leaveVector.X);
-            CoordPoint v2 = new CoordPoint(leaveVector.Y, -leaveVector.X);
+            //CoordPoint v1 = new CoordPoint(-leaveVector.Y, leaveVector.X);
+            //CoordPoint v2 = new CoordPoint(leaveVector.Y, -leaveVector.X);
 
-            float a1 = Math.Abs(v1.AngleTo(toTarget));
-            float a2 = Math.Abs(v2.AngleTo(toTarget));
+            //float a1 = Math.Abs(v1.AngleTo(toTarget));
+            //float a2 = Math.Abs(v2.AngleTo(toTarget));
 
-            CoordPoint normalVector = a1 < a2 ? v1 : v2;
+            //CoordPoint normalVector = a1 < a2 ? v1 : v2;
 
-            //CoordPoint normalVector = v1;
 
-            TargetLocation = leaveVector + normalVector + Owner.Position;
+            //TargetLocation = leaveVector + normalVector + Owner.Position;
+
+            TargetLocation = Owner.Position + leaveVector;
         }
         ShipAction CheckWayToTarget() {
             if(TargetLocation == null)

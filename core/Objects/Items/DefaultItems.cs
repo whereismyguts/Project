@@ -15,11 +15,11 @@ namespace GameCore {
         }
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("gun.png", 1, 1, 1);
+                return fireCoolDown < 10 ? new SpriteInfo("retrogunfire.png", 6, 1, 1) : new SpriteInfo("retrogun.png", 1, 1, 1); ;
             }
         }
 
-        public DefaultWeapon() : base(new CoordPoint(1500, 1500), new CoordPoint(750, 750)) {
+        public DefaultWeapon() : base(new CoordPoint(1200, 1200), new CoordPoint(600, 600)) {
             fireCoolDownMax = Rnd.Get(100, 150);
         }
 

@@ -182,13 +182,15 @@ namespace GameCore {
 
         public override IEnumerable<Geometry> GetPrimitives() {
             List<Geometry> geom = new List<Geometry>();
-
+            ColorCore color = Hull.Health > 6 ? ColorCore.Green : Hull.Health > 3 ? ColorCore.Yellow : ColorCore.Red;
+            geom.Add(new InternalRectangle(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200), color));
+            return geom;
             for(int i = 0; i < Hull.Health; i++) {
-                Circle circle = new Circle(Position + new CoordPoint(-200 + i * 130, -450), 70);
+                InternalCircle circle = new InternalCircle(Position + new CoordPoint(-200 + i * 130, -450), 70);
                 geom.Add(circle);
             }
 
-            geom.Add(new Circle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
+            geom.Add(new InternalCircle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
 
             return geom;
         }
@@ -217,7 +219,10 @@ namespace GameCore {
         }
 
         public static ColorCore Black = new ColorCore() { r = 0, g = 0, b = 0 };
-        public static ColorCore Blue = new ColorCore() { r = 0, g = 0, b = 255 };
-        public static ColorCore Red = new ColorCore() { r = 255, g = 0, b = 0 };
+        public static ColorCore Blue = new ColorCore() { r = 55, g = 0, b = 255 };
+        public static ColorCore Red = new ColorCore() { r = 255, g = 55, b = 0 };
+        public static ColorCore Green = new ColorCore() { r = 55, g = 255, b = 0 };
+        public static ColorCore Yellow = new ColorCore() { r = 255, g = 255, b = 0 };
+
     }
 }

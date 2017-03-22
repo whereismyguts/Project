@@ -40,7 +40,7 @@ namespace GameCore {
         }
 
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new Circle(Position, 20) };
+            return new Geometry[] { new InternalCircle(Position, 20) };
         }
         int liveTime = 0;
         protected internal override void Step() {

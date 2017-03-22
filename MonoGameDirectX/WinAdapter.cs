@@ -45,6 +45,8 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("eng_active.png");
             contentLoader.SetTexture("eng.png");
             contentLoader.SetTexture("hull.png");
+            contentLoader.SetTexture("retrogun.png");
+            contentLoader.SetTexture("retrogunfire.png");
         }
         internal static void Unload() {
 

@@ -45,8 +45,13 @@ namespace MonoGameDirectX {
         }
 
         internal static void DrawGeometry(Geometry geom, SpriteBatch spriteBatch) {
-            if(geom is Circle)
-                DrawCircle(WinAdapter.CoordPoint2Vector(geom.ScreenPosition), (geom as Circle).ScreenRadius, spriteBatch, new Color( geom.Color.r, geom.Color.g, geom.Color.b));
+            if(geom is InternalCircle)
+                DrawCircle(WinAdapter.CoordPoint2Vector(geom.ScreenPosition), (geom as InternalCircle).ScreenRadius, spriteBatch, new Color(geom.Color.r, geom.Color.g, geom.Color.b));
+            if(geom is InternalRectangle) {
+                var rect = geom as InternalRectangle;
+                DrawRect(new Rectangle((int)rect.ScreenPosition.X, (int)rect.ScreenPosition.Y, (int)rect.ScreenSize.X, (int)rect.ScreenSize.Y), spriteBatch, 1, Color.Black, new Color(rect.Color.r, rect.Color.g, rect.Color.b));
+                //DrawCircle(WinAdapter.CoordPoint2Vector(geom.ScreenPosition), (geom as InternalCircle).ScreenRadius, spriteBatch, new Color(geom.Color.r, geom.Color.g, geom.Color.b));
+            }
 
         }
 
@@ -69,7 +74,7 @@ namespace MonoGameDirectX {
                 DrawPixel(x, y, spBatch, color, clip);
                 theta += step;
             }
-          //  spBatch.DrawString(Renderer.Font, radius.ToString("f2"), center + new Vector2(radius / 4, radius / 4), Color.Black);
+            //  spBatch.DrawString(Renderer.Font, radius.ToString("f2"), center + new Vector2(radius / 4, radius / 4), Color.Black);
         }
         public static void DrawLineDotted(Vector2 start, Vector2 end, SpriteBatch spBatch, int width, Color color) {
             Vector2 v = end - start;
