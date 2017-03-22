@@ -63,7 +63,7 @@ namespace GameCore {
         public override int Volume { get { return capacity; } }
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("spaceship.png", 4, 2);
+                return new SpriteInfo("hull.png", 1, 1);
             }
         }
         public override float Rotation { get { return Owner.Rotation; } }
@@ -73,9 +73,10 @@ namespace GameCore {
         public int Health { get; internal set; } = 10;
 
         public ShipHull(int diameter) : base(new CoordPoint(diameter, diameter), new CoordPoint(diameter / 2, diameter / 2)) {
-            slots.Add(new Slot(new CoordPoint(-150, 150), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new CoordPoint(150, 150), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new CoordPoint(1000, 200), this, SlotType.WeaponSlot));
+            slots.Add(new Slot(new CoordPoint(-250, 150), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new CoordPoint(250, 150), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new CoordPoint(500, -400), this, SlotType.WeaponSlot));
+            slots.Add(new Slot(new CoordPoint(-500, -400), this, SlotType.WeaponSlot));
         }
         public override void Activate() { }
         public override void Deactivate() { }
@@ -147,12 +148,11 @@ namespace GameCore {
 
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("emptyslot.png", 1);
+                return new SpriteInfo("256tile.png", 1, 1,1);
             }
         }
-        public EmptySlotItem(Slot slot) : base(new CoordPoint(10, 10), new CoordPoint(5, 5)) {
+        public EmptySlotItem(Slot slot) : base(new CoordPoint(200, 200), new CoordPoint(100, 100)) {
             Slot = slot;
-
         }
         public override void Activate() { }
         public override void Deactivate() { }

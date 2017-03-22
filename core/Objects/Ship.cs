@@ -44,15 +44,18 @@ namespace GameCore {
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
             var w1 = new DefaultWeapon();
+            var w2 = new DefaultWeapon();
             Inventory.Add(e1);
             Inventory.Add(e2);
             Inventory.Add(w1);
+            Inventory.Add(w2);
             //Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10,10)), Hull.Slots[0]);
             //Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10, 10)), Hull.Slots[1]);
 
             Inventory.Attach(Hull.Slots[0], e1);
             Inventory.Attach(Hull.Slots[1], e2);
             Inventory.Attach(Hull.Slots[2], w1);
+            Inventory.Attach(Hull.Slots[3], w2);
 
             Mass = 0.5f;
             Color = Rnd.GetColor();

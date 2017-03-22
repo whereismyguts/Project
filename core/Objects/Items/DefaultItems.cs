@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameCore {
     public class DefaultWeapon: AttachedItem {
+        int fireCoolDownMax;
         int fireCoolDown = 0;
         public override string Name {
             get {
@@ -19,11 +20,12 @@ namespace GameCore {
         }
 
         public DefaultWeapon() : base(new CoordPoint(1500, 1500), new CoordPoint(750, 750)) {
+            fireCoolDownMax = Rnd.Get(100, 150);
         }
 
         public override float Rotation {
             get {
-                return base.Rotation;// + (float)(Math.PI / 2.0);
+                return base.Rotation;
             }
         }
 
@@ -33,14 +35,14 @@ namespace GameCore {
         }
 
         public override void Step() {
-            if(fireCoolDown < 120)
+            if(fireCoolDown < fireCoolDownMax)
                 fireCoolDown++;
             base.Step();
         }
         internal void Fire() {
-            if(fireCoolDown == 120) {
+            if(fireCoolDown == fireCoolDownMax) {
                 //var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
-                Slot.Hull.Owner.CurrentSystem.Add(new Bullet(Position + Origin, Position.GetRotated(-Rotation - (float)(Math.PI / 2.0)).UnaryVector, Slot.Hull.Owner));
+                Slot.Hull.Owner.CurrentSystem.Add(new Bullet(Position + Origin, new CoordPoint(0, -1).UnaryVector.GetRotated(Rotation), Slot.Hull.Owner));
                 fireCoolDown = 0;
             }
         }
@@ -52,7 +54,7 @@ namespace GameCore {
         float accselerationUp;
         public override float Rotation {
             get {
-                return base.Rotation - (float)(Math.PI / 2.0);
+                return base.Rotation;
             }
         }
         public override string Name {
@@ -60,14 +62,14 @@ namespace GameCore {
                 return "standard engine";
             }
         }
-        public DefaultEngine() : base(new CoordPoint(80, 40), new CoordPoint(40, 20)) {
+        public DefaultEngine() : base(new CoordPoint(1200, 1200), new CoordPoint(600, 400)) {
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 5f;
         }
         bool active = false;
         public override SpriteInfo SpriteInfo {
             get {
-                return active ? new SpriteInfo("flame_sprite.png", 6) : new SpriteInfo("engine.png", 1);
+                return active ? new SpriteInfo("eng_active.png", 4, 1, 1) : new SpriteInfo("eng.png", 1, 1, 1);
             }
         }
         public override void Activate() {
