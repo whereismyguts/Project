@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GameCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 
 namespace MonoGameDirectX {
     internal class RenderObject {
@@ -24,7 +25,7 @@ namespace MonoGameDirectX {
         }
 
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
-
+            sprites = sprites.OrderBy(s => s.ZIndex).ToList();
             foreach(var sprite in sprites)
                 if(sprite.DestRect.Size != new Point() && sprite.DestRect.Intersects(spriteBatch.GraphicsDevice.Viewport.Bounds))
                     sprite.Draw(spriteBatch, time, false);
@@ -44,7 +45,7 @@ namespace MonoGameDirectX {
     }
     class Sprite {
         const float frameTime = 0.04f;
-
+        internal int ZIndex { get; set; } = 0;
         internal Rectangle DestRect { get; private set; }
         int frameHeight;
         int frameIndexX;
@@ -104,6 +105,7 @@ namespace MonoGameDirectX {
         }
         void DrawImage(SpriteBatch spriteBatch) {
             spriteBatch.Draw(texture, DestRect, null, Color.White, rotation, origin, SpriteEffects.None, 0f);
+            //spriteBatch.DrawString(Renderer.Font, texture.Name, (DestRect.Center).ToVector2(), Color.Red);
         }
 
         internal void Draw(SpriteBatch spBatch, GameTime t, bool fit) {
@@ -132,6 +134,7 @@ namespace MonoGameDirectX {
         internal void Update() {
             Vector2 location = WinAdapter.CoordPoint2Vector(item.PositionScreen);
             rotation = item.Rotation;
+            ZIndex = item.SpriteInfo.ZIndex;
             texture = WinAdapter.GetTexture(item.SpriteInfo.Content);
             framesX = item.SpriteInfo.FramesX;
             framesY = item.SpriteInfo.FramesY;

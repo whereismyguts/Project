@@ -41,6 +41,7 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("spaceship.png");
             contentLoader.SetTexture("bullet.png");
             contentLoader.SetTexture("slime.png");
+            contentLoader.SetTexture("gun.png");
         }
         internal static void Unload() {
 
@@ -63,12 +64,12 @@ namespace MonoGameDirectX {
                 renderObjects.RemoveAll(o => newrenderObjects.FirstOrDefault(n => n.GameObject == o.GameObject) == null);
 
             }
-                foreach(RenderObject obj in renderObjects)
+            foreach(RenderObject obj in renderObjects)
 
                 obj.Update();
 
 
-                
+
         }
 
         private static List<RenderObject> CreateRenderObjects() {

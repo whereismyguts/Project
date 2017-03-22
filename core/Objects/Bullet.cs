@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace GameCore {
     class Bullet: GameObject {
-        public Bullet(Ship owner) : base(owner.CurrentSystem) {
+        public Bullet(CoordPoint position, CoordPoint direction, Ship owner) : base(owner.CurrentSystem) {
 
-            Position = owner.Position;
-            direction = owner.Direction.Clone();
+            Position = position;
+            this.direction = direction;
             this.owner = owner;
             Velosity = direction * 420;
         }
@@ -36,7 +36,7 @@ namespace GameCore {
         }
 
         public override IEnumerable<Item> GetItems() {
-                          return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size/2, "slime.png", 4,2) };
+            return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "slime.png", 4, 2) };
         }
 
         public override IEnumerable<Geometry> GetPrimitives() {

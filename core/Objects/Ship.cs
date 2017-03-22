@@ -19,6 +19,7 @@ namespace GameCore {
                 name = NameGenerator.Generate(fraction);
             }
         }
+        public int Health { get { return Hull.Health; } }
         public ColorCore Color { get; } // TODO remove
         public CoordPoint Direction { get { return direction; } }
         string name;
@@ -60,10 +61,10 @@ namespace GameCore {
             //    controller = new AIController(this, target, TaskType.Peersuit);
 
         }
-        int lives = 10;
+
         internal void GetDamage(int d, Ship from) {
-            lives -= d;
-            if(lives <= 0)
+            Hull.Health -= d;
+            if(Hull.Health <= 0)
                 Dead("shoot " + from.Name);
         }
 
@@ -119,9 +120,9 @@ namespace GameCore {
 
         protected internal override void Step() {
 
-            if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 25000) {
-                Dead("lost in the Void");
-            }
+            //if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 25000) {
+            //    Dead("lost in the Void");
+            //}
             foreach(Body obj in CurrentSystem.Objects)
                 if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius) {
                     Dead("impact with '" + obj.Name + "'");
@@ -135,12 +136,11 @@ namespace GameCore {
             foreach(Item item in Inventory.Container)
                 item.Step();
 
-            Velosity = Velosity * 0.99f + Direction * GetAcceleration() * 1.5f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this)*0.7f;
+            Velosity = Velosity * 0.99f + Direction * GetAcceleration() * 1.5f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this) * 0.7f;
 
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
-            if(fireCoolDown < 120)
-                fireCoolDown++;
+
             base.Step();
         }
 
@@ -152,14 +152,10 @@ namespace GameCore {
             return sum;
         }
 
-        int fireCoolDown = 0;
-
         internal void Fire() {
-            if(fireCoolDown == 120) {
-                var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
-                CurrentSystem.Add(new Bullet(this));
-                fireCoolDown = 0;
-            }
+            IEnumerable<DefaultWeapon> weapons = Hull.GetWeapons();
+            foreach(DefaultWeapon W in weapons)
+                W.Fire();
         }
 
         public override IEnumerable<Item> GetItems() {
@@ -184,12 +180,12 @@ namespace GameCore {
         public override IEnumerable<Geometry> GetPrimitives() {
             List<Geometry> geom = new List<Geometry>();
 
-            for(int i = 0; i < lives; i++) {
+            for(int i = 0; i < Hull.Health; i++) {
                 Circle circle = new Circle(Position + new CoordPoint(-200 + i * 130, -450), 70);
                 geom.Add(circle);
             }
 
-            geom.Add(new Circle(Position, ObjectBounds.Width/2, Fraction ==0? ColorCore.Red : ColorCore.Blue));
+            geom.Add(new Circle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
 
             return geom;
         }
@@ -206,7 +202,7 @@ namespace GameCore {
     }
 
     public struct ColorCore {
-        
+
         public int b;
         public int g;
         public int r;
@@ -217,7 +213,7 @@ namespace GameCore {
             this.b = b;
         }
 
-        public  static ColorCore Black = new ColorCore() { r = 0, g = 0, b = 0 };
+        public static ColorCore Black = new ColorCore() { r = 0, g = 0, b = 0 };
         public static ColorCore Blue = new ColorCore() { r = 0, g = 0, b = 255 };
         public static ColorCore Red = new ColorCore() { r = 255, g = 0, b = 0 };
     }

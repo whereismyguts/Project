@@ -12,7 +12,7 @@ namespace GameCore {
         protected internal abstract CoordPoint Position { get; }
         protected internal CoordPoint Size { get; }
         public virtual string Name { get; }
-        public virtual int Volume { get {return 10; } }
+        public virtual int Volume { get { return 10; } }
 
         public abstract SpriteInfo SpriteInfo { get; }
         public CoordPoint PositionScreen { get { return Viewport.World2ScreenPoint(Position); } }
@@ -63,18 +63,19 @@ namespace GameCore {
         public override int Volume { get { return capacity; } }
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("spaceship.png", 4,2);
+                return new SpriteInfo("spaceship.png", 4, 2);
             }
         }
         public override float Rotation { get { return Owner.Rotation; } }
 
         public List<Slot> Slots { get { return slots; } }
 
+        public int Health { get; internal set; } = 10;
 
-        public ShipHull(int diameter) : base(new CoordPoint(diameter, diameter), new CoordPoint(diameter / 2, diameter/2)) {
+        public ShipHull(int diameter) : base(new CoordPoint(diameter, diameter), new CoordPoint(diameter / 2, diameter / 2)) {
             slots.Add(new Slot(new CoordPoint(-150, 150), this, SlotType.EngineSlot));
             slots.Add(new Slot(new CoordPoint(150, 150), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new CoordPoint(0, -200), this, SlotType.WeaponSlot));
+            slots.Add(new Slot(new CoordPoint(1000, 200), this, SlotType.WeaponSlot));
         }
         public override void Activate() { }
         public override void Deactivate() { }
@@ -87,9 +88,15 @@ namespace GameCore {
         List<Slot> slots = new List<Slot>();
 
         internal IEnumerable<DefaultEngine> GetEngines() {
-            for(int i =0;i<slots.Count;i++)
+            for(int i = 0; i < slots.Count; i++)
                 if(slots[i].AttachedItem is DefaultEngine)
                     yield return slots[i].AttachedItem as DefaultEngine;
+        }
+
+        internal IEnumerable<DefaultWeapon> GetWeapons() {
+            for(int i = 0; i < slots.Count; i++)
+                if(slots[i].AttachedItem is DefaultWeapon)
+                    yield return slots[i].AttachedItem as DefaultWeapon;
         }
     }
 
@@ -124,10 +131,12 @@ namespace GameCore {
         //}
     }
     public class SpriteInfo {
-        public SpriteInfo(string content, int framesX=1, int framesY = 1) {
+        public int ZIndex = 0;
+        public SpriteInfo(string content, int framesX = 1, int framesY = 1, int zIndex = 0) {
             Content = content;
             FramesX = framesX;
             FramesY = framesY;
+            ZIndex = zIndex;
         }
         public SpriteInfo() { }
         public string Content { get; } = string.Empty;

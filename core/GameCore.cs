@@ -5,7 +5,7 @@ using System.Linq;
 namespace GameCore {
 
     public enum GameState { MainMenu, Space, Pause, Inventory, Landing, Station, CustomBattle };
-    public class StateEventArgs : EventArgs {
+    public class StateEventArgs: EventArgs {
         readonly GameState state;
         public GameState State { get { return state; } }
 
@@ -20,27 +20,22 @@ namespace GameCore {
 
         public InteractionController Controller { get; } = new InteractionController();
 
-        public static MainCore Instance
-        {
-            get
-            {
+        public static MainCore Instance {
+            get {
                 if(instance == null)
                     instance = new MainCore();
                 return instance;
             }
         }
 
-        public List<GameObject> Objects
-        {
+        public List<GameObject> Objects {
             get { return GetAllObjects().ToList(); }
         }
         public List<Ship> Ships { get { return ships; } }
         GameState state = GameState.Space;
-        public GameState State
-        {
+        public GameState State {
             get { return state; }
-            set
-            {
+            set {
                 if(state == value)
                     return;
                 state = value;
@@ -64,10 +59,10 @@ namespace GameCore {
         void CreatePlayers() {
 
             for(int i = 0; i < 6; i++) {
-                var ship = new Ship(StarSystems[0]) { Fraction = i%2 == 0 ? 1 : 0 };
-                //if(i == 0)
-                //    ShipController.Controllers.Add(new ManualControl(ship));
-                //else
+                var ship = new Ship(StarSystems[0]) { Fraction = i % 2 == 0 ? 1 : 0 };
+                if(i == 0)
+                    ShipController.Controllers.Add(new ManualControl(ship));
+                else
                     ShipController.Controllers.Add(new AutoControl(ship));
                 ships.Add(ship);
             }
@@ -105,11 +100,11 @@ namespace GameCore {
                 TurnBasedMode = !TurnBasedMode;
 
             //&& Controller.Keys.ToList().Contains(32)
-            if(State == GameState.Space ) {
+            if(State == GameState.Space) {
 
 
 
-                if(ships.Count(s => s.Fraction == 0) == 0 || ships.Count(s => s.Fraction == 1) == 0) {
+                if(ships.Count == 0 && (ships.Count(s => s.Fraction == 0) == 0 || ships.Count(s => s.Fraction == 1) == 0)) {
                     foreach(Ship ship in ships)
                         ship.ToRemove = true;
                     ShipController.Controllers.Clear();
@@ -147,7 +142,6 @@ namespace GameCore {
             CoordPoint total = new CoordPoint();
 
             foreach(var shp in Objects.Where(o => o is Planet || o is Ship)) {
-                total += shp.Position;
                 if(shp.Position.X > right)
                     right = shp.Position.X;
                 if(shp.Position.X < left)
@@ -184,7 +178,7 @@ namespace GameCore {
         const int TurnLong = 100;
         int turnTime = 0;
         bool turnIsActive = false;
-        
+
         public void NextTurn() {
             turnIsActive = true;
         }

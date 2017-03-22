@@ -8,7 +8,7 @@ namespace GameCore {
     public static class ShipController {
         public static List<BindingController> Controllers { get; } = new List<BindingController>();
         public static void Step() {
-            Controllers.RemoveAll(c => c.Owner == null || c.Owner.ToRemove );
+            Controllers.RemoveAll(c => c.Owner == null || c.Owner.ToRemove);
             foreach(BindingController controller in Controllers) {
                 controller.Step();
             }
@@ -111,7 +111,9 @@ namespace GameCore {
             GameObject danger = GetDangerZone();
 
             if(ToKill == null || ToKill.ToRemove)
-                FindToKill();
+                ToKill = FindEnemy();
+            if(Owner.Health <= 5 && ToKill != null)
+                TaskLeaveDeathZone(ToKill);
 
             if(Owner.Velosity.Length > 100)
                 TaskDecreaseSpeed();
@@ -128,10 +130,9 @@ namespace GameCore {
             GetShipAction(CheckWayToTarget())();
         }
 
-        private void FindToKill() {
+        private Ship FindEnemy() {
             var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction && !s.ToRemove).OrderBy(s => CoordPoint.Distance(s.Position, Owner.Position)).ToList();
-
-            ToKill = (e != null && e.Count > 0) ? e[Rnd.Get(0, e.Count - 1)] : null;
+            return (e != null && e.Count > 0) ? e[Rnd.Get(0, e.Count - 1)] : null;
         }
 
         private void FireIfCan() {
