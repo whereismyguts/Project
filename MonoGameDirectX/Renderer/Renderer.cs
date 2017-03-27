@@ -19,9 +19,7 @@ namespace MonoGameDirectX {
         // DrawPrimitives primitiveDrawer;
         static List<RenderObject> renderObjects;
 
-
-        static InteractionController Controller { get { return MainCore.Instance.Controller; } }
-        static GameState GameState { get { return MainCore.Instance.State; } }
+        static UIState GameState { get { return MainCore.Instance.State; } }
         static GameCore.Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
         public static GraphicsDevice GraphicsDevice { get; set; }
@@ -30,6 +28,7 @@ namespace MonoGameDirectX {
 
         public static int ScreenHeight { get { return GraphicsDevice.Viewport.Height; } }
         public static int ScreenWidth { get { return GraphicsDevice.Viewport.Width; } }
+
 
         //public List<CoordPoint> TraectoryPath { get; internal set; }
 
@@ -45,8 +44,6 @@ namespace MonoGameDirectX {
                     WinAdapter.CoordPoint2Vector(shipBounds.Center),
                     (WinAdapter.CoordPoint2Vector((shipBounds + ship.Direction * 10).Center)),
                     SpriteBatch, 1, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
-
-
                 //if(ship.Velosity.Length > 0)
                 //    DrawPrimitives.DrawLine(
                 //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
@@ -59,10 +56,9 @@ namespace MonoGameDirectX {
                 //        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
                 //}
             }
-
             foreach(var c in ShipController.Controllers) {
                 AutoControl ac = c as AutoControl;
-                if(ac != null && ac.TargetLocation!=null)
+                if(ac != null && ac.TargetLocation != null)
                     DrawPrimitives.DrawLine(
                         WinAdapter.CoordPoint2Vector(ac.Owner.GetScreenBounds().Center),
                         WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ac.TargetLocation)),
@@ -75,10 +71,9 @@ namespace MonoGameDirectX {
 
             //    }
             if(MainCore.Cursor != null) {
-
                 DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(MainCore.Cursor)), 5, SpriteBatch, Color.Red);
             }
-            var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
+            //var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
 
             //foreach(var c in ShipController.Controllers) 
             //    if(c != null && c is AutoControl) { 
@@ -88,9 +83,7 @@ namespace MonoGameDirectX {
             //           spriteBatch, 1, Color.Blue);
             //    }
 
-
-
-            DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, Color.Brown);
+            //DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, Color.Brown);
         }
 
 
@@ -98,8 +91,8 @@ namespace MonoGameDirectX {
         internal static void Set(GraphicsDevice graphicsDevice, SpriteFont spriteFont) {
             GraphicsDevice = graphicsDevice;
             Font = spriteFont;
-            SpriteBatch = new SpriteBatch(graphicsDevice) ;
-            
+            SpriteBatch = new SpriteBatch(graphicsDevice);
+
             miniMapBorder = new Rectangle(ScreenWidth - 100, ScreenHeight - 100, 90, 90);
         }
 
@@ -124,15 +117,15 @@ namespace MonoGameDirectX {
             SpriteBatch.DrawString(Font, Debugger.Text, new Vector2(0, ScreenHeight - 50), Color.Black);
         }
 
-        static void DrawInterface(IEnumerable<Control> controls, GameTime time) {
-            foreach(Control c in controls)
-                c.Draw(SpriteBatch, time);
-
+        static void DrawInterface(GameTime time) {
+            throw new NotImplementedException();
+            //foreach(Control c in controls)
+            //c.Draw(SpriteBatch, time);
         }
 
 
         public static void Render(GameTime gameTime) {
-            
+
             GraphicsDevice.Clear(Color.White);
             SpriteBatch.Begin();
 
@@ -157,13 +150,12 @@ namespace MonoGameDirectX {
             //}
 
 
-            if(GameState == GameState.Space) {
+            if(InterfaceController.State.InGame) {
                 DrawObjects(gameTime);
                 DrawMiniMap();
-                if(Controller.KeysPressed.Contains(68))
-                    DrawDebugInfo();
+                DrawDebugInfo();
             }
-            DrawInterface(Controller.GetActualInterface().Cast<Control>(), gameTime);
+            DrawInterface(gameTime);
             DrawCursor();
             WriteDebugInfo();
 

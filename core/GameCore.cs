@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace GameCore {
 
-    public enum GameState { MainMenu, Space, Pause, Inventory, Landing, Station, CustomBattle };
-    public class StateEventArgs: EventArgs {
-        readonly GameState state;
-        public GameState State { get { return state; } }
 
-        internal StateEventArgs(GameState state) {
+    public class StateEventArgs: EventArgs {
+        readonly UIState state;
+        public UIState State { get { return state; } }
+
+        internal StateEventArgs(UIState state) {
             this.state = state;
         }
     }
@@ -17,9 +17,6 @@ namespace GameCore {
         static MainCore instance;
 
         List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
-
-        public InteractionController Controller { get; } = new InteractionController();
-
         public static MainCore Instance {
             get {
                 if(instance == null)
@@ -32,8 +29,8 @@ namespace GameCore {
             get { return GetAllObjects().ToList(); }
         }
         public List<Ship> Ships { get { return ships; } }
-        GameState state = GameState.Space;
-        public GameState State {
+        UIState state = new MenuState();
+        public UIState State {
             get { return state; }
             set {
                 if(state == value)
@@ -96,11 +93,10 @@ namespace GameCore {
 
         public void Update() {
 
-            if(Controller.KeysUp.Contains(32))
-                TurnBasedMode = !TurnBasedMode;
+
 
             //&& Controller.Keys.ToList().Contains(32)
-            if(State == GameState.Space) {
+            if(State.InGame) {
 
 
 
@@ -165,22 +161,26 @@ namespace GameCore {
         List<Ship> ships = new List<Ship>();
 
         static int pressCoolDown = 0;
-        public static void Pressed(CoordPoint coordPoint) {
-            if(pressCoolDown < 0)
-                pressCoolDown++;
-            else {
-                pressCoolDown = -10;
-                // var ship = new Ship(instance.ships[0], instance.StarSystems[0]);
-                //ship.Position = coordPoint;
-                //instance.ships.Add(ship);
-            }
-        }
+        //public static void Pressed(CoordPoint coordPoint) {
+        //    if(pressCoolDown < 0)
+        //        pressCoolDown++;
+        //    else {
+        //        pressCoolDown = -10;
+        //        // var ship = new Ship(instance.ships[0], instance.StarSystems[0]);
+        //        //ship.Position = coordPoint;
+        //        //instance.ships.Add(ship);
+        //    }
+        //}
         const int TurnLong = 100;
         int turnTime = 0;
         bool turnIsActive = false;
 
         public void NextTurn() {
             turnIsActive = true;
+        }
+
+        public void Pause() {
+            TurnBasedMode = !TurnBasedMode;
         }
     }
 }

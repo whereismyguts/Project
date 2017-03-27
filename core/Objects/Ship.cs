@@ -182,16 +182,11 @@ namespace GameCore {
 
         public override IEnumerable<Geometry> GetPrimitives() {
             List<Geometry> geom = new List<Geometry>();
+
             ColorCore color = Hull.Health > 6 ? ColorCore.Green : Hull.Health > 3 ? ColorCore.Yellow : ColorCore.Red;
             geom.Add(new InternalRectangle(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200), color));
-            return geom;
-            for(int i = 0; i < Hull.Health; i++) {
-                InternalCircle circle = new InternalCircle(Position + new CoordPoint(-200 + i * 130, -450), 70);
-                geom.Add(circle);
-            }
 
-            geom.Add(new InternalCircle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
-
+            //geom.Add(new InternalCircle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
             return geom;
         }
 
