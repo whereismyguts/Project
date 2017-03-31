@@ -76,12 +76,22 @@ namespace GameCore {
             StarSystems.Add(new StarSystem(2));
         }
 
+        public Ship Player1 { get; private set; }
+        public Ship Player2 { get; private set; }
+
         void CreatePlayers() {
 
             for(int i = 0; i < 6; i++) {
                 var ship = new Ship(StarSystems[0]) { Fraction = i % 2 == 0 ? 1 : 0 };
-                if(i == 0)
+                if(i == 0) {
+                    Player1 = ship;
                     ShipController.Controllers.Add(new ManualControl(ship));
+                }
+                else
+                    if(i == 6 / 2) {
+                    Player2 = ship;
+                    ShipController.Controllers.Add(new ManualControl(ship));
+                }
                 else
                     ShipController.Controllers.Add(new AutoControl(ship));
                 ships.Add(ship);
