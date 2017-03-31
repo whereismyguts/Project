@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace GameCore {
-    public abstract class InteractiveObject {
+    public abstract class InteractiveObject: IControl {
 
         bool isHighlighted;
         bool isSelected;
@@ -28,20 +28,23 @@ namespace GameCore {
         protected event EventHandler Hover;
         protected event EventHandler KeyPress;
 
-        protected internal virtual void HandleMouseClick(object position) {
+        protected virtual internal void DoClick(object tag) {
             if(Click != null)
-                Click(position, EventArgs.Empty);
+                Click(tag, EventArgs.Empty);
         }
         protected internal virtual void HandleMouseHover(object position) {
             if(Hover != null)
                 Hover(position, EventArgs.Empty);
         }
-        protected internal virtual void HandleKeyPress(object key)
-        {
-            if (IsSelected && KeyPress!=null)
+        protected internal virtual void HandleKeyPress(object key) {
+            if(IsSelected && KeyPress != null)
                 KeyPress((int)key, EventArgs.Empty);
         }
 
         public abstract bool Contains(object position);
+
+        void IControl.DoClick(object tag) {
+            DoClick(tag);
+        }
     }
 }

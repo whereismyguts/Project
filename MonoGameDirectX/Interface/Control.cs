@@ -29,7 +29,7 @@ namespace MonoGameDirectX {
             return Rectangle.Contains((Point)position);
         }
     }
-    public enum Align { Left, Center , Right, Top, Bottom}
+    public enum Align { Left, Center, Right, Top, Bottom }
     public class Label: Control {
         public StringBuilder Text { get; set; }
         public Color TextColor { get; internal set; }
@@ -42,7 +42,7 @@ namespace MonoGameDirectX {
         protected virtual void TextDraw(SpriteBatch spriteBatch, string text) {
             Vector2 textSize = Renderer.Font.MeasureString(text);
             Vector2 panSize = Rectangle.Size.ToVector2();
-            Vector2 alignVector = TextAlign == Align.Left ?  new Vector2(5, (panSize.Y - textSize.Y) / 2) : (panSize - textSize) / 2;
+            Vector2 alignVector = TextAlign == Align.Left ? new Vector2(5, (panSize.Y - textSize.Y) / 2) : (panSize - textSize) / 2;
             Vector2 textLocation = Rectangle.Location.ToVector2() + alignVector;// + (panSize - textSize) / 2;
             spriteBatch.DrawString(Renderer.Font, text, textLocation, TextColor);
         }
@@ -130,7 +130,7 @@ namespace MonoGameDirectX {
             System.Diagnostics.Debug.WriteLine(key);
         }
 
-     
+
 
         Dictionary<int, char> letters = new Dictionary<int, char>();
 
@@ -144,7 +144,7 @@ namespace MonoGameDirectX {
             }
         }
         void DeleteCurrentSymbol() {
-            if(caret < Text.Length ) {
+            if(caret < Text.Length) {
                 Text.Remove(caret, 1);
             }
         }
@@ -175,9 +175,9 @@ namespace MonoGameDirectX {
 
         public event EventHandler ButtonClick;
 
-        protected override void HandleMouseClick(object position) {
+        protected override void DoClick(object tag) {
             ButtonClick?.Invoke(this, EventArgs.Empty);
-            base.HandleMouseClick(position);
+            base.DoClick(tag);
         }
     }
     public class ListBox: Control {

@@ -16,8 +16,7 @@ namespace MonoGameDirectX {
         int ScreenHeight { get { return Renderer.ScreenHeight; } }
         int ScreenWidth { get { return Renderer.ScreenWidth; } }
         UIState State {
-            get { return Instance.State; }
-            set { Instance.State = value; }
+            get { return Instance.CurrentState; }
         }
         GameCore.Viewport Viewport { get { return Instance.Viewport; } }
         //InteractionController Controller { get { return Instance.Controller; } }
@@ -35,7 +34,7 @@ namespace MonoGameDirectX {
             var pressedKeys = keyState.GetPressedKeys();
             InteractionController.SetPressedKeys(keyState.GetPressedKeys().Cast<int>());
 
-            Debugger.Text = mouseState.ScrollWheelValue.ToString() + " " + Viewport.Scale;
+            //Debugger.Text = mouseState.ScrollWheelValue.ToString() + " " + Viewport.Scale;
             MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
 
             //if(Controller.KeysUp.Count>0)
@@ -81,7 +80,33 @@ namespace MonoGameDirectX {
 
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
 
+            InterfaceController.AddState(new MenuState(), new GameState()); // order is matters
+
+            var b1 = new Button(100, 50, 100, 40, "b1");
+            var b2 = new Button(100, 100, 100, 40, "b2");
+            var b3 = new Button(100, 150, 100, 40, "b3");
+            var b4 = new Button(100, 200, 100, 40, "b4");
+
+            b1.ButtonClick += ButtonClicked;
+            b2.ButtonClick += ButtonClicked;
+            b3.ButtonClick += ButtonClicked;
+            b4.ButtonClick += ButtonClicked;
+
+            InterfaceController.AddControl(0, b1);
+            InterfaceController.AddControl(0, b2);
+            InterfaceController.AddControl(0, b3);
+            InterfaceController.AddControl(0, b4);
+
+            InterfaceController.AddKeyBinding(Keys.Up, 1, PlayerAction.Up);
+            InterfaceController.AddKeyBinding(Keys.Down, 1, PlayerAction.Down);
+            InterfaceController.AddKeyBinding(Keys.Z, 1, PlayerAction.Yes);
+            InterfaceController.AddKeyBinding(Keys.Tab, 1, PlayerAction.Tab);
+
             base.Initialize();
+        }
+
+        private void ButtonClicked(object sender, EventArgs e) {
+            Debugger.Text += "," + (sender as Button).Text;
         }
 
         protected override void LoadContent() {

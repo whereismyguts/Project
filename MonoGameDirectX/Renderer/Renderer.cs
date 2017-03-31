@@ -19,7 +19,7 @@ namespace MonoGameDirectX {
         // DrawPrimitives primitiveDrawer;
         static List<RenderObject> renderObjects;
 
-        static UIState GameState { get { return MainCore.Instance.State; } }
+        static UIState GameState { get { return MainCore.Instance.CurrentState; } }
         static GameCore.Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
         public static GraphicsDevice GraphicsDevice { get; set; }
@@ -97,12 +97,12 @@ namespace MonoGameDirectX {
         }
 
         static void DrawMiniMap() {
-            DrawPrimitives.DrawRect(miniMapBorder, SpriteBatch, 3, Color.GhostWhite, Color.Green);
-            foreach(RenderObject renderObject in renderObjects)
-                if(renderObject.MiniMapLocation != null) {
-                    Vector2 objLocation = miniMapBorder.Center.ToVector2() + renderObject.MiniMapLocation;
-                    DrawPrimitives.DrawCircle(objLocation, 3, SpriteBatch, Color.Black, miniMapBorder);
-                }
+            //DrawPrimitives.DrawRect(miniMapBorder, SpriteBatch, 3, Color.GhostWhite, Color.Green);
+            //foreach(RenderObject renderObject in renderObjects)
+            //    if(renderObject.MiniMapLocation != null) {
+            //        Vector2 objLocation = miniMapBorder.Center.ToVector2() + renderObject.MiniMapLocation;
+            //        DrawPrimitives.DrawCircle(objLocation, 3, SpriteBatch, Color.Black, miniMapBorder);
+            //    }
         }
         static void DrawObjects(GameTime gameTime) {
             WinAdapter.UpdateRenderObjects(ref renderObjects);
@@ -114,11 +114,11 @@ namespace MonoGameDirectX {
         }
 
         static void WriteDebugInfo() {
-            SpriteBatch.DrawString(Font, Debugger.Text, new Vector2(0, ScreenHeight - 50), Color.Black);
+            SpriteBatch.DrawString(Font, Debugger.Text + " state: " + MainCore.Instance.CurrentState.Id, new Vector2(0, ScreenHeight - 50), Color.Black);
         }
 
         static void DrawInterface(GameTime time) {
-            throw new NotImplementedException();
+            InterfaceController.GetActualControls().ToList().ForEach(con => con.Draw(SpriteBatch, time));
             //foreach(Control c in controls)
             //c.Draw(SpriteBatch, time);
         }
@@ -150,10 +150,10 @@ namespace MonoGameDirectX {
             //}
 
 
-            if(InterfaceController.State.InGame) {
-                DrawObjects(gameTime);
+            if(InterfaceController.CurrentState.InGame) {
+                //   DrawObjects(gameTime);
                 DrawMiniMap();
-                DrawDebugInfo();
+                //  DrawDebugInfo();
             }
             DrawInterface(gameTime);
             DrawCursor();

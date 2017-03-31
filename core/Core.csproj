@@ -34,10 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Commands.cs" />
     <Compile Include="GeneticAnalizer.cs" />
     <Compile Include="InteractionController.cs" />
-    <Compile Include="InterfaceController.cs" />
     <Compile Include="Objects\AIController.cs" />
     <Compile Include="Objects\Bullet.cs" />
     <Compile Include="Objects\Explosion.cs" />
@@ -61,7 +59,7 @@
     <Compile Include="CoordSystem\Viewport.cs" />
     <Compile Include="ShipController.cs" />
     <Compile Include="TraectoryCalculator.cs" />
-    <Compile Include="UIState.cs" />
+    <Compile Include="UI\UIState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

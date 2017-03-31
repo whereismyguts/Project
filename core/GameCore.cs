@@ -16,6 +16,9 @@ namespace GameCore {
     public class MainCore {
         static MainCore instance;
 
+        static List<UIState> states = new List<UIState>();
+        static int state;
+
         List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
         public static MainCore Instance {
             get {
@@ -28,20 +31,41 @@ namespace GameCore {
         public List<GameObject> Objects {
             get { return GetAllObjects().ToList(); }
         }
+
         public List<Ship> Ships { get { return ships; } }
-        UIState state = new MenuState();
-        public UIState State {
-            get { return state; }
-            set {
-                if(state == value)
-                    return;
-                state = value;
-                if(StateChanged != null)
-                    StateChanged(instance, new StateEventArgs(value));
-            }
+
+        public UIState CurrentState {
+            get { return states[state]; }
         }
 
+        internal static void SwitchState() {
+            if(state < states.Count - 1)
+                state++;
+            else
+                state = 0;
+        }
+
+        public static void AddControl(int state, IControl control, int actor) {
+            states.First(st => st.Id == state).AddControl(control, actor);
+        }
+
+        //public int State {
+        //    get { return state; }
+        //    set {
+        //        if(state == value)
+        //            return;
+        //        state = value;
+        //        if(StateChanged != null)
+        //            StateChanged(instance, new StateEventArgs(states[value]));
+        //    }
+        //}
+
         public delegate void StateEventHandler(object sender, StateEventArgs e);
+
+        public static void AddStates(UIState[] newstates) {
+            states.AddRange(newstates);
+        }
+
         public event StateEventHandler StateChanged;
         public bool TurnBasedMode { get; private set; } = false;
         public Viewport Viewport { get; set; }
@@ -50,7 +74,6 @@ namespace GameCore {
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);
             StarSystems.Add(new StarSystem(2));
-
         }
 
         void CreatePlayers() {
@@ -83,7 +106,6 @@ namespace GameCore {
         static List<string> messages = new List<string>();
 
         void CleanObjects() {
-
             foreach(StarSystem sys in StarSystems) {
                 sys.CleanObjects();
             }
@@ -92,14 +114,8 @@ namespace GameCore {
 
 
         public void Update() {
-
-
-
             //&& Controller.Keys.ToList().Contains(32)
-            if(State.InGame) {
-
-
-
+            if(CurrentState.InGame) {
                 if(ships.Count == 0 && (ships.Count(s => s.Fraction == 0) == 0 || ships.Count(s => s.Fraction == 1) == 0)) {
                     foreach(Ship ship in ships)
                         ship.ToRemove = true;
@@ -123,9 +139,7 @@ namespace GameCore {
                         }
                     }
                 }
-
                 UpdateViewport();
-
             }
         }
 
