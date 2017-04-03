@@ -5,58 +5,61 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GameCore {
-    public static class ShipController {
-        public static List<BindingController> Controllers { get; } = new List<BindingController>();
+    public static class AIShipsController {
+        public static List<AIController> Controllers { get; } = new List<AIController>();
         public static void Step() {
             Controllers.RemoveAll(c => c.Owner == null || c.Owner.ToRemove);
-            foreach(BindingController controller in Controllers) {
+            foreach(AIController controller in Controllers) {
                 controller.Step();
             }
         }
+        internal static void AddController(DefaultAutoControl controller) {
+            Controllers.Add(controller);
+        }
     }
-    public abstract class BindingController {
-        public enum ShipAction { Accelerate, Left, Right, Idle, Fire }
-        public BindingController(Ship ship) {
+    public abstract class AIController {
+        //public enum ShipAction { Accelerate, Left, Right, Idle, Fire }
+        public AIController(Ship ship) {
             Owner = ship;
         }
 
         public Ship Owner { get; set; }
 
-        protected Action GetShipAction(ShipAction action) {
+        protected Action GetShipAction(PlayerAction action) {
             switch(action) {
-                case ShipAction.Accelerate: return Owner.Accselerate;
-                case ShipAction.Left: return Owner.RotateL;
-                case ShipAction.Right: return Owner.RotateR;
-                case ShipAction.Fire: return Owner.Fire;
+                case PlayerAction.Up: return Owner.Accselerate;
+                case PlayerAction.Left: return Owner.RotateL;
+                case PlayerAction.Right: return Owner.RotateR;
+                case PlayerAction.Yes: return Owner.Fire;
                 default: return DoNothing;
             }
         }
         internal abstract void Step();
         public void DoNothing() { } //TODO rewrite
     }
-    public class ManualControl: BindingController {
-        Dictionary<int, ShipAction> Actions = new Dictionary<int, ShipAction>();
-        protected static List<int> PressedKeys { get { return InteractionController.KeysPressed; } }
+    //public class ManualControl: BindingController {
+    //    Dictionary<int, ShipAction> Actions = new Dictionary<int, ShipAction>();
+    //    protected static List<int> PressedKeys { get { return InteractionController.KeysPressed; } }
 
-        public ManualControl(Ship ship) : base(ship) {
-            SetKey(ShipAction.Accelerate, 38);
-            SetKey(ShipAction.Left, 37);
-            SetKey(ShipAction.Right, 39);
-            SetKey(ShipAction.Fire, 90);
-        }
+    //    public ManualControl(Ship ship) : base(ship) {
+    //        SetKey(ShipAction.Accelerate, 38);
+    //        SetKey(ShipAction.Left, 37);
+    //        SetKey(ShipAction.Right, 39);
+    //        SetKey(ShipAction.Fire, 90);
+    //    }
 
-        public void SetKey(ShipAction action, int key) {
-            Actions[key] = action;
-        }
+    //    public void SetKey(ShipAction action, int key) {
+    //        Actions[key] = action;
+    //    }
 
-        internal override void Step() {
-            foreach(int key in Actions.Keys) {
-                if(PressedKeys != null && PressedKeys.Contains(key))
-                    GetShipAction(Actions[key])();
-            }
-        }
-    }
-    public class AutoControl: BindingController {
+    //    internal override void Step() {
+    //        foreach(int key in Actions.Keys) {
+    //            if(PressedKeys != null && PressedKeys.Contains(key))
+    //                GetShipAction(Actions[key])();
+    //        }
+    //    }
+    //}
+    public class DefaultAutoControl: AIController {
         public CoordPoint TargetLocation { get; private set; }
 
         public Ship ToKill { get; set; }
@@ -64,7 +67,7 @@ namespace GameCore {
         double acceptableAngle = 0.1;
         double dangerZoneMultiplier = 2.4;
 
-        public AutoControl(Ship ship) : base(ship) {
+        public DefaultAutoControl(Ship ship) : base(ship) {
 
         }
 
@@ -99,13 +102,13 @@ namespace GameCore {
 
             TargetLocation = Owner.Position + leaveVector;
         }
-        ShipAction CheckWayToTarget() {
+        PlayerAction CheckWayToTarget() {
             if(TargetLocation == null)
-                return ShipAction.Idle;
+                return PlayerAction.None;
             float angle = Owner.Direction.AngleTo(TargetLocation - Owner.Position);
             if(angle <= acceptableAngle && angle > -acceptableAngle)
-                return ShipAction.Accelerate;
-            return angle > 0 ? ShipAction.Left : ShipAction.Right;
+                return PlayerAction.Up;
+            return angle > 0 ? PlayerAction.Left : PlayerAction.Right;
         }
 
         internal override void Step() {

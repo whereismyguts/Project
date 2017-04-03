@@ -44,12 +44,13 @@ namespace MonoGameDirectX {
             DrawCircle(center, radius, spBatch, color, Rectangle.Empty);
         }
 
-        internal static void DrawGeometry(Geometry geom, SpriteBatch spriteBatch) {
+        internal static void DrawGeometry(Renderable geom, SpriteBatch spriteBatch) {
             if(geom is InternalCircle)
-                DrawCircle(WinAdapter.CoordPoint2Vector(geom.ScreenPosition), (geom as InternalCircle).ScreenRadius, spriteBatch, new Color(geom.Color.r, geom.Color.g, geom.Color.b));
+                DrawCircle(WinAdapter.CoordPoint2Vector(geom.ScreenLocation), (geom as InternalCircle).ScreenRadius, spriteBatch, Color.Violet); // TODO normal color!!
             if(geom is InternalRectangle) {
                 var rect = geom as InternalRectangle;
-                DrawRect(new Rectangle((int)rect.ScreenPosition.X, (int)rect.ScreenPosition.Y, (int)rect.ScreenSize.X, (int)rect.ScreenSize.Y), spriteBatch, 1, Color.Black, new Color(rect.Color.r, rect.Color.g, rect.Color.b));
+                var screenRect = new Rectangle((int)rect.ScreenLocation.X, (int)rect.ScreenLocation.Y, (int)rect.ScreenSize.X, (int)rect.ScreenSize.Y);
+                DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(rect.Color.r, rect.Color.g, rect.Color.b));
                 //DrawCircle(WinAdapter.CoordPoint2Vector(geom.ScreenPosition), (geom as InternalCircle).ScreenRadius, spriteBatch, new Color(geom.Color.r, geom.Color.g, geom.Color.b));
             }
 

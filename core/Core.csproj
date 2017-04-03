@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="GeneticAnalizer.cs" />
     <Compile Include="InteractionController.cs" />
+    <Compile Include="IRenderable.cs" />
     <Compile Include="Objects\Bullet.cs" />
     <Compile Include="Objects\Explosion.cs" />
     <Compile Include="Objects\Geometry.cs" />
@@ -44,6 +45,7 @@
     <Compile Include="Objects\Items\DefaultItems.cs" />
     <Compile Include="Objects\Items\Item.cs" />
     <Compile Include="Objects\Items\Slot.cs" />
+    <Compile Include="Objects\PlayerInterface.cs" />
     <Compile Include="Objects\StationGenerator.cs" />
     <Compile Include="PhysicsHelper.cs" />
     <Compile Include="Objects\Body.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="CoordSystem\Viewport.cs" />
     <Compile Include="ShipController.cs" />
     <Compile Include="TraectoryCalculator.cs" />
+    <Compile Include="UI\PlayerController.cs" />
     <Compile Include="UI\UIState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

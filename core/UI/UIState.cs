@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GameCore {
-    public enum PlayerAction { Up, Down, Left, Right, Yes, Tab };
+    public enum PlayerAction { Up, Down, Left, Right, Yes, Tab, None };
 
     public interface ICommandsBehavior {
         //void Up(int actor);
@@ -13,7 +13,16 @@ namespace GameCore {
         void Act(ActorKeyPair pair);
     }
     public class MenuBehavior: ICommandsBehavior {
+
+
+        TimeSpan lastPressed = new TimeSpan();
         public void Act(ActorKeyPair pair) {
+
+            TimeSpan now = DateTime.Now.TimeOfDay;
+            if((now - lastPressed).TotalMilliseconds < 100)
+                return;
+            lastPressed = now;
+
             switch(pair.Action) {
                 case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
                 case PlayerAction.Up: MainCore.Instance.CurrentState.Select(false, pair.Actor); break;
@@ -28,6 +37,9 @@ namespace GameCore {
     //}
     public class GameBehavior: ICommandsBehavior {
         public void Act(ActorKeyPair pair) {
+
+            PlayerController.Execute(pair);
+            return;
             switch(pair.Action) {
                 case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
                 case PlayerAction.Up: MainCore.Instance.CurrentState.Select(false, pair.Actor); break;

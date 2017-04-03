@@ -19,7 +19,7 @@ namespace GameCore {
         public static void DoActions() {
             //if(InteractionController.KeysUp.Contains(32))
             //    MainCore.Instance.Pause();
-            foreach(var key in InteractionController.KeysUp) {
+            foreach(var key in InteractionController.KeysPressed) {
                 if(KeyActions.ContainsKey(key))
                     CurrentState.DoAction(KeyActions[key]);
             }

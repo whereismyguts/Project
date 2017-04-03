@@ -10,7 +10,7 @@ namespace MonoGameDirectX {
     public static class WinAdapter {
         static ContentLoader contentLoader;
 
-        static RenderObject CreateRenderObject(GameObject obj) {
+        static RenderObject CreateRenderObject(IRenderableObject obj) {
             RenderObject renderObject = new RenderObject(obj);
             return renderObject;
         }
@@ -48,6 +48,7 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("retrogun.png");
             contentLoader.SetTexture("retrogunfire.png");
         }
+
         internal static void Unload() {
 
             contentLoader.Unload();
@@ -82,6 +83,12 @@ namespace MonoGameDirectX {
 
             foreach(GameObject obj in MainCore.Instance.Objects)
                 list.Add(CreateRenderObject(obj));
+
+            var playerInterface = PlayerController.GetInterfaceElements();
+
+            foreach(IRenderableObject obj in playerInterface)
+                list.Add(CreateRenderObject(obj));
+
             return list;
         }
     }

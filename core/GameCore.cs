@@ -19,7 +19,7 @@ namespace GameCore {
         static List<UIState> states = new List<UIState>();
         static int state;
 
-        List<StarSystem> StarSystems { get; set; } = new List<StarSystem>();
+        StarSystem System;
         public static MainCore Instance {
             get {
                 if(instance == null)
@@ -67,45 +67,38 @@ namespace GameCore {
         }
 
         public event StateEventHandler StateChanged;
-        public bool TurnBasedMode { get; private set; } = false;
+        //public bool TurnBasedMode { get; private set; } = false;
         public Viewport Viewport { get; set; }
         public static CoordPoint Cursor { get; set; }
 
         MainCore() {
             Viewport = new Viewport(300, 300, 0, 0);
-            StarSystems.Add(new StarSystem(2));
+            System = new StarSystem(3);
         }
 
-        public Ship Player1 { get; private set; }
-        public Ship Player2 { get; private set; }
 
         void CreatePlayers() {
+            Player p1 = new Player(new Ship(System) { Fraction = 0 });
+            PlayerController.AddPlayer(1, p1);
+            Player p2 = new Player(new Ship(System) { Fraction = 1 });
+            PlayerController.AddPlayer(2, p2);
+
+            ships.Add(p1.Ship);
+            ships.Add(p2.Ship);
 
             for(int i = 0; i < 6; i++) {
-                var ship = new Ship(StarSystems[0]) { Fraction = i % 2 == 0 ? 1 : 0 };
-                if(i == 0) {
-                    Player1 = ship;
-                    ShipController.Controllers.Add(new ManualControl(ship));
-                }
-                else
-                    if(i == 6 / 2) {
-                    Player2 = ship;
-                    ShipController.Controllers.Add(new ManualControl(ship));
-                }
-                else
-                    ShipController.Controllers.Add(new AutoControl(ship));
+                var ship = new Ship(System) { Fraction = i % 2 == 0 ? 1 : 0 };
+                AIShipsController.AddController(new DefaultAutoControl(ship));
                 ships.Add(ship);
             }
             //for(int i = 0; i < 3; i++)
             //    ships.Add(new Ship(StarSystems[0]));
         }
         IEnumerable<GameObject> GetAllObjects() {
-            foreach(StarSystem sys in StarSystems) {
-                foreach(GameObject obj in sys.Objects)
-                    yield return obj;
-                foreach(GameObject obj in sys.Effects)
-                    yield return obj;
-            }
+            foreach(GameObject obj in System.Objects)
+                yield return obj;
+            foreach(GameObject obj in System.Effects)
+                yield return obj;
             foreach(Ship s in ships) yield return s;
         }
 
@@ -116,9 +109,7 @@ namespace GameCore {
         static List<string> messages = new List<string>();
 
         void CleanObjects() {
-            foreach(StarSystem sys in StarSystems) {
-                sys.CleanObjects();
-            }
+            System.CleanObjects();
             ships.RemoveAll(s => s.ToRemove);
         }
 
@@ -126,29 +117,30 @@ namespace GameCore {
         public void Update() {
             //&& Controller.Keys.ToList().Contains(32)
             if(CurrentState.InGame) {
-                if(ships.Count == 0 && (ships.Count(s => s.Fraction == 0) == 0 || ships.Count(s => s.Fraction == 1) == 0)) {
+                if((ships.Count(s => s.Fraction == 0) == 0 || ships.Count(s => s.Fraction == 1) == 0)) {
                     foreach(Ship ship in ships)
                         ship.ToRemove = true;
-                    ShipController.Controllers.Clear();
+                    AIShipsController.Controllers.Clear();
                     CreatePlayers();
                     messages.Clear();
                 }
                 CleanObjects();
 
-                if(turnIsActive || !TurnBasedMode) {
-                    ShipController.Step();
+                //if(turnIsActive || !TurnBasedMode) {
+                //   PlayerController.Step();
+                AIShipsController.Step();
 
-                    foreach(GameObject obj in Objects)
-                        obj.Step();
+                foreach(GameObject obj in Objects)
+                    obj.Step();
 
-                    if(TurnBasedMode) {
-                        turnTime++;
-                        if(turnTime == TurnLong) {
-                            turnTime = 0;
-                            turnIsActive = false;
-                        }
-                    }
-                }
+                //if(TurnBasedMode) {
+                //    turnTime++;
+                //    if(turnTime == TurnLong) {
+                //        turnTime = 0;
+                //        turnIsActive = false;
+                //    }
+                //}
+                //}
                 UpdateViewport();
             }
         }
@@ -184,7 +176,7 @@ namespace GameCore {
         static Random rnd = new Random();
         List<Ship> ships = new List<Ship>();
 
-        static int pressCoolDown = 0;
+        //static int pressCoolDown = 0;
         //public static void Pressed(CoordPoint coordPoint) {
         //    if(pressCoolDown < 0)
         //        pressCoolDown++;
@@ -195,16 +187,16 @@ namespace GameCore {
         //        //instance.ships.Add(ship);
         //    }
         //}
-        const int TurnLong = 100;
-        int turnTime = 0;
-        bool turnIsActive = false;
+        //const int TurnLong = 100;
+        //int turnTime = 0;
+        //bool turnIsActive = false;
 
-        public void NextTurn() {
-            turnIsActive = true;
-        }
+        //public void NextTurn() {
+        //    turnIsActive = true;
+        //}
 
-        public void Pause() {
-            TurnBasedMode = !TurnBasedMode;
-        }
+        //public void Pause() {
+        //    TurnBasedMode = !TurnBasedMode;
+        //}
     }
 }

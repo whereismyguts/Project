@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 
 namespace GameCore {
-    public abstract class GameObject {
-
+    public abstract class GameObject : IRenderableObject{
         protected string Image { get; set; }
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
 
@@ -22,7 +21,6 @@ namespace GameCore {
         public GameObject(StarSystem system) {
             CurrentSystem = system;
         }
-
         protected internal virtual void Step() {
             Position += Velosity;
         }

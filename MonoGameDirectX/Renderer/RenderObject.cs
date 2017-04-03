@@ -10,16 +10,15 @@ namespace MonoGameDirectX {
 
         protected float Scale { get { return MainCore.Instance.Viewport.Scale; } }
 
-        public GameObject GameObject { get; internal set; }
+        public IRenderableObject GameObject { get; internal set; }
         public Vector2 MiniMapLocation { get; internal set; }
 
-        public RenderObject(GameObject obj) {
+        public RenderObject(IRenderableObject obj) {
             GameObject = obj;
             IEnumerable<Item> items = obj.GetItems();
 
             foreach(Item item in items)
                 sprites.Add(new Sprite(item));
-            MiniMapLocation = WinAdapter.CoordPoint2Vector(obj.Position / 10000f);
 
             primitives = obj.GetPrimitives();
         }
@@ -132,7 +131,7 @@ namespace MonoGameDirectX {
         }
 
         internal void Update() {
-            Vector2 location = WinAdapter.CoordPoint2Vector(item.PositionScreen);
+            Vector2 location = WinAdapter.CoordPoint2Vector(item.ScreenPosition);
             rotation = item.Rotation;
             ZIndex = item.SpriteInfo.ZIndex;
             texture = WinAdapter.GetTexture(item.SpriteInfo.Content);

@@ -99,8 +99,16 @@ namespace MonoGameDirectX {
 
             InterfaceController.AddKeyBinding(Keys.Up, 1, PlayerAction.Up);
             InterfaceController.AddKeyBinding(Keys.Down, 1, PlayerAction.Down);
-            InterfaceController.AddKeyBinding(Keys.Z, 1, PlayerAction.Yes);
+            InterfaceController.AddKeyBinding(Keys.Left, 1, PlayerAction.Left);
+            InterfaceController.AddKeyBinding(Keys.Right, 1, PlayerAction.Right);
+            InterfaceController.AddKeyBinding(Keys.RightControl, 1, PlayerAction.Yes);
             InterfaceController.AddKeyBinding(Keys.Tab, 1, PlayerAction.Tab);
+
+            InterfaceController.AddKeyBinding(Keys.W,2, PlayerAction.Up);
+            InterfaceController.AddKeyBinding(Keys.S, 2, PlayerAction.Down);
+            InterfaceController.AddKeyBinding(Keys.A, 2, PlayerAction.Left);
+            InterfaceController.AddKeyBinding(Keys.D, 2, PlayerAction.Right);
+            InterfaceController.AddKeyBinding(Keys.M, 2, PlayerAction.Yes);
 
             base.Initialize();
         }

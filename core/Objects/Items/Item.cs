@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 
 namespace GameCore {
-    public abstract class Item {
+    public abstract class Item: Renderable {
 
         Viewport Viewport { get { return MainCore.Instance.Viewport; } }
         public virtual void Step() {
 
         }
         protected internal CoordPoint Origin { get; }
-        protected internal abstract CoordPoint Position { get; }
+
         protected internal CoordPoint Size { get; }
         public virtual string Name { get; }
         public virtual int Volume { get { return 10; } }
 
         public abstract SpriteInfo SpriteInfo { get; }
-        public CoordPoint PositionScreen { get { return Viewport.World2ScreenPoint(Position); } }
+        public CoordPoint ScreenPosition { get { return Viewport.World2ScreenPoint(Location); } }
 
         public abstract float Rotation { get; }
         public CoordPoint ScreenOrigin { get { return Viewport.World2ScreenBounds(new Bounds(0, 0, Origin.X, Origin.Y)).Size; } }
@@ -58,7 +58,9 @@ namespace GameCore {
     //}
     public class ShipHull: Item {
         protected internal Ship Owner { get; set; }
-        protected internal override CoordPoint Position { get { return Owner.Position; } }
+
+
+        public override CoordPoint Location { get { return Owner.Position; }  set { } }
         int capacity = 100;
         public override int Volume { get { return capacity; } }
         public override SpriteInfo SpriteInfo {
@@ -108,11 +110,18 @@ namespace GameCore {
 
     public abstract class AttachedItem: Item {
 
-        protected internal override CoordPoint Position {
+        public override CoordPoint Location {
             get {
-                return Slot.Hull.Position + Slot.RelativePosition;
+                return Slot.Hull.Location + Slot.RelativePosition;
+            }
+            set {
+               
             }
         }
+
+        //protected internal override CoordPoint Location {
+        //    
+        //}
 
         protected internal virtual Slot Slot { get; set; }
 
@@ -148,7 +157,7 @@ namespace GameCore {
 
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("256tile.png", 1, 1,1);
+                return new SpriteInfo("256tile.png", 1, 1, 1);
             }
         }
         public EmptySlotItem(Slot slot) : base(new CoordPoint(200, 200), new CoordPoint(100, 100)) {

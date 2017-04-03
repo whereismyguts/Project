@@ -43,7 +43,7 @@ namespace MonoGameDirectX {
                 DrawPrimitives.DrawLine(
                     WinAdapter.CoordPoint2Vector(shipBounds.Center),
                     (WinAdapter.CoordPoint2Vector((shipBounds + ship.Direction * 10).Center)),
-                    SpriteBatch, 1, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
+                    SpriteBatch, 3, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
                 //if(ship.Velosity.Length > 0)
                 //    DrawPrimitives.DrawLine(
                 //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
@@ -55,15 +55,19 @@ namespace MonoGameDirectX {
                 //    for(int i = 0; i < ship.Calculator.Path.Count - 1; i++)
                 //        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
                 //}
+
+
+                var rect = ship.GetScreenBounds();
+                DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, ship.Fraction > 0 ? Color.Red : Color.Blue);
             }
-            foreach(var c in ShipController.Controllers) {
-                AutoControl ac = c as AutoControl;
-                if(ac != null && ac.TargetLocation != null)
-                    DrawPrimitives.DrawLine(
-                        WinAdapter.CoordPoint2Vector(ac.Owner.GetScreenBounds().Center),
-                        WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ac.TargetLocation)),
-                        SpriteBatch, 1, new Color(ac.Owner.Color.r, ac.Owner.Color.g, ac.Owner.Color.b));
-            }
+            //foreach(var c in AIShipsController.Controllers) {
+            //    DefaultAutoControl ac = c as DefaultAutoControl;
+            //    if(ac != null && ac.TargetLocation != null)
+            //        DrawPrimitives.DrawLine(
+            //            WinAdapter.CoordPoint2Vector(ac.Owner.GetScreenBounds().Center),
+            //            WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ac.TargetLocation)),
+            //            SpriteBatch, 1, new Color(ac.Owner.Color.r, ac.Owner.Color.g, ac.Owner.Color.b));
+            //}
             //if(TraectoryPath != null)
             //    for(int i = 0; i < TraectoryPath.Count - 1; i++) {
             //         DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), spriteBatch, Color.Black);
@@ -107,9 +111,12 @@ namespace MonoGameDirectX {
         static void DrawObjects(GameTime gameTime) {
             WinAdapter.UpdateRenderObjects(ref renderObjects);
             foreach(RenderObject renderObject in renderObjects) {
-                renderObject.Draw(SpriteBatch, gameTime);
+                //DONT remove!!
+                    renderObject.Draw(SpriteBatch, gameTime); 
                 //if(renderObject.GameObject is Body)
-                //    DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(renderObject.GameObject.GetScreenBounds().Center), renderObject.GameObject.GetScreenBounds().Width / 2, spriteBatch, Color.Blue);
+                //    renderObject.Draw(SpriteBatch, gameTime);
+
+                //DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(renderObject.GameObject.GetScreenBounds().Center), renderObject.GameObject.GetScreenBounds().Width / 2, SpriteBatch, Color.Blue);
             }
         }
 
@@ -151,9 +158,9 @@ namespace MonoGameDirectX {
 
 
             if(InterfaceController.CurrentState.InGame) {
-                //   DrawObjects(gameTime);
+                DrawObjects(gameTime);
                 DrawMiniMap();
-                //  DrawDebugInfo();
+                DrawDebugInfo();
             }
             DrawInterface(gameTime);
             DrawCursor();

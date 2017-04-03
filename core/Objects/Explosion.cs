@@ -66,11 +66,17 @@ namespace GameCore {
             }
         }
 
-        protected internal override CoordPoint Position {
+        public override CoordPoint Location {
             get {
                 return Owner.Position;
             }
+
+            set {
+                throw new Exception("it didt suppose to happen!");
+            }
         }
+
+        
 
         public GameObject Owner { get; private set; }
 
