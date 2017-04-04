@@ -17,19 +17,19 @@ namespace GameCore {
                 if(!o1.TemporaryNoclip)
                     foreach(GameObject o2 in objects)
                         if(o1 != o2)
-                            if((o1 is Bullet || o1 is Ship) && (o2 is Body || o2 is Bullet || o2 is Ship)) {
+                            if((o1 is ProjectileBase || o1 is Ship) && (o2 is Body || o2 is ProjectileBase || o2 is Ship)) {
 
                                 Ship s = o1 as Ship;
-                                Bullet b = o2 as Bullet;
+                                ProjectileBase b = o2 as ProjectileBase;
                                 if(s != null && b != null) {
-                                    if(b.Owner == s) 
+                                    if(b.Owner == s)
                                         continue;
                                     if(CoordPoint.Distance(s.Hull.Location, b.Position) <= s.Hull.Size.X / 2) {
-                                        s.GetDamage(1, b.Owner);
+                                        s.GetDamage(b.Damage, b.Owner);
                                         b.Impact();
                                     }
-                                } 
-                                else 
+                                }
+                                else
 
                                 if(o2.ObjectBounds.Intersect(o1.ObjectBounds)) {
 

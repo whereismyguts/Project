@@ -5,16 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GameCore {
-    class Bullet: GameObject {
-        public Bullet(CoordPoint position, CoordPoint direction, Ship owner) : base(owner.CurrentSystem) {
+    public class ProjectileBase: GameObject {
+        public ProjectileBase(CoordPoint position, CoordPoint direction, Ship owner) : base(owner.CurrentSystem) {
 
             Position = position;
-           
+
             this.owner = owner;
             Velosity = direction * 420;
         }
 
         Ship owner;
+
+        protected virtual int Speed { get { return 420; } }
 
         public Ship Owner {
             get { return owner; }
@@ -38,12 +40,20 @@ namespace GameCore {
             }
         }
 
+        public virtual int Damage {
+            get { return 1; }
+        }
+
+        protected virtual int MaxLiveTime {
+            get { return 100; }
+        }
+
         public override IEnumerable<Item> GetItems() {
             return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "slime.png", 4, 2) };
         }
 
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new InternalCircle(Position, 20) };
+            return new Geometry[] { new InternalCircle(Position, 200) };
         }
 
         internal void Impact() {
@@ -52,13 +62,26 @@ namespace GameCore {
 
         int liveTime = 0;
         protected internal override void Step() {
-            if(liveTime > 100)
+            if(liveTime > MaxLiveTime)
                 ToRemove = true;
-            
+
 
             liveTime++;
 
             base.Step();
+        }
+    }
+
+    public class Rocket: ProjectileBase {
+        public Rocket(CoordPoint position, CoordPoint direction, Ship owner) : base(position, direction, owner) {
+        }
+
+        protected override int Speed { get { return 200; } }
+        protected override int MaxLiveTime { get { return 300; } }
+        public override int Damage { get { return 3; } }
+
+        public override IEnumerable<Item> GetItems() {
+            return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "flame_sprite.png", 6, 1) };
         }
     }
 }

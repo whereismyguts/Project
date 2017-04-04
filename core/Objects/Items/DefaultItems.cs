@@ -42,9 +42,13 @@ namespace GameCore {
         internal void Fire() {
             if(fireCoolDown == fireCoolDownMax) {
                 //var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
-                Slot.Hull.Owner.CurrentSystem.Add(new Bullet(Location + Origin, Slot.Hull.Owner.Direction, Slot.Hull.Owner));
+                Slot.Hull.Owner.CurrentSystem.Add(CreateProjectile(Location + Origin, Slot.Hull.Owner.Direction, Slot.Hull.Owner));
                 fireCoolDown = 0;
             }
+        }
+
+        protected virtual ProjectileBase CreateProjectile(CoordPoint location, CoordPoint direction, Ship owner) {
+            return new ProjectileBase(location, direction, owner);
         }
     }
     public class DefaultEngine: AttachedItem {
@@ -107,5 +111,19 @@ namespace GameCore {
         internal float GetAcceleration() {
             return acceleration;
         }
+    }
+
+
+
+    public class RocketLauncher: DefaultWeapon {
+        public override SpriteInfo SpriteInfo {
+            get {
+                return new SpriteInfo("gun.png");
+            }
+        }
+        protected override ProjectileBase CreateProjectile(CoordPoint location, CoordPoint direction, Ship owner) {
+            return new Rocket(location, direction, owner);
+        }
+
     }
 }

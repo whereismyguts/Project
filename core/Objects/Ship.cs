@@ -43,8 +43,8 @@ namespace GameCore {
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
-            var w1 = new DefaultWeapon();
-            var w2 = new DefaultWeapon();
+            var w1 = Rnd.Bool() ? new DefaultWeapon() : new RocketLauncher();
+            var w2 = Rnd.Bool() ? new DefaultWeapon() : new RocketLauncher();
             Inventory.Add(e1);
             Inventory.Add(e2);
             Inventory.Add(w1);
@@ -148,7 +148,7 @@ namespace GameCore {
             IEnumerable<DefaultEngine> engines = Hull.GetEngines();
             CoordPoint sum = new CoordPoint();
             foreach(DefaultEngine engine in engines)
-                sum += new CoordPoint(0,-1).GetRotated(engine.Rotation) * engine.GetAcceleration();
+                sum += new CoordPoint(0, -1).GetRotated(engine.Rotation) * engine.GetAcceleration();
             return sum;
         }
 
