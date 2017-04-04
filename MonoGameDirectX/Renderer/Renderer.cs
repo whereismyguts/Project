@@ -29,6 +29,7 @@ namespace MonoGameDirectX {
         public static int ScreenHeight { get { return GraphicsDevice.Viewport.Height; } }
         public static int ScreenWidth { get { return GraphicsDevice.Viewport.Width; } }
 
+        public static bool DebugMode { get { return debugMode; } }
 
         //public List<CoordPoint> TraectoryPath { get; internal set; }
 
@@ -90,7 +91,10 @@ namespace MonoGameDirectX {
             //DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, Color.Brown);
         }
 
-
+        static bool debugMode = true;
+        internal static void SwitchDebugMode() {
+            debugMode = !debugMode;
+        }
 
         internal static void Set(GraphicsDevice graphicsDevice, SpriteFont spriteFont) {
             GraphicsDevice = graphicsDevice;
@@ -112,7 +116,7 @@ namespace MonoGameDirectX {
             WinAdapter.UpdateRenderObjects(ref renderObjects);
             foreach(RenderObject renderObject in renderObjects) {
                 //DONT remove!!
-                    renderObject.Draw(SpriteBatch, gameTime); 
+                renderObject.Draw(SpriteBatch, gameTime);
                 //if(renderObject.GameObject is Body)
                 //    renderObject.Draw(SpriteBatch, gameTime);
 
@@ -121,7 +125,12 @@ namespace MonoGameDirectX {
         }
 
         static void WriteDebugInfo() {
-            SpriteBatch.DrawString(Font, Debugger.Text + " state: " + MainCore.Instance.CurrentState.Id, new Vector2(0, ScreenHeight - 50), Color.Black);
+            int lines = ScreenHeight / 30;
+            int line = Debugger.Lines.Count - 1;
+            for(int i = ScreenHeight - 30; i > 10 && line >= 0; i -= 30) {
+                SpriteBatch.DrawString(Font, Debugger.Lines[line], new Vector2(0, i), Color.Black);
+                line--;
+            }
         }
 
         static void DrawInterface(GameTime time) {
@@ -156,12 +165,13 @@ namespace MonoGameDirectX {
             //    return;
             //}
 
-
             if(InterfaceController.CurrentState.InGame) {
-                DrawObjects(gameTime);
                 DrawMiniMap();
-                DrawDebugInfo();
+                if(debugMode)
+                    DrawDebugInfo();
+                DrawObjects(gameTime);
             }
+
             DrawInterface(gameTime);
             DrawCursor();
             WriteDebugInfo();

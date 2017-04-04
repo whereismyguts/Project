@@ -12,6 +12,8 @@ namespace MonoGameDirectX {
     /// This is the main type for your game.
     /// </summary>
     public class GameMain: Microsoft.Xna.Framework.Game {
+        int width = 0;
+        int height = 0;
         GraphicsDeviceManager graphics;
         int ScreenHeight { get { return Renderer.ScreenHeight; } }
         int ScreenWidth { get { return Renderer.ScreenWidth; } }
@@ -32,7 +34,8 @@ namespace MonoGameDirectX {
             var mouseState = Mouse.GetState();
             var keyState = Keyboard.GetState();
             var pressedKeys = keyState.GetPressedKeys();
-            InteractionController.SetPressedKeys(keyState.GetPressedKeys().Cast<int>());
+            InterfaceController.ProcessInput(keyState.GetPressedKeys());
+            //InteractionController.SetPressedKeys(keyState.GetPressedKeys().Cast<int>());
 
             //Debugger.Text = mouseState.ScrollWheelValue.ToString() + " " + Viewport.Scale;
             MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
@@ -53,12 +56,42 @@ namespace MonoGameDirectX {
 
             //        Viewport.SetViewportSize(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             //    }
-
-            InterfaceController.DoActions();
         }
 
-        int width = 0;
-        int height = 0;
+        void InterfaceController_OnKeysDown(object sender, KeysEventArgs e) {
+            Debugger.Lines.Add("key pressed: " + e.Keys + "; ");
+        }
+        void InterfaceController_OnKeysUp(object sender, KeysEventArgs e) {
+            Debugger.Lines.Add("key released: " + e.Keys + "; ");
+            switch(e.Keys) {
+                case Keys.F:
+                    SwitchFillScreen(); break;
+                case Keys.D:
+                    Renderer.SwitchDebugMode(); break;
+            }
+        }
+
+        void SwitchFillScreen() {
+            try {
+                graphics.IsFullScreen = !graphics.IsFullScreen;
+
+                if(!graphics.IsFullScreen) {
+                    width = graphics.PreferredBackBufferWidth;
+                    height = graphics.PreferredBackBufferHeight;
+                }
+
+                graphics.PreferredBackBufferWidth = !graphics.IsFullScreen ? GraphicsDevice.DisplayMode.Width : width;
+                graphics.PreferredBackBufferHeight = !graphics.IsFullScreen ? GraphicsDevice.DisplayMode.Height : height;
+
+                graphics.ApplyChanges();
+
+                Viewport.SetViewportSize(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            }
+            catch { }
+        }
+
+        //int width = 0;
+        //int height = 0;
         //int mouseWheel = 0;
 
         protected override void Draw(GameTime gameTime) {
@@ -71,12 +104,8 @@ namespace MonoGameDirectX {
         protected override void Initialize() {
             Renderer.Set(GraphicsDevice, Content.Load<SpriteFont>("Arial"));
             //Renderer.SpriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // full screen mode:
-            //graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            //graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            //graphics.IsFullScreen = true;
-            //graphics.ApplyChanges();
+            InterfaceController.OnKeysUp += InterfaceController_OnKeysUp;
+            InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
 
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
 
@@ -104,7 +133,7 @@ namespace MonoGameDirectX {
             InterfaceController.AddKeyBinding(Keys.RightControl, 1, PlayerAction.Yes);
             InterfaceController.AddKeyBinding(Keys.Tab, 1, PlayerAction.Tab);
 
-            InterfaceController.AddKeyBinding(Keys.W,2, PlayerAction.Up);
+            InterfaceController.AddKeyBinding(Keys.W, 2, PlayerAction.Up);
             InterfaceController.AddKeyBinding(Keys.S, 2, PlayerAction.Down);
             InterfaceController.AddKeyBinding(Keys.A, 2, PlayerAction.Left);
             InterfaceController.AddKeyBinding(Keys.D, 2, PlayerAction.Right);
@@ -113,8 +142,8 @@ namespace MonoGameDirectX {
             base.Initialize();
         }
 
-        private void ButtonClicked(object sender, EventArgs e) {
-            Debugger.Text += "," + (sender as Button).Text;
+        void ButtonClicked(object sender, EventArgs e) {
+            Debugger.Lines.Add((sender as Button).Text + " clicked");
         }
 
         protected override void LoadContent() {

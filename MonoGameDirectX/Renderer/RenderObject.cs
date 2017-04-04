@@ -25,11 +25,15 @@ namespace MonoGameDirectX {
 
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
             sprites = sprites.OrderBy(s => s.ZIndex).ToList();
-            foreach(var sprite in sprites)
-                if(sprite.DestRect.Size != new Point() && sprite.DestRect.Intersects(spriteBatch.GraphicsDevice.Viewport.Bounds))
-                    sprite.Draw(spriteBatch, time, false);
-            foreach(Geometry geom in primitives)
-                DrawPrimitives.DrawGeometry(geom, spriteBatch);
+
+            if(Renderer.DebugMode)
+                foreach(Geometry geom in primitives)
+                    DrawPrimitives.DrawGeometry(geom, spriteBatch);
+            else
+                foreach(var sprite in sprites)
+                    if(sprite.DestRect.Size != new Point() &&
+                        sprite.DestRect.Intersects(spriteBatch.GraphicsDevice.Viewport.Bounds))
+                        sprite.Draw(spriteBatch, time, false);
         }
 
         internal void Update() {

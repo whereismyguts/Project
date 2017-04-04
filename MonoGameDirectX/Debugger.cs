@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace MonoGameDirectX {
     public static class Debugger {
-        public static string Text = "";
+        public static List<string> Lines = new List<string>() { "Start..." };
     }
 }

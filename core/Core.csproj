@@ -36,7 +36,6 @@
   <ItemGroup>
     <Compile Include="CollideController.cs" />
     <Compile Include="GeneticAnalizer.cs" />
-    <Compile Include="InteractionController.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="Objects\Bullet.cs" />
     <Compile Include="Objects\Explosion.cs" />
