@@ -10,10 +10,10 @@ namespace GameCore {
 
 
         protected CoordPoint Size { get; set; }
-        public CoordPoint ScreenLocation { get { return RealSize ? Viewport.World2ScreenPoint(Location) : Location; } }
+        public CoordPoint ScreenLocation { get { return IsRealSize ? Viewport.World2ScreenPoint(Location) : Location; } }
         public CoordPoint ScreenSize {
             get {
-                return RealSize ?
+                return IsRealSize ?
                     Viewport.World2ScreenBounds(new Bounds(Location - Size / 2f, Location + Size / 2f)).Size :
                     new Bounds(Location - Size / 2f, Location + Size / 2f).Size;
             }
@@ -21,7 +21,7 @@ namespace GameCore {
 
         public virtual CoordPoint Location { get; set; }
 
-        public bool RealSize { get; set; } = true;
+        public bool IsRealSize { get; set; } = true;
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
     }
 
@@ -41,7 +41,7 @@ namespace GameCore {
 
         public float ScreenRadius {
             get {
-                return RealSize
+                return IsRealSize
 ? Viewport.World2ScreenBounds(new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius))).Width / 2
 : radius;
             }

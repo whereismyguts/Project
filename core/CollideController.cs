@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace GameCore {
+    internal class CollideController {
+
+
+        internal static void Step(List<Ship> ships, IEnumerable<GameObject> spaceBodies) {
+            List<GameObject> bodies = new List<GameObject>(spaceBodies);
+            bodies.AddRange(ships);
+
+
+            var objects = MainCore.Instance.Objects;
+            objects.AddRange(MainCore.Instance.System.Effects);
+
+            foreach(GameObject o1 in objects)
+                if(!o1.TemporaryNoclip)
+                    foreach(GameObject o2 in objects)
+                        if(o1 != o2)
+                            if((o1 is Bullet || o1 is Ship) && (o2 is Body || o2 is Bullet || o2 is Ship)) {
+
+                                Ship s = o1 as Ship;
+                                Bullet b = o2 as Bullet;
+                                if(s != null && b != null) {
+                                    if(b.Owner == s) 
+                                        continue;
+                                    if(CoordPoint.Distance(s.Hull.Location, b.Position) <= s.Hull.Size.X / 2) {
+                                        s.GetDamage(1, b.Owner);
+                                        b.Impact();
+                                    }
+                                } 
+                                else 
+
+                                if(o2.ObjectBounds.Intersect(o1.ObjectBounds)) {
+
+                                    var alfa = (o1.Position - o2.Position).AngleTo(o1.Velosity);
+                                    o1.Velosity = o1.Velosity.GetRotated(alfa) * 1.001f;
+                                    o1.TemporaryNoclip = true;
+                                }
+                            }
+            //         foreach(Body obj in CurrentSystem.Objects)
+            //            if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius) {
+            //                Dead("impact with '" + obj.Name + "'");
+            //}
+
+
+            //        foreach(Ship ship in MainCore.Instance.Ships.Where(s => s != owner)) {
+            //                if(CoordPoint.Distance(ship.Position, Position) <= ship.ObjectBounds.Width / 2) {
+            //                    CurrentSystem.Add(new Explosion(CurrentSystem, Position));
+            //                    ship.GetDamage(1, owner);
+            //                    ToRemove = true;
+            //                    return;
+            //                }
+            //}
+            //}
+        }
+    }
+}

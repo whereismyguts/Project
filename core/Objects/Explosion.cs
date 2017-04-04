@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 namespace GameCore {
     class Explosion: GameObject {
         float rotation;
+        int radius = 3000;
         public override Bounds ObjectBounds {
             get {
-                return new Bounds(Position + new CoordPoint(-3000, -3000), Position + new CoordPoint(3000, 3000));
+                return new Bounds(Position + new CoordPoint(-radius, -radius), Position + new CoordPoint(radius, radius));
             }
         }
         
@@ -35,8 +36,9 @@ namespace GameCore {
             base.Step();
         }
 
-        public Explosion(StarSystem system, CoordPoint position):base(system) {
+        public Explosion(StarSystem system, CoordPoint position, int radius =3000):base(system) {
             this.Position = position;
+            this.radius = radius;
             rotation = (float)Rnd.Get(-Math.PI, Math.PI);
         }
 

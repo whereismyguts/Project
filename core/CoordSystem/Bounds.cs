@@ -54,11 +54,7 @@ namespace GameCore {
                 RightBottom + new CoordPoint(0, Height) };
         }
         public bool Intersect(Bounds bounds) {
-            var points = bounds.GetPoints();
-            for(int i = 0; i < points.Length; i++)
-                if(bounds.Contains(points[i]))
-                    return true;
-            return false;
+            return CoordPoint.Distance(Center, bounds.Center) <= (Width + Height) / 4f + (bounds.Width + bounds.Height) / 4f;
         }
         public override string ToString() {
             return LeftTop + " : " + RightBottom;
@@ -66,8 +62,5 @@ namespace GameCore {
         public CoordPoint LeftTop = new CoordPoint();
         public CoordPoint RightBottom = new CoordPoint();
 
-        public bool Contains(object bounds) {
-            throw new NotImplementedException();
-        }
     }
 }

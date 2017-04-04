@@ -126,10 +126,7 @@ namespace GameCore {
             //if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 25000) {
             //    Dead("lost in the Void");
             //}
-            foreach(Body obj in CurrentSystem.Objects)
-                if(CoordPoint.Distance(obj.Position, Position) <= obj.Radius) {
-                    Dead("impact with '" + obj.Name + "'");
-                }
+
             //if(IsBot) {
             //    List<Action> actions = controller.Step();
             //    foreach(Action a in actions)
@@ -139,7 +136,7 @@ namespace GameCore {
             foreach(Item item in Inventory.Container)
                 item.Step();
 
-            Velosity = Velosity * 0.99f + Direction * GetAcceleration() * 1.5f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this) * 0.7f;
+            Velosity = Velosity * 0.99f + GetAcceleration() * 1.5f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this) * 0.7f;
 
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
@@ -147,11 +144,11 @@ namespace GameCore {
             base.Step();
         }
 
-        float GetAcceleration() {
+        CoordPoint GetAcceleration() {
             IEnumerable<DefaultEngine> engines = Hull.GetEngines();
-            float sum = 0;
+            CoordPoint sum = new CoordPoint();
             foreach(DefaultEngine engine in engines)
-                sum += engine.GetAcceleration();
+                sum += new CoordPoint(0,-1).GetRotated(engine.Rotation) * engine.GetAcceleration();
             return sum;
         }
 

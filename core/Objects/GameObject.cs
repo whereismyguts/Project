@@ -23,6 +23,10 @@ namespace GameCore {
         }
         protected internal virtual void Step() {
             Position += Velosity;
+
+            if(noClipTimer < 10 )
+                noClipTimer++;
+
         }
         /// <summary>foreach in all iternal items (weapons, effects, clouds, engines)</summary>
         public virtual IEnumerable<Item> GetItems() {
@@ -30,6 +34,15 @@ namespace GameCore {
         }
         public abstract IEnumerable<Geometry> GetPrimitives();
         public CoordPoint Velosity { get; set; }
+
+        int noClipTimer=10;
+
+        public bool TemporaryNoclip { get {
+                return noClipTimer < 10;
+            } set {
+                noClipTimer = value? 0 : 10;
+            } }
+
         public Bounds GetScreenBounds() {
             return Viewport.World2ScreenBounds(ObjectBounds);
         }

@@ -19,7 +19,7 @@ namespace GameCore {
         static List<UIState> states = new List<UIState>();
         static int state;
 
-        StarSystem System;
+        public StarSystem System;
         public static MainCore Instance {
             get {
                 if(instance == null)
@@ -94,12 +94,15 @@ namespace GameCore {
             //for(int i = 0; i < 3; i++)
             //    ships.Add(new Ship(StarSystems[0]));
         }
-        IEnumerable<GameObject> GetAllObjects() {
+        IEnumerable<GameObject> GetAllObjects(int types = 0) {
+            if(types ==0 || types ==1)
             foreach(GameObject obj in System.Objects)
                 yield return obj;
-            foreach(GameObject obj in System.Effects)
+            if(types == 0 || types == 2)
+                foreach(GameObject obj in System.Effects)
                 yield return obj;
-            foreach(Ship s in ships) yield return s;
+            if(types == 0 || types == 3)
+                foreach(Ship s in ships) yield return s;
         }
 
         internal static void Console(string message) {
@@ -128,11 +131,17 @@ namespace GameCore {
 
                 //if(turnIsActive || !TurnBasedMode) {
                 //   PlayerController.Step();
+
+
+
+
                 AIShipsController.Step();
 
                 foreach(GameObject obj in Objects)
                     obj.Step();
 
+                CollideController.Step(ships, GetAllObjects(1));
+                
                 //if(TurnBasedMode) {
                 //    turnTime++;
                 //    if(turnTime == TurnLong) {

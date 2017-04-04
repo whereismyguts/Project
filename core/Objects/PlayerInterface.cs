@@ -18,7 +18,7 @@ namespace GameCore {
         }
 
         public IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new InternalRectangle(new CoordPoint(0, 0), new CoordPoint(100, 100), ColorCore.Green) { RealSize = false} };
+            return new Geometry[] { new InternalRectangle(new CoordPoint(0, 0), new CoordPoint(100, 100), ColorCore.Green) { IsRealSize = false} };
         }
     }
 }

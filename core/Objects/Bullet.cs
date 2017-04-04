@@ -9,13 +9,16 @@ namespace GameCore {
         public Bullet(CoordPoint position, CoordPoint direction, Ship owner) : base(owner.CurrentSystem) {
 
             Position = position;
-            this.direction = direction;
+           
             this.owner = owner;
             Velosity = direction * 420;
         }
 
         Ship owner;
-        CoordPoint direction;
+
+        public Ship Owner {
+            get { return owner; }
+        }
 
         public override Bounds ObjectBounds {
             get {
@@ -25,7 +28,7 @@ namespace GameCore {
 
         protected internal override float Rotation {
             get {
-                return direction.Angle;
+                return Velosity.Angle;
             }
         }
 
@@ -42,18 +45,16 @@ namespace GameCore {
         public override IEnumerable<Geometry> GetPrimitives() {
             return new Geometry[] { new InternalCircle(Position, 20) };
         }
+
+        internal void Impact() {
+            CurrentSystem.Add(new Explosion(CurrentSystem, Position, 1200));
+        }
+
         int liveTime = 0;
         protected internal override void Step() {
             if(liveTime > 100)
                 ToRemove = true;
-            foreach(Ship ship in MainCore.Instance.Ships.Where(s => s != owner)) {
-                if(CoordPoint.Distance(ship.Position, Position) <= ship.ObjectBounds.Width / 2) {
-                    CurrentSystem.Add(new Explosion(CurrentSystem, Position));
-                    ship.GetDamage(1, owner);
-                    ToRemove = true;
-                    return;
-                }
-            }
+            
 
             liveTime++;
 
