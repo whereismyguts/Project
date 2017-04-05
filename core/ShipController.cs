@@ -73,21 +73,21 @@ namespace GameCore {
 
         GameObject GetDangerZone() {
             for(int i = 0; i < Owner.CurrentSystem.Objects.Count; i++)
-                if(CoordPoint.Distance(Owner.CurrentSystem.Objects[i].Position, Owner.Position) <= dangerZoneMultiplier * Owner.CurrentSystem.Objects[i].Radius)
+                if(CoordPoint.Distance(Owner.CurrentSystem.Objects[i].Location, Owner.Location) <= dangerZoneMultiplier * Owner.CurrentSystem.Objects[i].Radius)
                     return Owner.CurrentSystem.Objects[i];
 
 
 
             foreach(Ship s in MainCore.Instance.Ships)
-                if(s != Owner && CoordPoint.Distance(Owner.Position, s.Position) < dangerZoneMultiplier * s.ObjectBounds.Width)
+                if(s != Owner && CoordPoint.Distance(Owner.Location, s.Location) < dangerZoneMultiplier * s.ObjectBounds.Width)
                     return s;
             return null;
         }
         void TaskLeaveDeathZone(GameObject obj) {
             // set target location as end of vector, normal to strait vector from center of danger obj
 
-            CoordPoint toTarget = TargetLocation == null ? new CoordPoint() : TargetLocation - Owner.Position;
-            CoordPoint leaveVector = (Owner.Position - obj.Position) * 2;
+            CoordPoint toTarget = TargetLocation == null ? new CoordPoint() : TargetLocation - Owner.Location;
+            CoordPoint leaveVector = (Owner.Location - obj.Location) * 2;
 
             //CoordPoint v1 = new CoordPoint(-leaveVector.Y, leaveVector.X);
             //CoordPoint v2 = new CoordPoint(leaveVector.Y, -leaveVector.X);
@@ -100,12 +100,12 @@ namespace GameCore {
 
             //TargetLocation = leaveVector + normalVector + Owner.Position;
 
-            TargetLocation = Owner.Position + leaveVector;
+            TargetLocation = Owner.Location + leaveVector;
         }
         PlayerAction CheckWayToTarget() {
             if(TargetLocation == null)
                 return PlayerAction.None;
-            float angle = Owner.Direction.AngleTo(TargetLocation - Owner.Position);
+            float angle = Owner.Direction.AngleTo(TargetLocation - Owner.Location);
             if(angle <= acceptableAngle && angle > -acceptableAngle)
                 return PlayerAction.Up;
             return angle > 0 ? PlayerAction.Left : PlayerAction.Right;
@@ -135,23 +135,23 @@ namespace GameCore {
         }
 
         private Ship FindEnemy() {
-            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction && !s.ToRemove).OrderBy(s => CoordPoint.Distance(s.Position, Owner.Position)).ToList();
+            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction && !s.ToRemove).OrderBy(s => CoordPoint.Distance(s.Location, Owner.Location)).ToList();
             return (e != null && e.Count > 0) ? e[Rnd.Get(0, e.Count - 1)] : null;
         }
 
         private void FireIfCan() {
-            if(IsLookingTo(Owner, ToKill, Math.PI / 8) && !IsIntersectSomething(ToKill.Position, Owner.Position))
+            if(IsLookingTo(Owner, ToKill, Math.PI / 8) && !IsIntersectSomething(ToKill.Location, Owner.Location))
                 Owner.Fire();
         }
 
         private bool IsLookingTo(Ship owner, Ship target, double a) {
-            float angle = owner.Direction.AngleTo(target.Position - owner.Position);
+            float angle = owner.Direction.AngleTo(target.Location - owner.Location);
             return angle <= a / 2f && angle >= -a / 2f;
         }
 
         private bool IsIntersectSomething(CoordPoint p1, CoordPoint p2) {
             foreach(var body in Owner.CurrentSystem.Objects)
-                if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Position.X, body.Position.Y, body.Radius))
+                if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Location.X, body.Location.Y, body.Radius))
                     return true;
             return false;
         }
@@ -181,12 +181,12 @@ namespace GameCore {
         }
 
         private void TaskGoToGoal() {
-            if(ToKill != null && CoordPoint.Distance(ToKill.Position, Owner.Position) > 3000)
-                TargetLocation = ToKill.Position;
+            if(ToKill != null && CoordPoint.Distance(ToKill.Location, Owner.Location) > 3000)
+                TargetLocation = ToKill.Location;
         }
 
         private void TaskDecreaseSpeed() {
-            TargetLocation = Owner.Position - Owner.Velosity.UnaryVector * 10;
+            TargetLocation = Owner.Location - Owner.Velosity.UnaryVector * 10;
         }
 
         //private void SetRandomLocationGoal() {

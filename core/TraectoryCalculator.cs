@@ -14,14 +14,14 @@ namespace GameCore {
         #endregion
         public bool IsDead = false;
         public VirtualObject(StarSystem system, float mass, CoordPoint position, CoordPoint velosity) : base(system) {
-            Position = position;
+            Location = position;
             Mass = mass;
             Velosity = velosity;
         }
         protected internal override void Step() {
             Velosity += PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this);
             foreach(Body b in CurrentSystem.Objects)
-                if(CoordPoint.Distance(b.Position, Position) <= b.Radius)
+                if(CoordPoint.Distance(b.Location, Location) <= b.Radius)
                     IsDead = true;
             base.Step();
         }
@@ -35,26 +35,26 @@ namespace GameCore {
         GameObject realObj;
         public List<CoordPoint> Path { get; private set; } = new List<CoordPoint>();
         public TrajectoryCalculator(GameObject obj) {
-            this.virtObj = new VirtualObject(obj.CurrentSystem, obj.Mass, obj.Position, obj.Velosity);
+            this.virtObj = new VirtualObject(obj.CurrentSystem, obj.Mass, obj.Location, obj.Velosity);
             realObj = obj;
         }
         public List<CoordPoint> CalculateStep() {
           
              Path.Clear();
             virtObj.IsDead = false;
-            Path.Add(virtObj.Position);
+            Path.Add(virtObj.Location);
             for(int i = 0; i < 100; i++) {
                 for(int j = 0; j < 20; j++) {
                     virtObj.Step();
                     if(virtObj.IsDead)
                         return Path;
                 }
-                Path.Add(virtObj.Position.Clone());
+                Path.Add(virtObj.Location.Clone());
             }
             return Path;
         }
         internal void Update() {
-            virtObj.Position = realObj.Position;
+            virtObj.Location = realObj.Location;
             virtObj.Velosity = realObj.Velosity;
         }
     }

@@ -4,24 +4,16 @@ using System.Collections.Generic;
 namespace GameCore {
     public abstract class Item: Renderable {
 
-        Viewport Viewport { get { return MainCore.Instance.Viewport; } }
         public virtual void Step() {
 
         }
-        protected internal CoordPoint Origin { get; }
-
-        protected internal CoordPoint Size { get; }
-        public virtual string Name { get; }
-        public virtual int Volume { get { return 10; } }
+        public virtual string Name { get { return "no-name item"; } }
 
         public abstract SpriteInfo SpriteInfo { get; }
-        public CoordPoint ScreenPosition { get { return Viewport.World2ScreenPoint(Location); } }
+        // public CoordPoint ScreenPosition { get { return Viewport.World2ScreenPoint(Location); } }
 
         public abstract float Rotation { get; }
-        public CoordPoint ScreenOrigin { get { return Viewport.World2ScreenBounds(new Bounds(0, 0, Origin.X, Origin.Y)).Size; } }
-        public CoordPoint ScreenSize { get { return Viewport.World2ScreenBounds(new Bounds(0, 0, Size.X, Size.Y)).Size; } }
-
-
+        public string Content { get { return SpriteInfo.Content; } }
 
         public Item(CoordPoint size, CoordPoint origin) { //TODO implement in children
             Size = size;
@@ -60,9 +52,9 @@ namespace GameCore {
         protected internal Ship Owner { get; set; }
 
 
-        public override CoordPoint Location { get { return Owner.Position; }  set { } }
-        int capacity = 100;
-        public override int Volume { get { return capacity; } }
+        public override CoordPoint Location { get { return Owner.Location; } set { } }
+
+
         public override SpriteInfo SpriteInfo {
             get {
                 return new SpriteInfo("hull.png", 1, 1);
@@ -114,10 +106,9 @@ namespace GameCore {
             get {
                 return Slot.Hull.Location + Slot.RelativePosition;
             }
-            set {
-               
-            }
         }
+
+
 
         //protected internal override CoordPoint Location {
         //    

@@ -16,13 +16,13 @@ namespace GameCore {
         public virtual string Name { get { return string.Empty; } }
 
         public abstract Bounds ObjectBounds { get; }
-        public virtual CoordPoint Position { get; set; }
+        public virtual CoordPoint Location { get; set; }
 
         public GameObject(StarSystem system) {
             CurrentSystem = system;
         }
         protected internal virtual void Step() {
-            Position += Velosity;
+            Location += Velosity;
 
             if(noClipTimer < 10 )
                 noClipTimer++;

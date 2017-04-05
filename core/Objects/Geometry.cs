@@ -8,12 +8,14 @@ namespace GameCore {
 
     public abstract class Renderable {
 
+        internal CoordPoint Size { get; set; }
+        protected CoordPoint Origin { get; set; }
 
-        protected CoordPoint Size { get; set; }
-        public CoordPoint ScreenLocation { get { return IsRealSize ? Viewport.World2ScreenPoint(Location) : Location; } }
+        public CoordPoint ScreenOrigin { get { return IsWorldSize ? Viewport.World2ScreenBounds(new Bounds(0, 0, Origin.X, Origin.Y)).Size : Origin; } }
+        public CoordPoint ScreenLocation { get { return IsWorldSize ? Viewport.World2ScreenPoint(Location) : Location; } }
         public CoordPoint ScreenSize {
             get {
-                return IsRealSize ?
+                return IsWorldSize ?
                     Viewport.World2ScreenBounds(new Bounds(Location - Size / 2f, Location + Size / 2f)).Size :
                     new Bounds(Location - Size / 2f, Location + Size / 2f).Size;
             }
@@ -21,7 +23,7 @@ namespace GameCore {
 
         public virtual CoordPoint Location { get; set; }
 
-        public bool IsRealSize { get; set; } = true;
+        public bool IsWorldSize { get; set; } = true;
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
     }
 
@@ -41,7 +43,7 @@ namespace GameCore {
 
         public float ScreenRadius {
             get {
-                return IsRealSize
+                return IsWorldSize
 ? Viewport.World2ScreenBounds(new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius))).Width / 2
 : radius;
             }

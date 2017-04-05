@@ -8,7 +8,7 @@ namespace GameCore {
     public class ProjectileBase: GameObject {
         public ProjectileBase(CoordPoint position, CoordPoint direction, Ship owner) : base(owner.CurrentSystem) {
 
-            Position = position;
+            Location = position;
 
             this.owner = owner;
             Velosity = direction * 420;
@@ -24,7 +24,7 @@ namespace GameCore {
 
         public override Bounds ObjectBounds {
             get {
-                return new Bounds(Position.X - 800, Position.Y - 800, 1600, 1600);
+                return new Bounds(Location.X - 800, Location.Y - 800, 1600, 1600);
             }
         }
 
@@ -53,7 +53,7 @@ namespace GameCore {
         }
 
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new InternalCircle(Position, 200) };
+            return new Geometry[] { new InternalCircle(Location, 200) };
         }
 
         internal bool Impact() {

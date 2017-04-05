@@ -40,12 +40,12 @@ namespace GameCore {
 
             PlayerController.Execute(pair);
             return;
-            switch(pair.Action) {
-                case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
-                case PlayerAction.Up: MainCore.Instance.CurrentState.Select(false, pair.Actor); break;
-                case PlayerAction.Tab: MainCore.SwitchState(); break;
-                case PlayerAction.Yes: MainCore.Instance.CurrentState.DoSelected(pair.Actor); break;
-            }
+            //switch(pair.Action) {
+            //    case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
+            //    case PlayerAction.Up: MainCore.Instance.CurrentState.Select(false, pair.Actor); break;
+            //    case PlayerAction.Tab: MainCore.SwitchState(); break;
+            //    case PlayerAction.Yes: MainCore.Instance.CurrentState.DoSelected(pair.Actor); break;
+            //}
         }
     }
 

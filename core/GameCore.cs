@@ -95,12 +95,12 @@ namespace GameCore {
             //    ships.Add(new Ship(StarSystems[0]));
         }
         IEnumerable<GameObject> GetAllObjects(int types = 0) {
-            if(types ==0 || types ==1)
-            foreach(GameObject obj in System.Objects)
-                yield return obj;
+            if(types == 0 || types == 1)
+                foreach(GameObject obj in System.Objects)
+                    yield return obj;
             if(types == 0 || types == 2)
                 foreach(GameObject obj in System.Effects)
-                yield return obj;
+                    yield return obj;
             if(types == 0 || types == 3)
                 foreach(Ship s in ships) yield return s;
         }
@@ -141,7 +141,7 @@ namespace GameCore {
                     obj.Step();
 
                 CollideController.Step(ships, GetAllObjects(1));
-                
+
                 //if(TurnBasedMode) {
                 //    turnTime++;
                 //    if(turnTime == TurnLong) {
@@ -163,14 +163,14 @@ namespace GameCore {
             CoordPoint total = new CoordPoint();
 
             foreach(var shp in Objects.Where(o => o is Planet || o is Ship)) {
-                if(shp.Position.X > right)
-                    right = shp.Position.X;
-                if(shp.Position.X < left)
-                    left = shp.Position.X;
-                if(shp.Position.Y > top)
-                    top = shp.Position.Y;
-                if(shp.Position.Y < bottom)
-                    bottom = shp.Position.Y;
+                if(shp.Location.X > right)
+                    right = shp.Location.X;
+                if(shp.Location.X < left)
+                    left = shp.Location.X;
+                if(shp.Location.Y > top)
+                    top = shp.Location.Y;
+                if(shp.Location.Y < bottom)
+                    bottom = shp.Location.Y;
             }
             //Cursor = total / Objects.Count;
             //var center = total / Objects.Count;
