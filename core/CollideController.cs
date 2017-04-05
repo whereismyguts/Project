@@ -24,7 +24,7 @@ namespace GameCore {
                                 if(s != null && b != null) {
                                     if(b.Owner == s)
                                         continue;
-                                    if(CoordPoint.Distance(s.Hull.Location, b.Position) <= s.Hull.Size.X / 2) {
+                                    if(CoordPoint.Distance(s.Hull.Location, b.Location) <= s.Hull.Size.X / 2) {
                                         s.GetDamage(b.Damage, b.Owner);
                                         b.Impact();
                                     }
@@ -33,7 +33,7 @@ namespace GameCore {
 
                                 if(o2.ObjectBounds.Intersect(o1.ObjectBounds)) {
 
-                                    var alfa = (o1.Position - o2.Position).AngleTo(o1.Velosity);
+                                    var alfa = (o1.Location - o2.Location).AngleTo(o1.Velosity);
                                     o1.Velosity = o1.Velosity.GetRotated(alfa) * 1.001f;
                                     o1.TemporaryNoclip = true;
                                 }

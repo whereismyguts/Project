@@ -30,7 +30,7 @@ namespace GameCore {
         }
         public override Bounds ObjectBounds {
             get {
-                return new Bounds(Position - Hull.Size / 2f, Position + Hull.Size / 2f); //TODO use origin, because ship posiotion may be no in center of the ship
+                return new Bounds(Location - Hull.Size / 2f, Location + Hull.Size / 2f); //TODO use origin, because ship posiotion may be no in center of the ship
             }
         }
         //public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
@@ -75,7 +75,7 @@ namespace GameCore {
 
             if(OnDead != null)
                 OnDead(this, EventArgs.Empty);
-            CurrentSystem.Add(new Explosion(CurrentSystem, Position));
+            CurrentSystem.Add(new Explosion(CurrentSystem, Location));
             ToRemove = true;
 
             MainCore.Console(Name + " is dead cause of " + cause);
@@ -86,13 +86,13 @@ namespace GameCore {
                 if(slot.Type == SlotType.EngineSlot && !slot.IsEmpty)
                     slot.AttachedItem.Activate();
         }
-        public override CoordPoint Position {
+        public override CoordPoint Location {
             get {
-                return base.Position;
+                return base.Location;
             }
 
             set {
-                base.Position = value;
+                base.Location = value;
                 //  if(Calculator!=null)
                 //Calculator.Update();
             }
@@ -103,10 +103,10 @@ namespace GameCore {
             bool correctPosition = false;
 
             while(!correctPosition) {
-                Position = new CoordPoint(Rnd.Get(-25000, 25000), Rnd.Get(-25000, 25000));
+                Location = new CoordPoint(Rnd.Get(-25000, 25000), Rnd.Get(-25000, 25000));
                 correctPosition = true;
                 foreach(Body body in CurrentSystem.Objects) {
-                    if(body.ObjectBounds.Contains(Position)) {
+                    if(body.ObjectBounds.Contains(Location)) {
                         correctPosition = false;
                         break;
                     }

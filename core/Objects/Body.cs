@@ -12,7 +12,7 @@ namespace GameCore {
 
         public override Bounds ObjectBounds {
             get {
-                return new Bounds(Position - new CoordPoint(radius, radius), Position + new CoordPoint(radius, radius));
+                return new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius));
             }
         }
 
@@ -22,7 +22,7 @@ namespace GameCore {
 
         public Body(CoordPoint location, float radius, StarSystem system) : base(system) {
             this.radius = radius;
-            Position = location;
+            Location = location;
             Mass = radius * 2;
         }
 
@@ -35,7 +35,7 @@ namespace GameCore {
             return new Item[] { };
         }
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new InternalCircle(Position, Radius) };
+            return new Geometry[] { new InternalCircle(Location, Radius) };
         }
     }
 
@@ -43,7 +43,7 @@ namespace GameCore {
         bool clockwise;
         float selfRotation;
 
-        float DistanceToSun { get { return CoordPoint.Distance(RotateCenter.Position, Position); } }
+        float DistanceToSun { get { return CoordPoint.Distance(RotateCenter.Location, Location); } }
         Body RotateCenter { get { return CurrentSystem.Star; } }
 
         protected internal override float Rotation { get { return selfRotation; } }
@@ -51,7 +51,7 @@ namespace GameCore {
         public override string Name { get; } = NameGenerator.Generate(Rnd.Get(0, 3));
 
         public Planet(float distance, float diameter, float rotation, bool clockwise, StarSystem system)
-            : base(new CoordPoint(system.Star.Position + new CoordPoint(distance, 0)), diameter, system) {
+            : base(new CoordPoint(system.Star.Location + new CoordPoint(distance, 0)), diameter, system) {
             starRotation = rotation;
             this.clockwise = clockwise;
             Mass *= 2;
@@ -63,7 +63,7 @@ namespace GameCore {
         protected internal override void Step() {
             if(starRotation >= 2 * Math.PI)
                 starRotation = 0;
-            Position = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Position.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Position.Y));
+            Location = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Location.Y));
 
             starRotation += clockwise ? rotationSpeed : -rotationSpeed;
             selfRotation += .005f;

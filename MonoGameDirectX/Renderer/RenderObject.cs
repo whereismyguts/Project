@@ -135,7 +135,7 @@ namespace MonoGameDirectX {
         }
 
         internal void Update() {
-            Vector2 location = WinAdapter.CoordPoint2Vector(item.ScreenPosition);
+            Vector2 location = WinAdapter.CoordPoint2Vector(item.ScreenLocation);
             rotation = item.Rotation;
             ZIndex = item.SpriteInfo.ZIndex;
             texture = WinAdapter.GetTexture(item.SpriteInfo.Content);
