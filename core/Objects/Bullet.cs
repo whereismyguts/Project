@@ -56,8 +56,14 @@ namespace GameCore {
             return new Geometry[] { new InternalCircle(Position, 200) };
         }
 
-        internal void Impact() {
-            CurrentSystem.Add(new Explosion(CurrentSystem, Position, 1200));
+        internal bool Impact() {
+            if(!ToRemove) {
+                CurrentSystem.Add(new Explosion(CurrentSystem, Position, 1200));
+                ToRemove = true;
+                return true;
+            }
+
+            return false;
         }
 
         int liveTime = 0;

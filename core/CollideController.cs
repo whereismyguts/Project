@@ -6,6 +6,8 @@ namespace GameCore {
 
 
         internal static void Step(List<Ship> ships, IEnumerable<GameObject> spaceBodies) {
+
+           
             List<GameObject> bodies = new List<GameObject>(spaceBodies);
             bodies.AddRange(ships);
 
@@ -17,16 +19,17 @@ namespace GameCore {
                 if(!o1.TemporaryNoclip)
                     foreach(GameObject o2 in objects)
                         if(o1 != o2)
-                            if((o1 is ProjectileBase || o1 is Ship) && (o2 is Body || o2 is ProjectileBase || o2 is Ship)) {
+                            if((o1 is ProjectileBase || o1 is Ship) && (o2 is Body  || o2 is Ship)) {
 
-                                Ship s = o1 as Ship;
-                                ProjectileBase b = o2 as ProjectileBase;
+                                Ship s = o2 as Ship;
+                                ProjectileBase b = o1 as ProjectileBase;
                                 if(s != null && b != null) {
                                     if(b.Owner == s)
                                         continue;
                                     if(CoordPoint.Distance(s.Hull.Location, b.Position) <= s.Hull.Size.X / 2) {
-                                        s.GetDamage(b.Damage, b.Owner);
-                                        b.Impact();
+                                        if(b.Impact())
+                                            s.GetDamage(b.Damage, b.Owner);
+                                        
                                     }
                                 }
                                 else
@@ -34,7 +37,7 @@ namespace GameCore {
                                 if(o2.ObjectBounds.Intersect(o1.ObjectBounds)) {
 
                                     var alfa = (o1.Position - o2.Position).AngleTo(o1.Velosity);
-                                    o1.Velosity = o1.Velosity.GetRotated(alfa) * 1.001f;
+                                    o1.Velosity = o1.Velosity.GetRotated(alfa) * 0.5f;
                                     o1.TemporaryNoclip = true;
                                 }
                             }

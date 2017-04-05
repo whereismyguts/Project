@@ -29,7 +29,7 @@ namespace MonoGameDirectX {
         public static int ScreenHeight { get { return GraphicsDevice.Viewport.Height; } }
         public static int ScreenWidth { get { return GraphicsDevice.Viewport.Width; } }
 
-        public static bool DebugMode { get { return debugMode; } }
+        public static int DebugMode { get { return debugMode; } }
 
         //public List<CoordPoint> TraectoryPath { get; internal set; }
 
@@ -91,9 +91,11 @@ namespace MonoGameDirectX {
             //DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, Color.Brown);
         }
 
-        static bool debugMode = true;
+        static int debugMode = 0;
         internal static void SwitchDebugMode() {
-            debugMode = !debugMode;
+            if(debugMode < 3)
+                debugMode++;
+            else debugMode = 0;
         }
 
         internal static void Set(GraphicsDevice graphicsDevice, SpriteFont spriteFont) {
@@ -167,9 +169,10 @@ namespace MonoGameDirectX {
 
             if(InterfaceController.CurrentState.InGame) {
                 DrawMiniMap();
-                if(debugMode)
+                if(debugMode == 0 || debugMode == 1)
                     DrawDebugInfo();
-                DrawObjects(gameTime);
+                if(debugMode == 0 || debugMode == 2)
+                    DrawObjects(gameTime);
             }
 
             DrawInterface(gameTime);

@@ -26,7 +26,7 @@ namespace MonoGameDirectX {
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
             sprites = sprites.OrderBy(s => s.ZIndex).ToList();
 
-            if(Renderer.DebugMode)
+            if(Renderer.DebugMode < 2)
                 foreach(Geometry geom in primitives)
                     DrawPrimitives.DrawGeometry(geom, spriteBatch);
             else
