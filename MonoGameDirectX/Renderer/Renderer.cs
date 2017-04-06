@@ -59,7 +59,7 @@ namespace MonoGameDirectX {
 
 
                 var rect = ship.GetScreenBounds();
-                DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, ship.Fraction > 0 ? Color.Red : Color.Blue);
+                DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, ship.Fraction > 1 ? Color.Red : Color.Blue);
             }
             //foreach(var c in AIShipsController.Controllers) {
             //    DefaultAutoControl ac = c as DefaultAutoControl;

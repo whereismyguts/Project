@@ -44,7 +44,7 @@ namespace GameCore {
 
         public override IEnumerable<Item> GetItems() {
             //return new Item[] { };
-            return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "exp2.png", 4, 4) };
+            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "exp2.png", 4, 4) };
 
             //return new Item[] { new JustSpriteItem(this, new CoordPoint(200,200), new CoordPoint(100,100), "exp.png", 10) };
         }
@@ -52,51 +52,6 @@ namespace GameCore {
         public override IEnumerable<Geometry> GetPrimitives() {
             //Circle c = new Circle(Position, lifeTime * lifeTime*lifeTime, ColorCore.Red);
             return new Geometry[] { };
-        }
-    }
-
-    public class JustSpriteItem: Item {
-        public override float Rotation {
-            get {
-                if(IsWorldSize)
-                    return Owner.Rotation;
-                else return 0;
-            }
-        }
-        SpriteInfo info;
-        public override SpriteInfo SpriteInfo {
-            get {
-                return info;
-            }
-        }
-
-        public override CoordPoint Location {
-            get {
-                if(IsWorldSize)
-                    return Owner.Location;
-                else
-                    return new CoordPoint(0, 0);
-
-            }
-
-            set {
-                throw new Exception("it didt suppose to happen!");
-            }
-        }
-
-
-
-        public GameObject Owner { get; private set; }
-
-        public JustSpriteItem(GameObject owner, CoordPoint size, CoordPoint origin, string content, int framesX = 1, int framesY = 1) : base(size, origin) {
-            info = new SpriteInfo(content, framesX, framesY);
-            Owner = owner;
-        }
-
-        public override void Activate() {
-        }
-
-        public override void Deactivate() {
         }
     }
 }

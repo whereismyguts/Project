@@ -24,6 +24,7 @@ namespace MonoGameDirectX {
         }
 
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
+            Update();
             sprites = sprites.OrderBy(s => s.ZIndex).ToList();
 
             if(Renderer.DebugMode)

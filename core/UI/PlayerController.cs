@@ -4,29 +4,32 @@ using System.Linq;
 
 namespace GameCore {
     public class PlayerController {
-        static Dictionary<int, Player> Players { get; set; } = new Dictionary<int, Player>();
+        public static List<Player> Players = new List<Player>();
 
-        public static void AddPlayer(int id, Player p) {
-            Players[id] = p;
+        public static void AddPlayer(Player p) {
+            Players.Add(p);
         }
 
         internal static void Execute(ActorKeyPair pair) {
-            if(Players.ContainsKey(pair.Actor))
-                Players[pair.Actor].Execute(pair.Action);
+            Player p = Players.FirstOrDefault(pl => pl.Index == pair.Actor);
+            if(p != null)
+                p.Execute(pair.Action);
         }
 
         public static IEnumerable<IRenderableObject> GetInterfaceElements() {
-            return Players.Select(p => p.Value.Interface);
+            return Players.Select(p => p.Interface);
         }
     }
     public class Player {
         Ship ship;
 
-        public Player(Ship ship) {
+        public Player(Ship ship, int id) {
             this.ship = ship;
+            Index = id;
             Interface = new PlayerInterface(this);
         }
 
+        public int Index { get; internal set; }
         public IRenderableObject Interface { get; internal set; }
 
         public Ship Ship { get { return ship; } }

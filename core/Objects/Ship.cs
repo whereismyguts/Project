@@ -25,7 +25,7 @@ namespace GameCore {
         string name;
         public override string Name {
             get {
-                return name + ", " + (Fraction == 0 ? "Glagnarian" : "Moldochivan");
+                return name + ", Fraction" + Fraction;
             }
         }
         public override Bounds ObjectBounds {

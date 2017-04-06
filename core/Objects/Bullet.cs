@@ -49,7 +49,7 @@ namespace GameCore {
         }
 
         public override IEnumerable<Item> GetItems() {
-            return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "slime.png", 4, 2) };
+            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "slime.png", 4, 2) };
         }
 
         public override IEnumerable<Geometry> GetPrimitives() {
@@ -81,7 +81,7 @@ namespace GameCore {
         public override int Damage { get { return 3; } }
 
         public override IEnumerable<Item> GetItems() {
-            return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "flame_sprite.png", 6, 1) };
+            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "flame_sprite.png", 6, 1) };
         }
     }
 }

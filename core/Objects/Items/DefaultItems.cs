@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GameCore {
     public class DefaultWeapon: AttachedItem {
         int fireCoolDownMax;
-        int fireCoolDown = 0;
+        int fireCoolDown = 10;
         public override string Name {
             get {
                 return "standard weapon";

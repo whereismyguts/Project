@@ -78,16 +78,16 @@ namespace GameCore {
 
 
         void CreatePlayers() {
-            Player p1 = new Player(new Ship(System) { Fraction = 0 });
-            PlayerController.AddPlayer(1, p1);
-            Player p2 = new Player(new Ship(System) { Fraction = 1 });
-            PlayerController.AddPlayer(2, p2);
+            Player p1 = new Player(new Ship(System) { Fraction = 1 }, 1);
+            PlayerController.AddPlayer(p1);
+            Player p2 = new Player(new Ship(System) { Fraction = 2 }, 2);
+            PlayerController.AddPlayer(p2);
 
             ships.Add(p1.Ship);
             ships.Add(p2.Ship);
 
             for(int i = 0; i < 6; i++) {
-                var ship = new Ship(System) { Fraction = i % 2 == 0 ? 1 : 0 };
+                var ship = new Ship(System) { Fraction = i % 2 == 0 ? 1 : 2 };
                 AIShipsController.AddController(new DefaultAutoControl(ship));
                 ships.Add(ship);
             }
@@ -120,7 +120,7 @@ namespace GameCore {
         public void Update() {
             //&& Controller.Keys.ToList().Contains(32)
             if(CurrentState.InGame) {
-                if((ships.Count(s => s.Fraction == 0) == 0 || ships.Count(s => s.Fraction == 1) == 0)) {
+                if((ships.Count(s => s.Fraction == 1) == 0 || ships.Count(s => s.Fraction == 2) == 0)) {
                     foreach(Ship ship in ships)
                         ship.ToRemove = true;
                     AIShipsController.Controllers.Clear();

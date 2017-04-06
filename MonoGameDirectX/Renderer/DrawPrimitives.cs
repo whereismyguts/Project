@@ -50,7 +50,7 @@ namespace MonoGameDirectX {
             if(geom is InternalRectangle) {
                 var rect = geom as InternalRectangle;
                 var screenRect = new Rectangle((int)rect.ScreenLocation.X, (int)rect.ScreenLocation.Y, (int)rect.ScreenSize.X, (int)rect.ScreenSize.Y);
-                DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(rect.Color.r, rect.Color.g, rect.Color.b));
+                DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(rect.Color.r, rect.Color.g, rect.Color.b, 0.5f));
                 //DrawCircle(WinAdapter.CoordPoint2Vector(geom.ScreenPosition), (geom as InternalCircle).ScreenRadius, spriteBatch, new Color(geom.Color.r, geom.Color.g, geom.Color.b));
             }
 

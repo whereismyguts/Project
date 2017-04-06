@@ -55,7 +55,7 @@ namespace MonoGameDirectX {
         }
 
         internal static void UpdateRenderObjects(ref List<RenderObject> renderObjects) {
-            if(renderObjects == null)
+            if( renderObjects == null)
                 renderObjects = CreateRenderObjects();
             else {
                 var newrenderObjects = CreateRenderObjects();
@@ -65,17 +65,10 @@ namespace MonoGameDirectX {
                     if(oldObj == null)
                         renderObjects.Add(newObj);
                 }
-
-
                 renderObjects.RemoveAll(o => newrenderObjects.FirstOrDefault(n => n.GameObject == o.GameObject) == null);
-
             }
             foreach(RenderObject obj in renderObjects)
-
                 obj.Update();
-
-
-
         }
 
         private static List<RenderObject> CreateRenderObjects() {
