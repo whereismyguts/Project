@@ -91,9 +91,9 @@ namespace MonoGameDirectX {
             //DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, Color.Brown);
         }
 
-        static int debugMode = 0;
+        static int debugMode = 1;
         internal static void SwitchDebugMode() {
-            if(debugMode < 3)
+            if(debugMode < 2)
                 debugMode++;
             else debugMode = 0;
         }
@@ -145,7 +145,7 @@ namespace MonoGameDirectX {
         public static void Render(GameTime gameTime) {
 
             GraphicsDevice.Clear(Color.White);
-            SpriteBatch.Begin();
+            SpriteBatch.Begin(SpriteSortMode.Immediate);
 
             //cells = new StationGenerator().Generate();
             //if(GameState == GameState.Station) {
@@ -171,7 +171,7 @@ namespace MonoGameDirectX {
                 DrawMiniMap();
                 if(debugMode == 0 || debugMode == 1)
                     DrawDebugInfo();
-                if(debugMode == 0 || debugMode == 2)
+              
                     DrawObjects(gameTime);
             }
 

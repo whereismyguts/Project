@@ -38,7 +38,7 @@ namespace MonoGameDirectX {
             if(Renderer.DebugMode < 2)
                 foreach(Geometry geom in primitives)
                     DrawPrimitives.DrawGeometry(geom, spriteBatch);
-            else
+            if(Renderer.DebugMode>0)
                 foreach(var sprite in sprites)
                     if(sprite.DestRect.Size != new Point() &&
                         sprite.DestRect.Intersects(spriteBatch.GraphicsDevice.Viewport.Bounds))
