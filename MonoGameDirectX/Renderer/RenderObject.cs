@@ -27,7 +27,7 @@ namespace MonoGameDirectX {
             Update();
             sprites = sprites.OrderBy(s => s.ZIndex).ToList();
 
-            if(Renderer.DebugMode)
+            if(Renderer.DebugMode < 2)
                 foreach(Geometry geom in primitives)
                     DrawPrimitives.DrawGeometry(geom, spriteBatch);
             else

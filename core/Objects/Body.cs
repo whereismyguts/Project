@@ -18,7 +18,7 @@ namespace GameCore {
 
         public float Radius { get { return radius; } }
 
-        public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
+       // public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
 
         public Body(CoordPoint location, float radius, StarSystem system) : base(system) {
             this.radius = radius;
@@ -31,8 +31,9 @@ namespace GameCore {
         }
 
         public override IEnumerable<Item> GetItems() {
+            return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "planet.png", 19,1) };
             // return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size/2, "exp2.png", 4, 4) };
-            return new Item[] { };
+            //return new Item[] { };
         }
         public override IEnumerable<Geometry> GetPrimitives() {
             return new Geometry[] { new InternalCircle(Location, Radius) };
@@ -69,9 +70,9 @@ namespace GameCore {
             selfRotation += .005f;
 
         }
-        public override IEnumerable<Item> GetItems() {
-            return new Item[] { };
-        }
+        //public override IEnumerable<Item> GetItems() {
+        //    return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size/2, "planet1.png", 5,4) };
+        //}
 
         float starRotation = 0;
     }
