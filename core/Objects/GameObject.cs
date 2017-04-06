@@ -37,6 +37,8 @@ namespace GameCore {
 
         int noClipTimer=10;
 
+        public event RenderObjectChangedEventHandler Changed;
+
         public bool TemporaryNoclip { get {
                 return noClipTimer < 10;
             } set {

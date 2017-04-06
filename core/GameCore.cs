@@ -78,6 +78,7 @@ namespace GameCore {
 
 
         void CreatePlayers() {
+            PlayerController.Clear();
             Player p1 = new Player(new Ship(System) { Fraction = 1 }, 1);
             PlayerController.AddPlayer(p1);
             Player p2 = new Player(new Ship(System) { Fraction = 2 }, 2);

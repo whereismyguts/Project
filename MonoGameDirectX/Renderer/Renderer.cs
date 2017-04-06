@@ -130,7 +130,7 @@ namespace MonoGameDirectX {
             int lines = ScreenHeight / 30;
             int line = Debugger.Lines.Count - 1;
             for(int i = ScreenHeight - 30; i > 10 && line >= 0; i -= 30) {
-                SpriteBatch.DrawString(Font, Debugger.Lines[line], new Vector2(0, i), Color.Black);
+                SpriteBatch.DrawString(Font, Debugger.Lines[line], new Vector2(0, i), new Color(Color.Black, 0.8f));
                 line--;
             }
         }

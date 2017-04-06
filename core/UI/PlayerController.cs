@@ -19,6 +19,10 @@ namespace GameCore {
         public static IEnumerable<IRenderableObject> GetInterfaceElements() {
             return Players.Select(p => p.Interface);
         }
+
+        internal static void Clear() {
+            Players.Clear();
+        }
     }
     public class Player {
         Ship ship;

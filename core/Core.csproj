@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CollideController.cs" />
+    <Compile Include="Debugger.cs" />
     <Compile Include="GeneticAnalizer.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="Objects\Bullet.cs" />

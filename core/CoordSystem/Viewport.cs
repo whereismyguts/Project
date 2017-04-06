@@ -58,6 +58,13 @@ namespace GameCore {
             }
         }
 
+        public delegate void ViewportChangedEventHandler(ViewportChangedEventArgs args);
+        public event ViewportChangedEventHandler Changed;
+        void RaiseChanged() {
+            if(Changed != null)
+                Changed(new ViewportChangedEventArgs(this));
+        }
+
         public Viewport(float x, float y, float w, float h) {
             Centerpoint = new CoordPoint(x, y);
             pxlWidth = w;
@@ -77,6 +84,7 @@ namespace GameCore {
         public void SetViewportSize(int width, int height) {
             this.pxlWidth = width;
             this.pxlHeight = height;
+            RaiseChanged();
         }
         public override string ToString() {
             return string.Format("Bounds: {0}:{1} | Size: {2}x{3} | Centerpoint: {4}", Bounds.LeftTop, Bounds.RightBottom, pxlWidth, pxlHeight, Centerpoint);
@@ -135,6 +143,14 @@ namespace GameCore {
 
             Scale = Math.Max(Math.Max(scale1, scale2), Math.Max(scale3, scale4));
             //  scale  == (rb-cp)*2/(pxlWidth , pxlHeight)
+        }
+    }
+
+    public class ViewportChangedEventArgs : EventArgs {
+        Viewport view;
+        public Viewport View { get { return view; } }
+        public ViewportChangedEventArgs(Viewport view) {
+            this.view = view;
         }
     }
 }

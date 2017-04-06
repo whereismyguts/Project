@@ -12,11 +12,14 @@ namespace GameCore {
         public PlayerInterface(Player player) {
             this.player = player;
             UpdateItems();
-            player.Ship.Inventory.Changed += Inventory_Changed;
+            player.Ship.Inventory.Changed += InterfaceChanged;
+            MainCore.Instance.Viewport.Changed += InterfaceChanged;
         }
 
-        void Inventory_Changed(InventoryChangedEventArgs args) {
+        void InterfaceChanged(EventArgs args) {
             UpdateItems();
+            if(Changed != null)
+                Changed(new RenderObjectChangedEventArgs(this));
         }
 
         void UpdateItems() {
@@ -24,7 +27,7 @@ namespace GameCore {
             CoordPoint offset = player.Index == 1 ? new CoordPoint() : new CoordPoint(300, 0);
             Align align = player.Index == 1 ? Align.LeftBottom : Align.RightBottom;
             ScreenSpriteItem hull = new ScreenSpriteItem(align, player.Ship.Hull.Size / 20, player.Ship.Hull.Origin / 20, player.Ship.Hull.SpriteInfo);
-
+            items.Clear();
             items.Add(hull);
             foreach(AttachedItem item in player.Ship.GetItems().Where(s => !(s is ShipHull))) {
                 items.Add(new ScreenSpriteItem(hull, item.Slot.RelativeLocation.GetRotated((float)Math.PI) / 20, item.Size / 20, item.Origin / 20, item.SpriteInfo));
@@ -32,6 +35,8 @@ namespace GameCore {
         }
 
         List<ScreenSpriteItem> items = new List<ScreenSpriteItem>();
+
+        public event RenderObjectChangedEventHandler Changed;
 
         public IEnumerable<Item> GetItems() {
             return items;

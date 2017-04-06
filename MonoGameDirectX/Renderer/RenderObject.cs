@@ -15,16 +15,24 @@ namespace MonoGameDirectX {
 
         public RenderObject(IRenderableObject obj) {
             GameObject = obj;
-            IEnumerable<Item> items = obj.GetItems();
+            Update();
+            GameObject.Changed += GameObject_Changed;
+        }
 
-            foreach(Item item in items)
+        void GameObject_Changed(RenderObjectChangedEventArgs args) {
+            Update();
+        }
+
+        void Update() {
+            IEnumerable<Item> items = GameObject.GetItems();
+            sprites.Clear();
+            foreach(Item item in items) {
                 sprites.Add(new Sprite(item));
-
-            primitives = obj.GetPrimitives();
+            }
         }
 
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
-            Update();
+            Step();
             sprites = sprites.OrderBy(s => s.ZIndex).ToList();
 
             if(Renderer.DebugMode < 2)
@@ -37,10 +45,21 @@ namespace MonoGameDirectX {
                         sprite.Draw(spriteBatch, time, false);
         }
 
-        internal void Update() {
-            foreach(Sprite sprite in sprites)
-                sprite.Update();
+        internal void Step() {
+
+          //  IEnumerable<Item> items = GameObject.GetItems();
+            //sprites.Clear();
+
+            sprites.ForEach(s => s.Step());
+
+            //foreach(Item item in items) {
+            //        sprites.Add(new Sprite(item));
+            //}
+
+
             primitives = GameObject.GetPrimitives();
+
+            
             // var items = GameObject.GetItems();
             //   MiniMapLocation = WinAdapter.CoordPoint2Vector(GameObject.Position / 10000f);
         }
@@ -51,6 +70,8 @@ namespace MonoGameDirectX {
         const float frameTime = 0.04f;
         internal int ZIndex { get; set; } = 0;
         internal Rectangle DestRect { get; private set; }
+        public Item Item { get { return item; } }
+
         int frameHeight;
         int frameIndexX;
         int frameIndexY;
@@ -65,7 +86,7 @@ namespace MonoGameDirectX {
 
         public Sprite(Item item) {
             this.item = item;
-            Update();
+            Step();
         }
 
         public Sprite(SpriteInfo info, Rectangle rectangle) {
@@ -135,7 +156,7 @@ namespace MonoGameDirectX {
             }
         }
 
-        internal void Update() {
+        internal void Step() {
             Vector2 location = WinAdapter.CoordPoint2Vector(item.ScreenLocation);
             rotation = item.Rotation;
             ZIndex = item.SpriteInfo.ZIndex;

@@ -86,6 +86,8 @@ namespace MonoGameDirectX {
                 graphics.ApplyChanges();
 
                 Viewport.SetViewportSize(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+                Debugger.Lines.Add("viewport changed: "+Viewport.PxlWidth +"x"+ Viewport.PxlHeight);
             }
             catch { }
         }
