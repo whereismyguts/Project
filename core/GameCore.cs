@@ -66,7 +66,7 @@ namespace GameCore {
             states.AddRange(newstates);
         }
 
-        public event StateEventHandler StateChanged;
+        //public event StateEventHandler StateChanged;
         //public bool TurnBasedMode { get; private set; } = false;
         public Viewport Viewport { get; set; }
         public static CoordPoint Cursor { get; set; }

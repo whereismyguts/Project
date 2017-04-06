@@ -33,7 +33,7 @@ namespace GameCore {
         public override IEnumerable<Item> GetItems() {
             return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "planet.png", 19,1) };
             // return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size/2, "exp2.png", 4, 4) };
-            return new Item[] { };
+            //return new Item[] { };
         }
         public override IEnumerable<Geometry> GetPrimitives() {
             return new Geometry[] { new InternalCircle(Location, Radius) };

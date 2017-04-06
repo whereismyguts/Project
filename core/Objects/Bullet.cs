@@ -58,7 +58,7 @@ namespace GameCore {
 
         internal bool Impact() {
             if(!ToRemove) {
-                CurrentSystem.Add(new Explosion(CurrentSystem, Position, 1200));
+                CurrentSystem.Add(new Explosion(CurrentSystem, Location, 1200));
                 ToRemove = true;
                 return true;
             }
