@@ -29,7 +29,10 @@ namespace GameCore {
 
         void UpdateItems() {
             Align align = player.Index == 1 ? Align.LeftBottom : Align.RightBottom;
-            ScreenSpriteItem hull = new ScreenSpriteItem(align, player.Ship.Hull.Size / 20, player.Ship.Hull.Origin / 20, player.Ship.Hull.SpriteInfo);
+            ScreenSpriteItem hull = new ScreenSpriteItem(
+                align, player.Ship.Hull.Size / 20,
+                player.Ship.Hull.Origin / 20,
+                player.Ship.Hull.SpriteInfo);
             items.Clear();
             items.Add(hull);
 
@@ -39,9 +42,10 @@ namespace GameCore {
                 items.Add(new ScreenSpriteItem(hull, item.Slot.RelativeLocation.GetRotated((float)Math.PI) / 20, item.Size / 20, item.Origin / 20, item.SpriteInfo));
             }
             //ColorCore color = player.Index == 1 ? ColorCore.Blue : ColorCore.Red;
-            CoordPoint offset = player.Index == 1 ? new CoordPoint() : new CoordPoint(300, 0);
+            //CoordPoint offset = player.Index == 1 ? new CoordPoint() : new CoordPoint(300, 0);
 
             geometry.Clear();
+            geometry.Add(new ScreenGeometry(hull.ScreenLocation, hull.ScreenSize, 20) { ZIndex = -1 });
             if(Focused)
                 geometry.Add(new ScreenGeometry(
                 items[selectedIndex].ScreenLocation,

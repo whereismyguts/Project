@@ -8,10 +8,10 @@ namespace GameCore {
 
     public abstract class Geometry: Renderable {
         //public ColorCore Color { get; protected set; } TODO add color
-        public  Geometry(CoordPoint location, CoordPoint size) {
+        public  Geometry(CoordPoint location, CoordPoint size, int padding=0) {
             Location = location;
-            Size = size;
-            Origin = size / 2;
+            Size = size+2*padding;
+            Origin = size / 2 + padding;
 
         }
 
@@ -23,7 +23,7 @@ namespace GameCore {
     }
 
     public class ScreenGeometry: Geometry {
-        public ScreenGeometry(CoordPoint location, CoordPoint size) : base(location, size) {
+        public ScreenGeometry(CoordPoint location, CoordPoint size, int padding=0) : base(location, size, padding) {
         }
 
         public override CoordPoint ScreenLocation {

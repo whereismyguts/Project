@@ -15,9 +15,9 @@ namespace GameCore {
         public abstract float Rotation { get; }
         public string Content { get { return SpriteInfo.Content; } }
 
-        public Item(CoordPoint size, CoordPoint origin) { //TODO implement in children
-            Size = size;
-            Origin = origin;
+        public Item(CoordPoint size, CoordPoint origin, int padding=0) { //TODO implement in children
+            Size = size+padding*2;
+            Origin = origin+padding;
         }
 
         public abstract void Activate();

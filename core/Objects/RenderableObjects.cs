@@ -26,7 +26,7 @@ namespace GameCore {
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
     }
 
-    public enum Align { LeftBottom, RightBottom };
+    public enum Align { LeftBottom, RightBottom, FillBottom };
 
     public class ScreenSpriteItem: Item {
         SpriteInfo info;
@@ -65,10 +65,18 @@ namespace GameCore {
             get { return info; }
         }
 
-        public ScreenSpriteItem(Align align, CoordPoint size, CoordPoint origin, SpriteInfo info) : base(size, origin) {
+        public ScreenSpriteItem(Align align, CoordPoint size, CoordPoint origin, SpriteInfo info, int padding = 0) : base(size, origin) {
             this.info = info;
             this.align = align;
-            Location = CalcArrangeLocation(align, new CoordPoint(), Viewport.World2ScreenBounds(Viewport.Bounds).Size, Size) + Origin;
+            var viewportSize = Viewport.World2ScreenBounds(Viewport.Bounds).Size;
+            Location = CalcArrangeLocation(align, new CoordPoint(), viewportSize, Size) + Origin;
+            Size = CalcArrangeSize(align, viewportSize, Size);
+        }
+
+        static CoordPoint CalcArrangeSize(Align align, CoordPoint ownerSize, CoordPoint objSize) {
+            if(align == Align.FillBottom)
+                return new CoordPoint(ownerSize.X, objSize.Y);
+            return objSize;
         }
 
         public ScreenSpriteItem(ScreenSpriteItem owner, CoordPoint relativeLocation, CoordPoint size, CoordPoint origin, SpriteInfo info) : base(size, origin) {
@@ -83,6 +91,8 @@ namespace GameCore {
                     return ownerLocation + new CoordPoint(0, ownerSize.Y - objSize.Y);
                 case Align.RightBottom:
                     return ownerLocation + ownerSize - objSize;
+                case Align.FillBottom:
+                    return ownerLocation + new CoordPoint(ownerSize.X / 2 - objSize.X / 2, ownerSize.Y - objSize.Y);
             }
             return null;
         }

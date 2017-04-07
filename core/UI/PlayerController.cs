@@ -16,8 +16,14 @@ namespace GameCore {
                 p.Execute(pair.Action, clickedOnce);
         }
 
+        static CommonInterface commonInterface = new CommonInterface();
+
         public static IEnumerable<IRenderableObject> GetInterfaceElements() {
-            return Players.Select(p => p.Interface);
+
+            List<IRenderableObject> res = new List<IRenderableObject>();
+            res.Add(commonInterface);
+            res.AddRange(Players.Select(p => p.Interface));
+            return res;
         }
 
         internal static void Clear() {
@@ -39,11 +45,8 @@ namespace GameCore {
         public Ship Ship { get { return ship; } }
 
 
-        TimeSpan lastPressed = new TimeSpan();
 
         internal void Execute(PlayerAction action, bool clickedOnce) {
-
-
             if(Interface.Focused) {
                 if(clickedOnce)
                     switch(action) {
@@ -65,6 +68,26 @@ namespace GameCore {
                     case PlayerAction.Yes: ship.Fire(); break;
                     case PlayerAction.Tab: if(clickedOnce) Interface.Focus(); break;
                 }
+        }
+    }
+    public class CommonInterface: IRenderableObject {
+        public event RenderObjectChangedEventHandler Changed;
+
+        List<Item> items = new List<Item>();
+        List<Geometry> geometry = new List<Geometry>();
+
+        public CommonInterface() {
+            ScreenSpriteItem item = new ScreenSpriteItem(Align.FillBottom, new CoordPoint(150, 150), new CoordPoint(75, 75), new SpriteInfo("256tile.png") { ZIndex = -2 });
+            items.Add(item);
+            geometry.Add(new ScreenGeometry(item.ScreenLocation, item.ScreenSize) { ZIndex = -3 });
+        }
+
+        public IEnumerable<Item> GetItems() {
+            return items;
+        }
+
+        public IEnumerable<Geometry> GetPrimitives() {
+            return geometry;
         }
     }
 }
