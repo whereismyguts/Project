@@ -29,7 +29,6 @@ namespace GameCore {
     public enum Align { LeftBottom, RightBottom };
 
     public class ScreenSpriteItem: Item {
-
         SpriteInfo info;
         ScreenSpriteItem owner;
         Align align;
@@ -42,6 +41,30 @@ namespace GameCore {
                 return SpriteInfo.Content + " Screen Sprite Item";
             }
         }
+        public override CoordPoint ScreenLocation {
+            get {
+                return Location;
+            }
+        }
+        public override CoordPoint ScreenOrigin {
+            get {
+                return Origin;
+            }
+        }
+        public override CoordPoint ScreenSize {
+            get {
+                return new Bounds(Location - Size / 2f, Location + Size / 2f).Size;
+            }
+        }
+        public override float Rotation {
+            get {
+                return 0; // yet
+            }
+        }
+        public override SpriteInfo SpriteInfo {
+            get { return info; }
+        }
+
         public ScreenSpriteItem(Align align, CoordPoint size, CoordPoint origin, SpriteInfo info) : base(size, origin) {
             this.info = info;
             this.align = align;
@@ -54,12 +77,6 @@ namespace GameCore {
             Location = owner.Location - relativeLocation;// CalcArrangeLocation(align, owner.Location, owner.Size, Size);
         }
 
-        public override CoordPoint ScreenLocation {
-            get {
-                return Location;
-            }
-        }
-
         static CoordPoint CalcArrangeLocation(Align objAlign, CoordPoint ownerLocation, CoordPoint ownerSize, CoordPoint objSize) {
             switch(objAlign) {
                 case Align.LeftBottom:
@@ -69,30 +86,6 @@ namespace GameCore {
             }
             return null;
         }
-
-        public override CoordPoint ScreenOrigin {
-            get {
-                return Origin;
-            }
-        }
-
-        public override CoordPoint ScreenSize {
-            get {
-                return new Bounds(Location - Size / 2f, Location + Size / 2f).Size;
-            }
-        }
-        public override float Rotation {
-            get {
-                return 0; // yet
-            }
-        }
-
-        public override SpriteInfo SpriteInfo {
-            get {
-                return info;
-            }
-        }
-
         public override void Activate() {
         }
         public override void Deactivate() {
@@ -100,26 +93,19 @@ namespace GameCore {
     }
 
     public class WordSpriteItem: Item {
-        public override float Rotation {
-            get {
-                return Owner.Rotation;
-            }
-        }
         SpriteInfo info;
+
+        public override float Rotation {
+            get { return Owner.Rotation; }
+        }
+
         public override SpriteInfo SpriteInfo {
-            get {
-                return info;
-            }
+            get { return info; }
         }
 
         public override CoordPoint Location {
-            get {
-                return Owner.Location;
-            }
-
-            set {
-                throw new Exception("it didt suppose to happen!");
-            }
+            get { return Owner.Location; }
+            set { throw new Exception("it didt suppose to happen!"); }
         }
 
         public GameObject Owner { get; private set; }

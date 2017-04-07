@@ -181,7 +181,7 @@ namespace GameCore {
             List<Geometry> geom = new List<Geometry>();
 
             ColorCore color = Hull.Health > 6 ? ColorCore.Green : Hull.Health > 3 ? ColorCore.Yellow : ColorCore.Red;
-            geom.Add(new InternalRectangle(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200), color));
+            geom.Add(new WorldGeometry(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200)));
 
             //geom.Add(new InternalCircle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
             return geom;

@@ -33,42 +33,62 @@ namespace MonoGameDirectX {
 
         internal void Draw(SpriteBatch spriteBatch, GameTime time) {
             Step();
-            sprites = sprites.OrderBy(s => s.ZIndex).ToList();
+            drawQueue = drawQueue.OrderBy(q => q.ZIndex).ToList();
 
-            if(Renderer.DebugMode < 2)
-                foreach(Geometry geom in primitives)
-                    DrawPrimitives.DrawGeometry(geom, spriteBatch);
-            if(Renderer.DebugMode>0)
-                foreach(var sprite in sprites)
-                    if(sprite.DestRect.Size != new Point() &&
-                        sprite.DestRect.Intersects(spriteBatch.GraphicsDevice.Viewport.Bounds))
-                        sprite.Draw(spriteBatch, time, false);
+            foreach(var selfDrawn in drawQueue)
+                selfDrawn.Draw(spriteBatch, time, false);
         }
 
         internal void Step() {
+            drawQueue.Clear();
 
-          //  IEnumerable<Item> items = GameObject.GetItems();
-            //sprites.Clear();
+            if(Renderer.DebugMode > 0) {
+                sprites.ForEach(s => s.Step());
+                drawQueue.AddRange(sprites);
+            }
 
-            sprites.ForEach(s => s.Step());
-
-            //foreach(Item item in items) {
-            //        sprites.Add(new Sprite(item));
-            //}
-
-
-            primitives = GameObject.GetPrimitives();
-
-            
-            // var items = GameObject.GetItems();
-            //   MiniMapLocation = WinAdapter.CoordPoint2Vector(GameObject.Position / 10000f);
+            if(Renderer.DebugMode < 2) {
+                var geometries = GameObject.GetPrimitives();
+                foreach(Geometry g in geometries)
+                    drawQueue.Add(new DrawableGeometry(g));
+            }
         }
-        List<Sprite> sprites = new List<Sprite>();
-        IEnumerable<Geometry> primitives = new List<Geometry>();
+        List<IDrawMyself> sprites = new List<IDrawMyself>();
+        List<IDrawMyself> drawQueue = new List<IDrawMyself>();
     }
-    class Sprite {
+
+
+    class DrawableGeometry: IDrawMyself {
+        Geometry geometry;
+
+        public int ZIndex {
+            get {
+                return geometry.ZIndex;
+            }
+        }
+
+        public DrawableGeometry(Geometry geometry) {
+            this.geometry = geometry;
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GameTime time, bool fit) {
+            DrawPrimitives.DrawGeometry(geometry, spriteBatch);
+        }
+
+        public void Step() {
+
+        }
+    }
+
+    interface IDrawMyself {
+        int ZIndex { get; }
+        void Draw(SpriteBatch spriteBatch, GameTime time, bool fit);
+        void Step();
+    }
+
+    class Sprite: IDrawMyself {
         const float frameTime = 0.04f;
-        internal int ZIndex { get; set; } = 0;
+        public int ZIndex { get; set; } = 0;
         internal Rectangle DestRect { get; private set; }
         public Item Item { get { return item; } }
 
@@ -133,16 +153,20 @@ namespace MonoGameDirectX {
             //spriteBatch.DrawString(Renderer.Font, texture.Name, (DestRect.Center).ToVector2(), Color.Red);
         }
 
-        internal void Draw(SpriteBatch spBatch, GameTime t, bool fit) {
-            if(texture == null)
-                return;
-            Rectangle temp = DestRect;
-            if(fit)
-                ResizeToFit();
-            if(framesX > 1 || framesY > 1)
-                DrawAnimation(spBatch, t);
-            else DrawImage(spBatch);
-            DestRect = temp;
+        public void Draw(SpriteBatch spBatch, GameTime t, bool fit) {
+
+            if(DestRect.Size != new Point() && DestRect.Intersects(spBatch.GraphicsDevice.Viewport.Bounds)) {
+
+                if(texture == null)
+                    return;
+                Rectangle temp = DestRect;
+                if(fit)
+                    ResizeToFit();
+                if(framesX > 1 || framesY > 1)
+                    DrawAnimation(spBatch, t);
+                else DrawImage(spBatch);
+                DestRect = temp;
+            }
         }
 
         void ResizeToFit() {
@@ -156,7 +180,7 @@ namespace MonoGameDirectX {
             }
         }
 
-        internal void Step() {
+        public void Step() {
             Vector2 location = WinAdapter.CoordPoint2Vector(item.ScreenLocation);
             rotation = item.Rotation;
             ZIndex = item.SpriteInfo.ZIndex;

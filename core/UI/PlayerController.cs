@@ -10,10 +10,10 @@ namespace GameCore {
             Players.Add(p);
         }
 
-        internal static void Execute(ActorKeyPair pair) {
+        internal static void Execute(ActorKeyPair pair, bool clickedOnce) {
             Player p = Players.FirstOrDefault(pl => pl.Index == pair.Actor);
             if(p != null)
-                p.Execute(pair.Action);
+                p.Execute(pair.Action, clickedOnce);
         }
 
         public static IEnumerable<IRenderableObject> GetInterfaceElements() {
@@ -34,19 +34,37 @@ namespace GameCore {
         }
 
         public int Index { get; internal set; }
-        public IRenderableObject Interface { get; internal set; }
+        public PlayerInterface Interface { get; internal set; }
 
         public Ship Ship { get { return ship; } }
 
-        internal void Execute(PlayerAction action) {
-            switch(action) {
-                case PlayerAction.Down: //do nothing yet
-                    break;
-                case PlayerAction.Up: ship.Accselerate(); break;
-                case PlayerAction.Left: ship.RotateL(); break;
-                case PlayerAction.Right: ship.RotateR(); break;
-                case PlayerAction.Yes: ship.Fire(); break;
+
+        TimeSpan lastPressed = new TimeSpan();
+
+        internal void Execute(PlayerAction action, bool clickedOnce) {
+
+
+            if(Interface.Focused) {
+                if(clickedOnce)
+                    switch(action) {
+                        case PlayerAction.Down: Interface.SelectNext(); break;
+                        case PlayerAction.Up: Interface.SelectPrev(); break;
+                        case PlayerAction.Left: Interface.SelectPrev(); break;
+                        case PlayerAction.Right: Interface.SelectNext(); break;
+                        case PlayerAction.Yes: Interface.Select(); break;
+                        case PlayerAction.Tab: Interface.Focus(); break;
+                    }
             }
+            else
+                switch(action) {
+                    case PlayerAction.Down: //do nothing yet
+                        break;
+                    case PlayerAction.Up: ship.Accselerate(); break;
+                    case PlayerAction.Left: ship.RotateL(); break;
+                    case PlayerAction.Right: ship.RotateR(); break;
+                    case PlayerAction.Yes: ship.Fire(); break;
+                    case PlayerAction.Tab: if(clickedOnce) Interface.Focus(); break;
+                }
         }
     }
 }

@@ -10,19 +10,12 @@ namespace GameCore {
     public interface ICommandsBehavior {
         //void Up(int actor);
         //void Tab(int actor);
-        void Act(ActorKeyPair pair);
+        void Act(ActorKeyPair pair, bool clickedOnce);
     }
     public class MenuBehavior: ICommandsBehavior {
-
-
-        TimeSpan lastPressed = new TimeSpan();
-        public void Act(ActorKeyPair pair) {
-
-            TimeSpan now = DateTime.Now.TimeOfDay;
-            if((now - lastPressed).TotalMilliseconds < 100)
-                return;
-            lastPressed = now;
-
+        
+        public void Act(ActorKeyPair pair, bool clickedOnce) {
+         if(clickedOnce)
             switch(pair.Action) {
                 case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
                 case PlayerAction.Up: MainCore.Instance.CurrentState.Select(false, pair.Actor); break;
@@ -36,9 +29,9 @@ namespace GameCore {
     //public class InventoryBehavior: ICommandsBehavior {
     //}
     public class GameBehavior: ICommandsBehavior {
-        public void Act(ActorKeyPair pair) {
+        public void Act(ActorKeyPair pair, bool clickedOnce) {
 
-            PlayerController.Execute(pair);
+            PlayerController.Execute(pair, clickedOnce);
             return;
             //switch(pair.Action) {
             //    case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
@@ -57,8 +50,8 @@ namespace GameCore {
         protected ICommandsBehavior Behavior { get; set; }
         public abstract List<IControl> Controls { get; }
 
-        public void DoAction(ActorKeyPair pair) {
-            Behavior.Act(pair);
+        public void DoAction(ActorKeyPair pair, bool clickedOnce) {
+            Behavior.Act(pair, clickedOnce);
         }
 
         public abstract void AddControl(IControl control, int actor);

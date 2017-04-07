@@ -34,42 +34,62 @@ namespace MonoGameDirectX {
             var mouseState = Mouse.GetState();
             var keyState = Keyboard.GetState();
             var pressedKeys = keyState.GetPressedKeys();
-            InterfaceController.ProcessInput(keyState.GetPressedKeys());
-            //InteractionController.SetPressedKeys(keyState.GetPressedKeys().Cast<int>());
 
-            //Debugger.Text = mouseState.ScrollWheelValue.ToString() + " " + Viewport.Scale;
+            if(false) {
+                GamePadCapabilities capabilities = GamePad.GetCapabilities(0);
+                if(capabilities.IsConnected) {
+                    GamePadState state = GamePad.GetState(PlayerIndex.One);
+                    if(capabilities.HasLeftXThumbStick) {
+                        if(state.ThumbSticks.Left.X < -0.5f) {
+                            //position.X -= 10.0f;
+                        }
+                        if(state.ThumbSticks.Left.X > 0.5f) {
+                            //   position.X += 10.0f;
+                        }
+                    }
+
+                    // You can also check the controllers "type"
+                    if(capabilities.GamePadType == GamePadType.GamePad) {
+                        var buttons = Enum.GetValues(typeof(Buttons)).Cast<Buttons>();
+                        List<Buttons> pressedButtons = new List<Buttons>();
+                        pressedButtons.AddRange(buttons.Where(b => state.IsButtonDown(b)));
+                        InterfaceController.ProcessInput(pressedButtons);
+                    }
+                }
+            }
+            InterfaceController.ProcessInput(pressedKeys);
+
             MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
-
-            //if(Controller.KeysUp.Count>0)
-            //if(Controller.KeysUp.Contains(70) ) {
-            //    graphics.IsFullScreen = !graphics.IsFullScreen;
-
-            //        if(!graphics.IsFullScreen) {
-            //            width = graphics.PreferredBackBufferWidth;
-            //            height = graphics.PreferredBackBufferHeight;
-            //        }
-
-            //        graphics.PreferredBackBufferWidth = !graphics.IsFullScreen ? GraphicsDevice.DisplayMode.Width : width;
-            //        graphics.PreferredBackBufferHeight = !graphics.IsFullScreen ? GraphicsDevice.DisplayMode.Height : height;
-
-            //        graphics.ApplyChanges();
-
-            //        Viewport.SetViewportSize(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            //    }
         }
+
+
+
 
         void InterfaceController_OnKeysDown(object sender, KeysEventArgs e) {
             Debugger.Lines.Add("key pressed: " + e.Keys + "; ");
+            if(e.Keys == Keys.LeftControl)
+                ctrlpressed = true;
         }
+
+        bool ctrlpressed = false;
+
         void InterfaceController_OnKeysUp(object sender, KeysEventArgs e) {
             Debugger.Lines.Add("key released: " + e.Keys + "; ");
             switch(e.Keys) {
                 case Keys.F:
                     SwitchFillScreen(); break;
                 case Keys.D:
-                    Renderer.SwitchDebugMode(); break;
+                    if(ctrlpressed)
+                        Renderer.SwitchDebugMode(); break;
+                case Keys.LeftControl:
+                    ctrlpressed = false; break;
             }
         }
+
+        void InterfaceController_OnButtonsUp(object sender, ButtonsEventArgs e) {
+            Debugger.Lines.Add("button released: " + e.Buttons + "; ");
+        }
+
 
         void SwitchFillScreen() {
             try {
@@ -87,7 +107,7 @@ namespace MonoGameDirectX {
 
                 Viewport.SetViewportSize(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
-                Debugger.Lines.Add("viewport changed: "+Viewport.PxlWidth +"x"+ Viewport.PxlHeight);
+                Debugger.Lines.Add("viewport changed: " + Viewport.PxlWidth + "x" + Viewport.PxlHeight);
             }
             catch { }
         }
@@ -108,6 +128,7 @@ namespace MonoGameDirectX {
             //Renderer.SpriteBatch = new SpriteBatch(GraphicsDevice);
             InterfaceController.OnKeysUp += InterfaceController_OnKeysUp;
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
+            InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
 
@@ -139,7 +160,15 @@ namespace MonoGameDirectX {
             InterfaceController.AddKeyBinding(Keys.S, 2, PlayerAction.Down);
             InterfaceController.AddKeyBinding(Keys.A, 2, PlayerAction.Left);
             InterfaceController.AddKeyBinding(Keys.D, 2, PlayerAction.Right);
-            InterfaceController.AddKeyBinding(Keys.M, 2, PlayerAction.Yes);
+            InterfaceController.AddKeyBinding(Keys.Z, 2, PlayerAction.Yes);
+            InterfaceController.AddKeyBinding(Keys.X, 2, PlayerAction.Tab);
+
+            InterfaceController.AddButtonBinding(Buttons.LeftThumbstickUp, 2, PlayerAction.Up);
+            InterfaceController.AddButtonBinding(Buttons.LeftThumbstickDown, 2, PlayerAction.Down);
+            InterfaceController.AddButtonBinding(Buttons.LeftThumbstickLeft, 2, PlayerAction.Left);
+            InterfaceController.AddButtonBinding(Buttons.LeftThumbstickRight, 2, PlayerAction.Right);
+            InterfaceController.AddButtonBinding(Buttons.X, 2, PlayerAction.Yes);
+            InterfaceController.AddButtonBinding(Buttons.B, 2, PlayerAction.Tab);
 
             base.Initialize();
         }

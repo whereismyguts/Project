@@ -36,7 +36,7 @@ namespace GameCore {
             //return new Item[] { };
         }
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new InternalCircle(Location, Radius) };
+            return new Geometry[] { new WorldGeometry(Location, new CoordPoint(radius*2,radius*2)) };
         }
     }
 

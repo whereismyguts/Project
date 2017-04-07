@@ -6,36 +6,44 @@ using System.Threading.Tasks;
 
 namespace GameCore {
 
-    public class Geometry: Renderable {
-        public ColorCore Color { get; protected set; }
-    }
-    
+    public abstract class Geometry: Renderable {
+        //public ColorCore Color { get; protected set; } TODO add color
+        public  Geometry(CoordPoint location, CoordPoint size) {
+            Location = location;
+            Size = size;
+            Origin = size / 2;
 
-    public class InternalCircle: Geometry {
-
-        private float radius;
-
-        public InternalCircle(CoordPoint position, float radius, ColorCore color = new ColorCore()) {
-            Location = position;
-            Color = color;
-            Size = new CoordPoint(radius * 2, radius * 2);
-            this.radius = radius;
         }
 
-        public float ScreenRadius {
+        public int ZIndex { get; set; } = 1;
+    }
+    public class WorldGeometry: Geometry {
+        public WorldGeometry(CoordPoint location, CoordPoint size) : base(location, size) {
+        }
+    }
+
+    public class ScreenGeometry: Geometry {
+        public ScreenGeometry(CoordPoint location, CoordPoint size) : base(location, size) {
+        }
+
+        public override CoordPoint ScreenLocation {
             get {
-                return Viewport.World2ScreenBounds(new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius))).Width / 2;
+                return Location;
             }
         }
-    }
-    public class InternalRectangle: Geometry {
 
-
-
-        public InternalRectangle(CoordPoint leftTop, CoordPoint size, ColorCore color) {
-            this.Location = leftTop;
-            this.Size = size;
-            this.Color = color;
+        public override CoordPoint ScreenOrigin {
+            get {
+                return Origin;
+            }
         }
+
+        public override CoordPoint ScreenSize {
+            get {
+                return Size;
+            }
+        }
+
     }
+
 }
