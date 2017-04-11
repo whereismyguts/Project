@@ -44,7 +44,7 @@ namespace MonoGameDirectX {
                 DrawPrimitives.DrawLine(
                     WinAdapter.CoordPoint2Vector(shipBounds.Center),
                     (WinAdapter.CoordPoint2Vector((shipBounds + ship.Direction * 10).Center)),
-                    SpriteBatch, 3, new Color(ship.Color.r, ship.Color.g, ship.Color.b));
+                    SpriteBatch, 3, WinAdapter.Color(ship.Color));
                 //if(ship.Velosity.Length > 0)
                 //    DrawPrimitives.DrawLine(
                 //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
@@ -56,6 +56,13 @@ namespace MonoGameDirectX {
                 //    for(int i = 0; i < ship.Calculator.Path.Count - 1; i++)
                 //        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
                 //}
+
+                SpriteBatch.DrawString(Font, ship.Name, WinAdapter.CoordPoint2Vector(shipBounds.Center + new CoordPoint(0, -20)), WinAdapter.Color(ship.Color));
+
+                DrawPrimitives.DrawLine(
+                  WinAdapter.CoordPoint2Vector(shipBounds.Center),
+                  WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Location + ship.ForceVector * 1000)),
+                  SpriteBatch, 1, Color.Red);
 
 
                 var rect = ship.GetScreenBounds();
@@ -171,8 +178,8 @@ namespace MonoGameDirectX {
                 DrawMiniMap();
                 if(debugMode == 0 || debugMode == 1)
                     DrawDebugInfo();
-              
-                    DrawObjects(gameTime);
+
+                DrawObjects(gameTime);
             }
 
             DrawInterface(gameTime);

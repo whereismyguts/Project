@@ -131,23 +131,26 @@ namespace MonoGameDirectX {
             InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
             Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
+            MainCore.AddPlanets();
 
             InterfaceController.AddState(new MenuState(), new GameState()); // order is matters
 
-            var b1 = new Button(100, 50, 100, 40, "b1");
-            var b2 = new Button(100, 100, 100, 40, "b2");
-            var b3 = new Button(100, 150, 100, 40, "b3");
-            var b4 = new Button(100, 200, 100, 40, "b4");
+            var startButton = new Button(100, 50, 200, 40, "start");
+            //var b2 = new Button(100, 100, 200, 40, "b2");
+            //var b3 = new Button(100, 150, 200, 40, "b3");
+            var quitButton = new Button(100, 200, 200, 40, "quit");
 
-            b1.ButtonClick += ButtonClicked;
-            b2.ButtonClick += ButtonClicked;
-            b3.ButtonClick += ButtonClicked;
-            b4.ButtonClick += ButtonClicked;
+            startButton.ButtonClick += ButtonClicked;
+            //b2.ButtonClick += ButtonClicked;
+            //b3.ButtonClick += ButtonClicked;
+            quitButton.ButtonClick += ButtonClicked;
+            startButton.ButtonClick += StartButton_ButtonClick;
+            quitButton.ButtonClick += QuitButton_ButtonClick;
 
-            InterfaceController.AddControl(0, b1);
-            InterfaceController.AddControl(0, b2);
-            InterfaceController.AddControl(0, b3);
-            InterfaceController.AddControl(0, b4);
+            InterfaceController.AddControl(0, startButton);
+            //InterfaceController.AddControl(0, b2);
+            //InterfaceController.AddControl(0, b3);
+            InterfaceController.AddControl(0, quitButton);
 
             InterfaceController.AddKeyBinding(Keys.Up, 1, PlayerAction.Up);
             InterfaceController.AddKeyBinding(Keys.Down, 1, PlayerAction.Down);
@@ -171,6 +174,14 @@ namespace MonoGameDirectX {
             InterfaceController.AddButtonBinding(Buttons.B, 2, PlayerAction.Tab);
 
             base.Initialize();
+        }
+
+        private void QuitButton_ButtonClick(object sender, EventArgs e) {
+            Exit();
+        }
+
+        private void StartButton_ButtonClick(object sender, EventArgs e) {
+            MainCore.SwitchState();
         }
 
         void ButtonClicked(object sender, EventArgs e) {

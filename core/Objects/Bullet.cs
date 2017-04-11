@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameCore {
     public class ProjectileBase: GameObject {
-        public ProjectileBase(CoordPoint position, CoordPoint direction, Ship owner) : base(owner.CurrentSystem) {
+        public ProjectileBase(CoordPoint position, CoordPoint direction, Ship owner) {
 
             Location = position;
 
@@ -34,12 +34,6 @@ namespace GameCore {
             }
         }
 
-        internal override bool IsMinimapVisible {
-            get {
-                return false;
-            }
-        }
-
         public virtual int Damage {
             get { return 1; }
         }
@@ -53,12 +47,12 @@ namespace GameCore {
         }
 
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new WorldGeometry(Location, new CoordPoint(400,400)) };
+            return new Geometry[] { new WorldGeometry(Location, new CoordPoint(400, 400)) };
         }
 
         internal bool Impact() {
             if(!ToRemove) {
-                CurrentSystem.Add(new Explosion(CurrentSystem, Location, 1200));
+                new Explosion(CurrentSystem, Location, 1200);
                 ToRemove = true;
                 return true;
             }
@@ -76,10 +70,15 @@ namespace GameCore {
 
             base.Step();
         }
+
+        protected override string GetName() {
+            return "PROJECTILE: " + Owner.Name;
+        }
     }
 
     public class Rocket: ProjectileBase {
         public Rocket(CoordPoint position, CoordPoint direction, Ship owner) : base(position, direction, owner) {
+
         }
 
         protected override int Speed { get { return 200; } }
@@ -88,6 +87,10 @@ namespace GameCore {
 
         public override IEnumerable<Item> GetItems() {
             return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "flame_sprite.png", 6, 1) };
+        }
+
+        protected override string GetName() {
+            return "ROCKET: " + Owner.Name;
         }
     }
 }

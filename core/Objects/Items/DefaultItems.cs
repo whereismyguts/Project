@@ -42,7 +42,7 @@ namespace GameCore {
         internal void Fire() {
             if(fireCoolDown == fireCoolDownMax) {
                 //var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
-                Slot.Hull.Owner.CurrentSystem.Add(CreateProjectile(Location + Origin, Slot.Hull.Owner.Direction, Slot.Hull.Owner));
+                CreateProjectile(Location + Origin, Slot.Hull.Owner.Direction, Slot.Hull.Owner);
                 fireCoolDown = 0;
             }
         }

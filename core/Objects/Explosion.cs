@@ -22,12 +22,6 @@ namespace GameCore {
 
         int lifeTime = 0;
 
-        internal override bool IsMinimapVisible {
-            get {
-                return false;
-            }
-        }
-
         protected internal override void Step() {
             lifeTime++;
 
@@ -36,7 +30,7 @@ namespace GameCore {
             base.Step();
         }
 
-        public Explosion(StarSystem system, CoordPoint position, int radius = 3000) : base(system) {
+        public Explosion(StarSystem system, CoordPoint position, int radius = 3000) {
             this.Location = position;
             this.radius = radius;
             rotation = (float)Rnd.Get(-Math.PI, Math.PI);
@@ -49,9 +43,8 @@ namespace GameCore {
             //return new Item[] { new JustSpriteItem(this, new CoordPoint(200,200), new CoordPoint(100,100), "exp.png", 10) };
         }
 
-        public override IEnumerable<Geometry> GetPrimitives() {
-            //Circle c = new Circle(Position, lifeTime * lifeTime*lifeTime, ColorCore.Red);
-            return new Geometry[] { };
+        protected override string GetName() {
+            return "EXPLOSION #" + rotation;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace GameCore {
             get { return states[state]; }
         }
 
-        internal static void SwitchState() {
+        public static void SwitchState() {
             if(state < states.Count - 1)
                 state++;
             else
@@ -72,23 +72,26 @@ namespace GameCore {
         public static CoordPoint Cursor { get; set; }
 
         MainCore() {
+            System = new StarSystem();
             Viewport = new Viewport(300, 300, 0, 0);
-            System = new StarSystem(3);
-        }
 
+        }
+        public static void AddPlanets() {
+            instance.System.CreatePlanets();
+        }
 
         void CreatePlayers() {
             PlayerController.Clear();
-            Player p1 = new Player(new Ship(System) { Fraction = 1 }, 1);
+            Player p1 = new Player(new Ship() { Fraction = 1 }, 1);
             PlayerController.AddPlayer(p1);
-            Player p2 = new Player(new Ship(System) { Fraction = 2 }, 2);
+            Player p2 = new Player(new Ship() { Fraction = 2 }, 2);
             PlayerController.AddPlayer(p2);
 
             ships.Add(p1.Ship);
             ships.Add(p2.Ship);
 
             for(int i = 0; i < 6; i++) {
-                var ship = new Ship(System) { Fraction = i % 2 == 0 ? 1 : 2 };
+                var ship = new Ship() { Fraction = i % 2 == 0 ? 1 : 2 };
                 AIShipsController.AddController(new DefaultAutoControl(ship));
                 ships.Add(ship);
             }
@@ -96,12 +99,9 @@ namespace GameCore {
             //    ships.Add(new Ship(StarSystems[0]));
         }
         IEnumerable<GameObject> GetAllObjects(int types = 0) {
-            if(types == 0 || types == 1)
-                foreach(GameObject obj in System.Objects)
-                    yield return obj;
-            if(types == 0 || types == 2)
-                foreach(GameObject obj in System.Effects)
-                    yield return obj;
+            foreach(GameObject obj in System.Objects) {
+                yield return obj;
+            }
             if(types == 0 || types == 3)
                 foreach(Ship s in ships) yield return s;
         }
@@ -119,6 +119,7 @@ namespace GameCore {
 
 
         public void Update() {
+
             //&& Controller.Keys.ToList().Contains(32)
             if(CurrentState.InGame) {
                 if((ships.Count(s => s.Fraction == 1) == 0 || ships.Count(s => s.Fraction == 2) == 0)) {

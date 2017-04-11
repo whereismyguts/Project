@@ -49,13 +49,16 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("retrogunfire.png");
         }
 
-        internal static void Unload() {
+        internal static Color Color(InternalColor color) {
+            return new Color(color.r, color.g, color.b);
+        }
 
+        internal static void Unload() {
             contentLoader.Unload();
         }
 
         internal static void UpdateRenderObjects(ref List<RenderObject> renderObjects) {
-            if( renderObjects == null)
+            if(renderObjects == null)
                 renderObjects = CreateRenderObjects();
             else {
                 var newrenderObjects = CreateRenderObjects();

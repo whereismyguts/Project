@@ -9,11 +9,10 @@ namespace GameCore {
         #region implement
         public override Bounds ObjectBounds { get { throw new NotImplementedException(); } }
         protected internal override float Rotation { get { throw new NotImplementedException(); } }
-        internal override bool IsMinimapVisible { get { throw new NotImplementedException(); } }
         public override IEnumerable<Item> GetItems() { throw new NotImplementedException(); }
         #endregion
         public bool IsDead = false;
-        public VirtualObject(StarSystem system, float mass, CoordPoint position, CoordPoint velosity) : base(system) {
+        public VirtualObject(float mass, CoordPoint position, CoordPoint velosity) {
             Location = position;
             Mass = mass;
             Velosity = velosity;
@@ -26,8 +25,8 @@ namespace GameCore {
             base.Step();
         }
 
-        public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { };
+        protected override string GetName() {
+            throw new NotImplementedException();
         }
     }
     public class TrajectoryCalculator {
@@ -35,12 +34,12 @@ namespace GameCore {
         GameObject realObj;
         public List<CoordPoint> Path { get; private set; } = new List<CoordPoint>();
         public TrajectoryCalculator(GameObject obj) {
-            this.virtObj = new VirtualObject(obj.CurrentSystem, obj.Mass, obj.Location, obj.Velosity);
+            this.virtObj = new VirtualObject(obj.Mass, obj.Location, obj.Velosity);
             realObj = obj;
         }
         public List<CoordPoint> CalculateStep() {
-          
-             Path.Clear();
+
+            Path.Clear();
             virtObj.IsDead = false;
             Path.Add(virtObj.Location);
             for(int i = 0; i < 100; i++) {

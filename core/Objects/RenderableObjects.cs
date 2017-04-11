@@ -85,6 +85,11 @@ namespace GameCore {
             Location = owner.Location - relativeLocation;// CalcArrangeLocation(align, owner.Location, owner.Size, Size);
         }
 
+        public ScreenSpriteItem(CoordPoint location, CoordPoint size, CoordPoint origin, SpriteInfo info) : base(size, origin, 0) {
+            Location = location;
+            this.info = info;
+        }
+
         static CoordPoint CalcArrangeLocation(Align objAlign, CoordPoint ownerLocation, CoordPoint ownerSize, CoordPoint objSize) {
             switch(objAlign) {
                 case Align.LeftBottom:
@@ -92,7 +97,8 @@ namespace GameCore {
                 case Align.RightBottom:
                     return ownerLocation + ownerSize - objSize;
                 case Align.FillBottom:
-                    return ownerLocation + new CoordPoint(ownerSize.X / 2 - objSize.X / 2, ownerSize.Y - objSize.Y);
+                    return ownerLocation + new CoordPoint(0, ownerSize.Y - objSize.Y);
+                    //                        new CoordPoint(ownerSize.X / 2 - objSize.X / 2, ownerSize.Y - objSize.Y);
             }
             return null;
         }

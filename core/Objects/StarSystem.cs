@@ -4,48 +4,33 @@ using System.Linq;
 
 namespace GameCore {
     public class StarSystem {
-        Body star;
+        List<GameObject> objects = new List<GameObject>();
 
-        public CoordPoint MapLocation { get; }
-        public List<Body> Objects {
+        public List<GameObject> Objects {
             get {
-                List<Body> objs = new List<Body>();
-                objs.AddRange(planets);
-                objs.AddRange(stations);
-                
-                objs.Add(star);
-                return objs;
+                return objects;
             }
         }
 
-        public List<GameObject> Effects {
-            get {
-                return effects;
-            }
+
+
+        public Body Star { get; internal set; }
+
+
+
+        internal void Add(GameObject obj) {
+            objects.Add(obj);
         }
-
-        public Body Star { get { return star; } }
-
-        public StarSystem(int planetsNumber) {
-            planets = new List<Body>();
-            //TODO Data Driven Factory
-            star = new Body(new CoordPoint(0, 0), 4000,  this);
-            for(int i=0;i< planetsNumber; i++)
-            planets.Add(new Planet(Rnd.Get(5000, 20000), Rnd.Get(500, 3000), Rnd.GetPeriod(),  Rnd.Bool(), this));
-
-        }
-        List<Body> planets = new List<Body>();
-        List<Body> stations = new List<Body>();
-        List<GameObject> effects = new List<GameObject>();
-
-        internal void Add(GameObject effect) {
-            effects.Add(effect);
-        }
-
         internal void CleanObjects() {
-            planets.RemoveAll(p => p.ToRemove);
-            stations.RemoveAll(p => p.ToRemove);
-            effects.RemoveAll(p => p.ToRemove);
+            objects.RemoveAll(p => p.ToRemove);
+        }
+
+        internal void CreatePlanets(int planetsNumber = 3) {
+
+            //TODO Data Driven Factory
+            Star = new Body(new CoordPoint(0, 0), 4000);
+            for(int i = 0; i < planetsNumber; i++)
+                new Planet(Rnd.Get(5000, 20000), Rnd.Get(500, 3000), Rnd.GetPeriod(), Rnd.Bool());
         }
     }
 }

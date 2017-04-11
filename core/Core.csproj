@@ -38,6 +38,7 @@
     <Compile Include="Debugger.cs" />
     <Compile Include="GeneticAnalizer.cs" />
     <Compile Include="IRenderable.cs" />
+    <Compile Include="Objects\Asteroid.cs" />
     <Compile Include="Objects\Bullet.cs" />
     <Compile Include="Objects\Explosion.cs" />
     <Compile Include="Objects\Geometry.cs" />

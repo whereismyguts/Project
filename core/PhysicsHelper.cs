@@ -17,10 +17,11 @@ namespace GameCore {
             var direction = (obj2.Location - obj1.Location).UnaryVector;
             return direction * force;
         }
-        public static CoordPoint GetSummaryAttractingForce(List<Body> objects, GameObject subject) {
+        public static CoordPoint GetSummaryAttractingForce(List<GameObject> objects, GameObject subject) {
             var vector = new CoordPoint();
             foreach(var obj in objects)
-                vector += GravitationForceVector(subject, obj);
+                if(obj.Mass > 0 && obj != subject)
+                    vector += GravitationForceVector(subject, obj);
             return vector;
         }
     }

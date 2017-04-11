@@ -7,19 +7,15 @@ namespace GameCore {
 
         internal static void Step(List<Ship> ships, IEnumerable<GameObject> spaceBodies) {
 
-           
-            List<GameObject> bodies = new List<GameObject>(spaceBodies);
-            bodies.AddRange(ships);
 
 
             var objects = MainCore.Instance.Objects;
-            objects.AddRange(MainCore.Instance.System.Effects);
 
             foreach(GameObject o1 in objects)
                 if(!o1.TemporaryNoclip)
                     foreach(GameObject o2 in objects)
                         if(o1 != o2)
-                            if((o1 is ProjectileBase || o1 is Ship) && (o2 is Body  || o2 is Ship)) {
+                            if((o1 is ProjectileBase || o1 is Ship) && (o2 is Body || o2 is Ship)) {
 
                                 Ship s = o2 as Ship;
                                 ProjectileBase b = o1 as ProjectileBase;
@@ -28,8 +24,8 @@ namespace GameCore {
                                         continue;
                                     if(CoordPoint.Distance(s.Hull.Location, b.Location) <= s.Hull.Size.X / 2) {
                                         if(b.Impact())
-                                            s.GetDamage(b.Damage, b.Owner);
-                                        
+                                            s.GetDamage(b.Damage, b.Owner == null ? "nothing" : b.Owner.Name);
+
                                     }
                                 }
                                 else

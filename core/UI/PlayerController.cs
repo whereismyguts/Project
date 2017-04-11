@@ -77,9 +77,22 @@ namespace GameCore {
         List<Geometry> geometry = new List<Geometry>();
 
         public CommonInterface() {
-            ScreenSpriteItem item = new ScreenSpriteItem(Align.FillBottom, new CoordPoint(150, 150), new CoordPoint(75, 75), new SpriteInfo("256tile.png") { ZIndex = -2 });
+            Update();
+
+            MainCore.Instance.Viewport.Changed += Viewport_Changed;
+        }
+
+        private void Viewport_Changed(ViewportChangedEventArgs args) {
+            Update();
+        }
+
+        void Update() {
+            ScreenSpriteItem item = new ScreenSpriteItem(Align.FillBottom, new CoordPoint(150, 150), new CoordPoint(), new SpriteInfo("256tile.png") { ZIndex = -2 });
+            items.Clear();
+            geometry.Clear();
             items.Add(item);
-            geometry.Add(new ScreenGeometry(item.ScreenLocation, item.ScreenSize) { ZIndex = -3 });
+            geometry.Add(new ScreenGeometry(item.ScreenLocation, item.ScreenSize) { ZIndex = -3, Origin = new CoordPoint() });
+            Debugger.Lines.Add("common interafce updated");
         }
 
         public IEnumerable<Item> GetItems() {

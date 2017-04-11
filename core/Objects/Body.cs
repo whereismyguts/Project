@@ -3,25 +3,22 @@ using System.Collections.Generic;
 
 namespace GameCore {
     public class Body: GameObject {
-        float radius;
         float selfRotation;
 
         protected internal override float Rotation { get { return selfRotation; } }
 
-        internal override bool IsMinimapVisible { get { return true; } }
-
         public override Bounds ObjectBounds {
             get {
-                return new Bounds(Location - new CoordPoint(radius, radius), Location + new CoordPoint(radius, radius));
+                return new Bounds(Location - new CoordPoint(Radius, Radius), Location + new CoordPoint(Radius, Radius));
             }
         }
 
-        public float Radius { get { return radius; } }
 
-       // public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
 
-        public Body(CoordPoint location, float radius, StarSystem system) : base(system) {
-            this.radius = radius;
+        // public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
+
+        public Body(CoordPoint location, float radius) {
+            this.Radius = radius;
             Location = location;
             Mass = radius * 2;
         }
@@ -31,12 +28,16 @@ namespace GameCore {
         }
 
         public override IEnumerable<Item> GetItems() {
-            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "planet.png", 19,1) };
+            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "planet.png", 19, 1) };
             // return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size/2, "exp2.png", 4, 4) };
             //return new Item[] { };
         }
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new WorldGeometry(Location, new CoordPoint(radius*2,radius*2)) };
+            return new Geometry[] { new WorldGeometry(Location, new CoordPoint(Radius * 2, Radius * 2), true) };
+        }
+
+        protected override string GetName() {
+            return "STAR";
         }
     }
 
@@ -45,18 +46,22 @@ namespace GameCore {
         float selfRotation;
 
         float DistanceToSun { get { return CoordPoint.Distance(RotateCenter.Location, Location); } }
-        Body RotateCenter { get { return CurrentSystem.Star; } }
+        static Body RotateCenter { get { return CurrentSystem.Star; } }
 
         protected internal override float Rotation { get { return selfRotation; } }
 
         public override string Name { get; } = NameGenerator.Generate(Rnd.Get(0, 3));
 
-        public Planet(float distance, float diameter, float rotation, bool clockwise, StarSystem system)
-            : base(new CoordPoint(system.Star.Location + new CoordPoint(distance, 0)), diameter, system) {
+        public Planet(float distance, float diameter, float rotation, bool clockwise)
+            : base(new CoordPoint(RotateCenter.Location + new CoordPoint(distance, 0)), diameter) {
             starRotation = rotation;
             this.clockwise = clockwise;
             Mass *= 2;
             rotationSpeed = Rnd.Get(.0005f, .0015f);
+        }
+
+        protected override string GetName() {
+            return "PLANET " + Name;
         }
 
         float rotationSpeed = 0;

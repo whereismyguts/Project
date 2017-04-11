@@ -71,16 +71,20 @@ namespace GameCore {
 
         }
 
+        StarSystem System {
+            get { return MainCore.Instance.System; }
+        }
+
         GameObject GetDangerZone() {
-            for(int i = 0; i < Owner.CurrentSystem.Objects.Count; i++)
-                if(CoordPoint.Distance(Owner.CurrentSystem.Objects[i].Location, Owner.Location) <= dangerZoneMultiplier * Owner.CurrentSystem.Objects[i].Radius)
-                    return Owner.CurrentSystem.Objects[i];
+            foreach(var obj in System.Objects)
 
+                if(obj!=Owner && CoordPoint.Distance(obj.Location, Owner.Location) <= dangerZoneMultiplier * obj.Radius)
+                    return obj;
 
+            //foreach(Ship s in MainCore.Instance.Ships)
+            //    if(s != Owner && CoordPoint.Distance(Owner.Location, s.Location) < dangerZoneMultiplier * s.ObjectBounds.Width)
+            //        return s;
 
-            foreach(Ship s in MainCore.Instance.Ships)
-                if(s != Owner && CoordPoint.Distance(Owner.Location, s.Location) < dangerZoneMultiplier * s.ObjectBounds.Width)
-                    return s;
             return null;
         }
         void TaskLeaveDeathZone(GameObject obj) {
@@ -116,12 +120,12 @@ namespace GameCore {
 
             if(ToKill == null || ToKill.ToRemove)
                 ToKill = FindEnemy();
-            if(Owner.Health <= 5 && ToKill != null)
+            if(Owner.Health <= 5 && ToKill != null && CoordPoint.Distance(Owner.Location, ToKill.Location) < 10000)
                 TaskLeaveDeathZone(ToKill);
 
-            if(Owner.Velosity.Length > 100)
-                TaskDecreaseSpeed();
-            else
+            //if(Owner.Velosity.Length > 100)
+            //    TaskDecreaseSpeed();
+            //else
                 if(danger != null)
                 TaskLeaveDeathZone(danger);
             else
@@ -150,7 +154,7 @@ namespace GameCore {
         }
 
         private bool IsIntersectSomething(CoordPoint p1, CoordPoint p2) {
-            foreach(var body in Owner.CurrentSystem.Objects)
+            foreach(var body in System.Objects)
                 if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Location.X, body.Location.Y, body.Radius))
                     return true;
             return false;

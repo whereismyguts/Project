@@ -46,11 +46,15 @@ namespace MonoGameDirectX {
 
         internal static void DrawGeometry(Geometry geom, SpriteBatch spriteBatch) {
 
-            var location = geom.ScreenLocation-geom.ScreenOrigin;
+            var location = geom.ScreenLocation - geom.ScreenOrigin;
             var size = geom.ScreenSize;
 
             var screenRect = new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y);
-            DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(Color.Blue, 0.7f));
+
+            if(geom.IsCircle)
+                DrawCircle(screenRect.Center.ToVector2(), screenRect.Width / 2, spriteBatch, Color.Black);
+            else
+                DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(Color.Blue, 0.7f));
         }
 
         //private static void DrawCircle(Vector2 vector2, object radius, SpriteBatch spriteBatch, Color black) {
