@@ -17,7 +17,7 @@ namespace GameCore {
         public override string ToString() {
             return GetName();
         }
-
+        public virtual bool IsDynamic { get; } = false;
         protected abstract string GetName();
 
         public abstract Bounds ObjectBounds { get; }
@@ -27,6 +27,9 @@ namespace GameCore {
             MainCore.Instance.System.Add(this);
         }
         protected internal virtual void Step() {
+            if(IsDynamic)
+                Velosity = Velosity * 0.9999f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this) * 5;
+
             Location += Velosity;
 
             if(noClipTimer < 10)

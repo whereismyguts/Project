@@ -28,9 +28,9 @@ namespace GameCore {
         internal void CreatePlanets(int planetsNumber = 3) {
 
             //TODO Data Driven Factory
-            Star = new Body(new CoordPoint(0, 0), 4000);
+            Star = new Body(new CoordPoint(0, 0), 20000);
             for(int i = 0; i < planetsNumber; i++)
-                new Planet(Rnd.Get(5000, 20000), Rnd.Get(500, 3000), Rnd.GetPeriod(), Rnd.Bool());
+                new Planet(Rnd.Get(30000, 80000), Rnd.Get(7000, 15000), Rnd.GetPeriod(), Rnd.Bool());
         }
     }
 }

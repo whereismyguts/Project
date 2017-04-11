@@ -74,6 +74,12 @@ namespace GameCore {
         protected override string GetName() {
             return "PROJECTILE: " + Owner.Name;
         }
+
+        public override bool IsDynamic {
+            get {
+                return true;
+            }
+        }
     }
 
     public class Rocket: ProjectileBase {

@@ -78,7 +78,7 @@ namespace GameCore {
         GameObject GetDangerZone() {
             foreach(var obj in System.Objects)
 
-                if(obj!=Owner && CoordPoint.Distance(obj.Location, Owner.Location) <= dangerZoneMultiplier * obj.Radius)
+                if(obj != Owner && CoordPoint.Distance(obj.Location, Owner.Location) <= dangerZoneMultiplier * obj.Radius)
                     return obj;
 
             //foreach(Ship s in MainCore.Instance.Ships)
@@ -123,9 +123,9 @@ namespace GameCore {
             if(Owner.Health <= 5 && ToKill != null && CoordPoint.Distance(Owner.Location, ToKill.Location) < 10000)
                 TaskLeaveDeathZone(ToKill);
 
-            //if(Owner.Velosity.Length > 100)
-            //    TaskDecreaseSpeed();
-            //else
+            if(Owner.Velosity.Length > 200)
+                TaskDecreaseSpeed();
+            else
                 if(danger != null)
                 TaskLeaveDeathZone(danger);
             else

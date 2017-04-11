@@ -36,8 +36,8 @@ namespace GameCore {
 
         //public CoordPoint Velosity { get { return velosity; } }
 
-        public Ship() {
-
+        public Ship(int fraction = 1) {
+            Fraction = fraction;
             Hull = new ShipHull(2000) { Owner = this };
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
@@ -63,6 +63,12 @@ namespace GameCore {
             //    controller = new AIController(this, target, TaskType.Peersuit);
 
         }
+        public override bool IsDynamic {
+            get {
+                return true;
+            }
+        }
+
 
         internal void GetDamage(int d, string text) {
             Hull.Health -= d;
@@ -108,7 +114,8 @@ namespace GameCore {
             bool correctPosition = false;
 
             while(!correctPosition) {
-                Location = new CoordPoint(Rnd.Get(-25000, 25000), Rnd.Get(-25000, 25000));
+                Location = Fraction == 1 ? new CoordPoint(Rnd.Get(-91000, -90000), Rnd.Get(-25000, 25000)) :
+                     new CoordPoint(Rnd.Get(90000, 91000), Rnd.Get(-25000, 25000));
                 correctPosition = true;
                 foreach(GameObject obj in CurrentSystem.Objects) {
                     if(obj != this && obj.ObjectBounds.Contains(Location)) {
@@ -141,7 +148,7 @@ namespace GameCore {
             foreach(Item item in Inventory.Container)
                 item.Step();
 
-            Velosity = Velosity * 0.9999f + GetAcceleration() * 0.5f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this);
+            Velosity += GetAcceleration() * 0.5f;
 
             direction.Rotate(angleSpeed);
             angleSpeed *= PhysicsHelper.RotationInertia;
@@ -194,7 +201,12 @@ namespace GameCore {
             List<Geometry> geom = new List<Geometry>();
 
             InternalColor color = Hull.Health > 6 ? InternalColor.Green : Hull.Health > 3 ? InternalColor.Yellow : InternalColor.Red;
-            geom.Add(new WorldGeometry(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200)));
+
+            if(GetScreenBounds().Size.X < 10) {
+                geom.Add(new ScreenGeometry(Viewport.World2ScreenPoint(Location), new CoordPoint(20, 20), 0, true));
+            }
+            else
+                geom.Add(new WorldGeometry(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200)));
 
             //geom.Add(new InternalCircle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
             return geom;

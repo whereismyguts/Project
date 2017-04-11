@@ -66,7 +66,7 @@ namespace MonoGameDirectX {
 
 
         void InterfaceController_OnKeysDown(object sender, KeysEventArgs e) {
-            Debugger.Lines.Add("key pressed: " + e.Keys + "; ");
+            //    Debugger.Lines.Add("key pressed: " + e.Keys + "; ");
             if(e.Keys == Keys.LeftControl)
                 ctrlpressed = true;
         }
@@ -74,10 +74,10 @@ namespace MonoGameDirectX {
         bool ctrlpressed = false;
 
         void InterfaceController_OnKeysUp(object sender, KeysEventArgs e) {
-            Debugger.Lines.Add("key released: " + e.Keys + "; ");
+            //    Debugger.Lines.Add("key released: " + e.Keys + "; ");
             switch(e.Keys) {
                 case Keys.F:
-                    SwitchFillScreen(); break;
+                    SwitchFullScreen(); break;
                 case Keys.D:
                     if(ctrlpressed)
                         Renderer.SwitchDebugMode(); break;
@@ -87,11 +87,11 @@ namespace MonoGameDirectX {
         }
 
         void InterfaceController_OnButtonsUp(object sender, ButtonsEventArgs e) {
-            Debugger.Lines.Add("button released: " + e.Buttons + "; ");
+            //      Debugger.Lines.Add("button released: " + e.Buttons + "; ");
         }
 
 
-        void SwitchFillScreen() {
+        void SwitchFullScreen() {
             try {
                 graphics.IsFullScreen = !graphics.IsFullScreen;
 
@@ -124,7 +124,8 @@ namespace MonoGameDirectX {
             base.Draw(gameTime);
         }
         protected override void Initialize() {
-            Renderer.Set(GraphicsDevice, Content.Load<SpriteFont>("Arial"));
+            //Renderer.Set(GraphicsDevice, Content.Load<SpriteFont>("Arial"));
+            Renderer.Set(GraphicsDevice, Content.Load<SpriteFont>("Font"));
             //Renderer.SpriteBatch = new SpriteBatch(GraphicsDevice);
             InterfaceController.OnKeysUp += InterfaceController_OnKeysUp;
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
@@ -185,7 +186,7 @@ namespace MonoGameDirectX {
         }
 
         void ButtonClicked(object sender, EventArgs e) {
-            Debugger.Lines.Add((sender as Button).Text + " clicked");
+            //      Debugger.Lines.Add((sender as Button).Text + " clicked");
         }
 
         protected override void LoadContent() {

@@ -13,14 +13,11 @@ namespace GameCore {
             }
         }
 
-
-
         // public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
-
         public Body(CoordPoint location, float radius) {
             this.Radius = radius;
             Location = location;
-            Mass = radius * 2;
+            Mass = radius;
         }
 
         protected internal override void Step() {
@@ -37,7 +34,7 @@ namespace GameCore {
         }
 
         protected override string GetName() {
-            return "STAR";
+            return "STAR" + ", mass = " + Mass; ;
         }
     }
 
@@ -53,15 +50,14 @@ namespace GameCore {
         public override string Name { get; } = NameGenerator.Generate(Rnd.Get(0, 3));
 
         public Planet(float distance, float diameter, float rotation, bool clockwise)
-            : base(new CoordPoint(RotateCenter.Location + new CoordPoint(distance, 0)), diameter) {
+            : base(new CoordPoint(RotateCenter.Location + new CoordPoint(distance, 0)), diameter / 2) {
             starRotation = rotation;
             this.clockwise = clockwise;
-            Mass *= 2;
             rotationSpeed = Rnd.Get(.0005f, .0015f);
         }
 
         protected override string GetName() {
-            return "PLANET " + Name;
+            return "PLANET " + Name + ", mass = " + Mass;
         }
 
         float rotationSpeed = 0;

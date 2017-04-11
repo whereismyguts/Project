@@ -82,16 +82,16 @@ namespace GameCore {
 
         void CreatePlayers() {
             PlayerController.Clear();
-            Player p1 = new Player(new Ship() { Fraction = 1 }, 1);
+            Player p1 = new Player(new Ship(1), 1);
             PlayerController.AddPlayer(p1);
-            Player p2 = new Player(new Ship() { Fraction = 2 }, 2);
+            Player p2 = new Player(new Ship(2), 2);
             PlayerController.AddPlayer(p2);
 
             ships.Add(p1.Ship);
             ships.Add(p2.Ship);
 
             for(int i = 0; i < 6; i++) {
-                var ship = new Ship() { Fraction = i % 2 == 0 ? 1 : 2 };
+                var ship = new Ship(i % 2 == 0 ? 1 : 2);
                 AIShipsController.AddController(new DefaultAutoControl(ship));
                 ships.Add(ship);
             }

@@ -47,6 +47,7 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("hull.png");
             contentLoader.SetTexture("retrogun.png");
             contentLoader.SetTexture("retrogunfire.png");
+            contentLoader.SetTexture("circle.png");
         }
 
         internal static Color Color(InternalColor color) {

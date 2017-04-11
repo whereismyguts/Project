@@ -24,7 +24,6 @@ namespace MonoGameDirectX {
                 if(!clip.Contains(new Point((int)x, (int)y)))
                     return;
 
-
             spBatch.Draw(GetTexture(spBatch),
                 new Rectangle((int)x, (int)y, 1, 1),
                null,
@@ -40,19 +39,20 @@ namespace MonoGameDirectX {
         //    graphDevice = null;
         //    Dispose();
         //}
+
         public static void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color) {
             DrawCircle(center, radius, spBatch, color, Rectangle.Empty);
         }
 
         internal static void DrawGeometry(Geometry geom, SpriteBatch spriteBatch) {
-
             var location = geom.ScreenLocation - geom.ScreenOrigin;
             var size = geom.ScreenSize;
 
             var screenRect = new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y);
 
-            if(geom.IsCircle)
+            if(geom.IsCircle) {
                 DrawCircle(screenRect.Center.ToVector2(), screenRect.Width / 2, spriteBatch, Color.Black);
+            }
             else
                 DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(Color.Blue, 0.7f));
         }
@@ -62,6 +62,11 @@ namespace MonoGameDirectX {
         //}
 
         public static void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color, Rectangle clip) {
+
+            //var DestRect = new Rectangle((int)(center.X - radius), (int)(center.Y - radius), (int)(radius * 2), (int)(radius * 2));
+            //spBatch.Draw(WinAdapter.GetTexture("circle.png"), DestRect, null, Color.TransparentBlack, 0, DestRect.Size.ToVector2()/2, SpriteEffects.None, 0f);
+            //return;
+
             double theta = -Math.PI;  // angle that will be increased each loop
                                       //    double step = .01;  // amount to add to theta each time (degrees)
 
