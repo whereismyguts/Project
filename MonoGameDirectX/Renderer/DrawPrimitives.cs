@@ -10,7 +10,7 @@ namespace MonoGameDirectX {
         //  static GraphicsDevice graphDevice;
 
         static Texture2D texture;
-        static Texture2D GetTexture(SpriteBatch sb) {
+        static Texture2D BlankTexture(SpriteBatch sb) {
             if(texture == null) {
                 texture = new Texture2D(sb.GraphicsDevice, 1, 1);
                 texture.SetData(new Color[] { Color.White });
@@ -24,7 +24,7 @@ namespace MonoGameDirectX {
                 if(!clip.Contains(new Point((int)x, (int)y)))
                     return;
 
-            spBatch.Draw(GetTexture(spBatch),
+            spBatch.Draw(BlankTexture(spBatch),
                 new Rectangle((int)x, (int)y, 1, 1),
                null,
                 color, //colour of line
@@ -45,17 +45,51 @@ namespace MonoGameDirectX {
         }
 
         internal static void DrawGeometry(Geometry geom, SpriteBatch spriteBatch) {
+            Color color = WinAdapter.Color(geom.Color);
+
+            if(geom is Line) {
+                var line = geom as Line;
+                var p1 = WinAdapter.CoordPoint2Vector(MainCore.Instance.Viewport.World2ScreenPoint(line.Start));
+                var p2 = WinAdapter.CoordPoint2Vector(MainCore.Instance.Viewport.World2ScreenPoint(line.End));
+                DrawLine(p1, p2, spriteBatch, 1, color);
+                return;
+            }
+
             var location = geom.ScreenLocation - geom.ScreenOrigin;
             var size = geom.ScreenSize;
 
             var screenRect = new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y);
 
+
+
             if(geom.IsCircle) {
-                DrawCircle(screenRect.Center.ToVector2(), screenRect.Width / 2, spriteBatch, Color.Black);
+                DrawCircle(screenRect.Center.ToVector2(), screenRect.Width / 2, spriteBatch, color);
+                return;
             }
-            else
-                DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(Color.Blue, 0.7f));
+
+            DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(color, 0.7f));
         }
+
+
+
+        public static void DrawPolygon(SpriteBatch spriteBatch, Vector2[] vertex, int count, Color color, int lineWidth) {
+            if(count > 0) {
+                for(int i = 0; i < count - 1; i++) {
+                    DrawLine(vertex[i], vertex[i + 1], spriteBatch, lineWidth, color);
+                }
+                DrawLine(vertex[count - 1], vertex[0], spriteBatch, lineWidth, color);
+            }
+        }
+        public static void DrawLine(Vector2 point1, Vector2 point2, SpriteBatch spriteBatch, int lineWidth, Color color) {
+
+            float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
+            float length = Vector2.Distance(point1, point2) + 1;
+
+            spriteBatch.Draw(BlankTexture(spriteBatch), point1, null, color,
+            angle, Vector2.Zero, new Vector2(length, lineWidth),
+            SpriteEffects.None, 0f);
+        }
+
 
         //private static void DrawCircle(Vector2 vector2, object radius, SpriteBatch spriteBatch, Color black) {
         //    throw new NotImplementedException();
@@ -90,32 +124,32 @@ namespace MonoGameDirectX {
             for(int i = 0; i < count; i += 10)
                 DrawLine(start + v * i, start + v * (i + 5), spBatch, width, color);
         }
-        public static void DrawLine(Vector2 start, Vector2 end, SpriteBatch spBatch, int width, Color color) {
+        //public static void DrawLine(Vector2 start, Vector2 end, SpriteBatch spBatch, int width, Color color) {
 
-            var edge = end - start;
-            // calculate angle to rotate line
-            // calculate angle to rotate line
-            var angle = (float)Math.Atan2(edge.Y, edge.X);
-            spBatch.Draw(GetTexture(spBatch),
-                new Rectangle(// rectangle defines shape of line and position of start of line
-                    (int)start.X,
-                    (int)start.Y,
-                    (int)edge.Length(), //sb will strech the texture to fill this rectangle
-                    width), //width of line, change this to make thicker line
-                null,
-                color,
-                angle, //angle of line (calulated above)
-                new Vector2(0, 0), // point in line about which to rotate
-                SpriteEffects.None,
-                0);
-        }
+        //    var edge = end - start;
+        //    // calculate angle to rotate line
+        //    // calculate angle to rotate line
+        //    var angle = (float)Math.Atan2(edge.Y, edge.X);
+        //    spBatch.Draw(BlankTexture(spBatch),
+        //        new Rectangle(// rectangle defines shape of line and position of start of line
+        //            (int)start.X,
+        //            (int)start.Y,
+        //            (int)edge.Length(), //sb will strech the texture to fill this rectangle
+        //            width), //width of line, change this to make thicker line
+        //        null,
+        //        color,
+        //        angle, //angle of line (calulated above)
+        //        new Vector2(0, 0), // point in line about which to rotate
+        //        SpriteEffects.None,
+        //        0);
+        //}
 
         public static void DrawPixel(Vector2 point, SpriteBatch spBatch, Color color) {
             DrawPixel(point, spBatch, color, Rectangle.Empty);
         }
 
         internal static void DrawRectDotted(Rectangle rect, SpriteBatch spBatch, int width, Color borderColor) {
-            spBatch.Draw(GetTexture(spBatch), rect, null, defaultFillColor, 0f, new Vector2(), SpriteEffects.None, 0f);
+            spBatch.Draw(BlankTexture(spBatch), rect, null, defaultFillColor, 0f, new Vector2(), SpriteEffects.None, 0f);
 
 
             var lt = new Vector2(rect.Left, rect.Top);
@@ -135,8 +169,16 @@ namespace MonoGameDirectX {
             DrawRect(rect, spBatch, strokeWidth, borderColor, defaultFillColor);
         }
         public static void DrawRect(Rectangle rect, SpriteBatch spBatch, int width, Color borderColor, Color fillColor) {
-            spBatch.Draw(GetTexture(spBatch), rect, null, fillColor, 0f, new Vector2(), SpriteEffects.None, 0f);
+            DrawPolygon(spBatch, new Vector2[] {
+                 new Vector2(rect.Left, rect.Top),
+             new Vector2(rect.Left, rect.Bottom),
+            new Vector2(rect.Right, rect.Bottom),
+             new Vector2(rect.Right, rect.Top)
 
+        }, 4, borderColor, 1);
+
+            spBatch.Draw(BlankTexture(spBatch), rect, null, fillColor, 0f, new Vector2(), SpriteEffects.None, 0f);
+            return;
 
             var lt = new Vector2(rect.Left, rect.Top);
             var lb = new Vector2(rect.Left, rect.Bottom);
