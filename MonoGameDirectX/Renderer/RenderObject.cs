@@ -8,8 +8,6 @@ using System.Linq;
 namespace MonoGameDirectX {
     internal class RenderObject {
 
-        protected float Scale { get { return MainCore.Instance.Viewport.Scale; } }
-
         public IRenderableObject GameObject { get; internal set; }
         public Vector2 MiniMapLocation { get; internal set; }
 

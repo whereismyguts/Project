@@ -72,8 +72,8 @@ namespace MonoGameDirectX {
                 }
                 renderObjects.RemoveAll(o => newrenderObjects.FirstOrDefault(n => n.GameObject == o.GameObject) == null);
             }
-            foreach(RenderObject obj in renderObjects)
-                obj.Step();
+            //foreach(RenderObject obj in renderObjects)
+            //    obj.Step();
         }
 
         private static List<RenderObject> CreateRenderObjects() {

@@ -73,11 +73,10 @@ namespace GameCore {
 
         MainCore() {
             System = new StarSystem();
-            Viewport = new Viewport(300, 300, 0, 0);
-
+            Viewport = new Viewport();
         }
         public static void AddPlanets() {
-            instance.System.CreatePlanets();
+            Instance.System.CreatePlanets();
         }
 
         void CreatePlayers() {

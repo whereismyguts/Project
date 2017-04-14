@@ -174,13 +174,19 @@ namespace GameCore {
                 W.Fire();
         }
 
-        public override IEnumerable<Item> GetItems() {
-            if(GetScreenBounds().Size.X < 10) {
-                yield return new ScreenSpriteItem(Viewport.World2ScreenPoint(Location), new CoordPoint(20, 20), new CoordPoint(10, 10), new SpriteInfo("256tile.png"));
+        public override float Radius {
+            get {
+                return ObjectBounds.Width / 2;
             }
-            else
-                for(int i = 0; i < Hull.Slots.Count; i++)
-                    yield return Hull.Slots[i].AttachedItem;
+        }
+
+        public override IEnumerable<Item> GetItems() {
+            //if(GetScreenBounds().Size.X < 10) {
+            //    yield return new ScreenSpriteItem(Viewport.World2ScreenPoint(Location), new CoordPoint(20, 20), new CoordPoint(10, 10), new SpriteInfo("256tile.png"));
+            //}
+            //else
+            for(int i = 0; i < Hull.Slots.Count; i++)
+                yield return Hull.Slots[i].AttachedItem;
             yield return Hull;
         }
 
@@ -202,11 +208,11 @@ namespace GameCore {
 
             InternalColor color = Hull.Health > 6 ? InternalColor.Green : Hull.Health > 3 ? InternalColor.Yellow : InternalColor.Red;
 
-            if(GetScreenBounds().Size.X < 10) {
-                geom.Add(new ScreenGeometry(Viewport.World2ScreenPoint(Location), new CoordPoint(20, 20), 0, true));
-            }
-            else
-                geom.Add(new WorldGeometry(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200)));
+            //if(GetScreenBounds().Size.X < 10) {
+            //    geom.Add(new ScreenGeometry(Viewport.World2ScreenPoint(Location), new CoordPoint(20, 20), 0, true));
+            //}
+            //else
+            geom.Add(new WorldGeometry(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200)));
 
             //geom.Add(new InternalCircle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
             return geom;

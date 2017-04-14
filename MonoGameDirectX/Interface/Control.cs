@@ -251,18 +251,18 @@ namespace MonoGameDirectX {
             return false;
         }
     }
-    public class ImageBox: Control {
-        public ImageBox(Rectangle rect) : base(rect) {
-            sprite = new Sprite(new SpriteInfo(), rect);
+    //public class ImageBox: Control {
+    //    public ImageBox(Rectangle rect) : base(rect) {
+    //        sprite = new Sprite(new SpriteInfo(), rect);
 
-        }
-        Sprite sprite;
-        public void SetImage(SpriteInfo info) {
-            sprite = new Sprite(info, Rectangle);
-        }
-        internal override void Draw(SpriteBatch spriteBatch, GameTime time) {
-            base.Draw(spriteBatch, time);
-            sprite.Draw(spriteBatch, time, true);
-        }
-    }
+    //    }
+    //    Sprite sprite;
+    //    public void SetImage(SpriteInfo info) {
+    //        sprite = new Sprite(info, Rectangle);
+    //    }
+    //    internal override void Draw(SpriteBatch spriteBatch, GameTime time) {
+    //        base.Draw(spriteBatch, time);
+    //        sprite.Draw(spriteBatch, time, true);
+    //    }
+    //}
 }

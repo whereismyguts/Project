@@ -35,31 +35,31 @@ namespace MonoGameDirectX {
             var keyState = Keyboard.GetState();
             var pressedKeys = keyState.GetPressedKeys();
 
-            if(false) {
-                GamePadCapabilities capabilities = GamePad.GetCapabilities(0);
-                if(capabilities.IsConnected) {
-                    GamePadState state = GamePad.GetState(PlayerIndex.One);
-                    if(capabilities.HasLeftXThumbStick) {
-                        if(state.ThumbSticks.Left.X < -0.5f) {
-                            //position.X -= 10.0f;
-                        }
-                        if(state.ThumbSticks.Left.X > 0.5f) {
-                            //   position.X += 10.0f;
-                        }
-                    }
+            // {
+            //    GamePadCapabilities capabilities = GamePad.GetCapabilities(0);
+            //    if(capabilities.IsConnected) {
+            //        GamePadState state = GamePad.GetState(PlayerIndex.One);
+            //        if(capabilities.HasLeftXThumbStick) {
+            //            if(state.ThumbSticks.Left.X < -0.5f) {
+            //                //position.X -= 10.0f;
+            //            }
+            //            if(state.ThumbSticks.Left.X > 0.5f) {
+            //                //   position.X += 10.0f;
+            //            }
+            //        }
 
-                    // You can also check the controllers "type"
-                    if(capabilities.GamePadType == GamePadType.GamePad) {
-                        var buttons = Enum.GetValues(typeof(Buttons)).Cast<Buttons>();
-                        List<Buttons> pressedButtons = new List<Buttons>();
-                        pressedButtons.AddRange(buttons.Where(b => state.IsButtonDown(b)));
-                        InterfaceController.ProcessInput(pressedButtons);
-                    }
-                }
-            }
+            //        // You can also check the controllers "type"
+            //        if(capabilities.GamePadType == GamePadType.GamePad) {
+            //            var buttons = Enum.GetValues(typeof(Buttons)).Cast<Buttons>();
+            //            List<Buttons> pressedButtons = new List<Buttons>();
+            //            pressedButtons.AddRange(buttons.Where(b => state.IsButtonDown(b)));
+            //            InterfaceController.ProcessInput(pressedButtons);
+            //        }
+            //    }
+            //}
             InterfaceController.ProcessInput(pressedKeys);
 
-            MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
+          //  MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
         }
 
 
@@ -105,9 +105,13 @@ namespace MonoGameDirectX {
 
                 graphics.ApplyChanges();
 
-                Viewport.SetViewportSize(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+                //Viewport.SetViewportSize(
+                //    graphics.PreferredBackBufferWidth / 3,
+                //    graphics.PreferredBackBufferHeight / 3,
+                //    graphics.PreferredBackBufferWidth / 3,
+                //    graphics.PreferredBackBufferHeight / 3);
 
-                Debugger.Lines.Add("viewport changed: " + Viewport.PxlWidth + "x" + Viewport.PxlHeight);
+                //Debugger.Lines.Add("viewport changed: " + Viewport.PxlWidth + "x" + Viewport.PxlHeight);
             }
             catch { }
         }
@@ -131,7 +135,7 @@ namespace MonoGameDirectX {
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
             InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
-            Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
+            Viewport.SetViewportSize(ScreenWidth , ScreenWidth);
             MainCore.AddPlanets();
 
             InterfaceController.AddState(new MenuState(), new GameState()); // order is matters

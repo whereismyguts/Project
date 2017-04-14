@@ -4,15 +4,20 @@ namespace GameCore {
     public class Viewport {
         float pxlHeight;
         float pxlWidth;
+        float zoomTarget = 128f;
+        float zoomStep = 12.8f;
+        float scale = 128f;
+        int lockTime = 0;
+        CoordPoint centerPoint = new CoordPoint();
+
+        public delegate void ViewportChangedEventHandler(ViewportChangedEventArgs args);
+        public event ViewportChangedEventHandler Changed;
 
         public Bounds Bounds {
             get {
                 return new Bounds(Centerpoint - new CoordPoint(pxlWidth * scale / 2, pxlHeight * scale / 2), Centerpoint + new CoordPoint(pxlWidth * scale / 2, pxlHeight * scale / 2));
             }
         }
-
-        CoordPoint centerPoint = new CoordPoint();
-
         public CoordPoint Centerpoint {
             get {
                 return centerPoint;
@@ -25,12 +30,6 @@ namespace GameCore {
                 SmoothScroll(value);
             }
         }
-
-        void SmoothScroll(CoordPoint value) {
-            //  var step = (centerPoint - value).Length / 100f;
-            centerPoint = (value - centerPoint).UnaryVector * (Math.Abs((value - centerPoint).Length) / 100 + 50) + centerPoint;
-        }
-
         public float MiniMapScale {
             get {
                 return 30f;
@@ -58,20 +57,8 @@ namespace GameCore {
             }
         }
 
-        public delegate void ViewportChangedEventHandler(ViewportChangedEventArgs args);
-        public event ViewportChangedEventHandler Changed;
-        void RaiseChanged() {
-            if(Changed != null)
-                Changed(new ViewportChangedEventArgs(this));
+        public Viewport() {
         }
-
-        public Viewport(float x, float y, float w, float h) {
-            Centerpoint = new CoordPoint(x, y);
-            pxlWidth = w;
-            pxlHeight = h;
-        }
-
-
 
         public CoordPoint Screen2WorldPoint(CoordPoint scrPoint) {
             double pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
@@ -104,7 +91,6 @@ namespace GameCore {
             ChangeZoom(scale - scale / 10, -scale / 50f);
 
         }
-
         public void Update() {
 
             //if(Math.Abs(scale - target) > 0.1f)
@@ -113,11 +99,18 @@ namespace GameCore {
             if(scale < 0)
                 scale = 0;
         }
-        float target = 128f;
-        float step = 12.8f;
+
+        void RaiseChanged() {
+            if(Changed != null)
+                Changed(new ViewportChangedEventArgs(this));
+        }
+        void SmoothScroll(CoordPoint value) {
+            //  var step = (centerPoint - value).Length / 100f;
+            centerPoint = (value - centerPoint).UnaryVector * (Math.Abs((value - centerPoint).Length) / 100 + 50) + centerPoint;
+        }
         void ChangeZoom(float target, float step) {
-            this.target = target;
-            this.step = Math.Sign(step) * Math.Max(0.1f, Math.Abs(step));
+            this.zoomTarget = target;
+            this.zoomStep = Math.Sign(step) * Math.Max(0.1f, Math.Abs(step));
         }
         void ChangeZoom(float delta) {
             if(lockTime == 0) {
@@ -128,10 +121,7 @@ namespace GameCore {
                 lockTime--;
         }
 
-        float scale = 128f;
-        int lockTime = 0;
-
-        internal void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset=2000) {
+        internal void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset = 2000) {
             CoordPoint lt = new CoordPoint(left - clipOffset, top + clipOffset);
             CoordPoint rb = new CoordPoint(right + clipOffset, bottom - clipOffset);
             Centerpoint = lt + (rb - lt) / 2;
@@ -146,7 +136,7 @@ namespace GameCore {
         }
     }
 
-    public class ViewportChangedEventArgs : EventArgs {
+    public class ViewportChangedEventArgs: EventArgs {
         Viewport view;
         public Viewport View { get { return view; } }
         public ViewportChangedEventArgs(Viewport view) {

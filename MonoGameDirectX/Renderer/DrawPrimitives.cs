@@ -96,7 +96,7 @@ namespace MonoGameDirectX {
         //}
 
         public static void DrawCircle(Vector2 center, float radius, SpriteBatch spBatch, Color color, Rectangle clip) {
-
+            if(radius < 1 || float.IsNaN(radius)) return;
             //var DestRect = new Rectangle((int)(center.X - radius), (int)(center.Y - radius), (int)(radius * 2), (int)(radius * 2));
             //spBatch.Draw(WinAdapter.GetTexture("circle.png"), DestRect, null, Color.TransparentBlack, 0, DestRect.Size.ToVector2()/2, SpriteEffects.None, 0f);
             //return;
@@ -180,15 +180,14 @@ namespace MonoGameDirectX {
             spBatch.Draw(BlankTexture(spBatch), rect, null, fillColor, 0f, new Vector2(), SpriteEffects.None, 0f);
             return;
 
-            var lt = new Vector2(rect.Left, rect.Top);
-            var lb = new Vector2(rect.Left, rect.Bottom);
-            var rt = new Vector2(rect.Right, rect.Top);
-            var rb = new Vector2(rect.Right, rect.Bottom);
-            DrawLine(lt, rt, spBatch, width, borderColor);
-            DrawLine(rt, rb, spBatch, width, borderColor);
-            DrawLine(rb, lb, spBatch, width, borderColor);
-            DrawLine(lb, lt, spBatch, width, borderColor);
+            //var lt = new Vector2(rect.Left, rect.Top);
+            //var lb = new Vector2(rect.Left, rect.Bottom);
+            //var rt = new Vector2(rect.Right, rect.Top);
+            //var rb = new Vector2(rect.Right, rect.Bottom);
+            //DrawLine(lt, rt, spBatch, width, borderColor);
+            //DrawLine(rt, rb, spBatch, width, borderColor);
+            //DrawLine(rb, lb, spBatch, width, borderColor);
+            //DrawLine(lb, lt, spBatch, width, borderColor);
         }
-
     }
 }

@@ -98,7 +98,7 @@ namespace MonoGameDirectX {
             //DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, Color.Brown);
         }
 
-        static int debugMode = 0;
+        static int debugMode = 2;
         internal static void SwitchDebugMode() {
 
             if(debugMode < 2)
