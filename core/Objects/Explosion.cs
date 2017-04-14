@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FarseerPhysics.Dynamics;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,18 +10,6 @@ namespace GameCore {
     class Explosion: GameObject {
         float rotation;
         int radius = 3000;
-        public override Bounds ObjectBounds {
-            get {
-                return new Bounds(Location + new CoordPoint(-radius, -radius), Location + new CoordPoint(radius, radius));
-            }
-        }
-
-        protected internal override float Rotation {
-            get {
-                return rotation;
-            }
-        }
-
         int lifeTime = 0;
 
         protected internal override void Step() {
@@ -30,10 +20,9 @@ namespace GameCore {
             base.Step();
         }
 
-        public Explosion(StarSystem system, CoordPoint position, int radius = 3000) {
-            this.Location = position;
-            this.radius = radius;
-            rotation = (float)Rnd.Get(-Math.PI, Math.PI);
+        public Explosion(World world, Vector2 position, int radius = 3000) : base(world, position, radius) {
+
+            //rotation = (float)Rnd.Get(-Math.PI, Math.PI);
         }
 
         public override IEnumerable<Item> GetItems() {

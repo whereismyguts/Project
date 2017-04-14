@@ -1,32 +1,19 @@
-﻿using System;
+﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace GameCore {
-    public class Body: GameObject {
+    public class SpaceBody: GameObject {
         protected float SelfRotation { get; set; }
 
-        protected internal override float Rotation { get { return SelfRotation; } }
-
-        public override Bounds ObjectBounds {
-            get {
-                return new Bounds(Location - new CoordPoint(Radius, Radius), Location + new CoordPoint(Radius, Radius));
-            }
-        }
-
         // public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
-        public Body(CoordPoint location, float radius) {
-            this.Radius = radius;
-            Location = location;
-            Mass = radius;
-
+        public SpaceBody(Vector2 location, float radius, World world) : base(world, location, radius) {
 
         }
 
         List<Geometry> sat = new List<Geometry>();
-
-        protected internal override void Step() {
-            SelfRotation += .001f;
-        }
 
         public override IEnumerable<Item> GetItems() {
             return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "earth.png") };
@@ -36,7 +23,7 @@ namespace GameCore {
         public override IEnumerable<Geometry> GetPrimitives() {
             UpdateSatellite();
 
-            var geometry = new List<Geometry> { new WorldGeometry(Location, new CoordPoint(Radius * 2, Radius * 2), true) };
+            var geometry = new List<Geometry> { new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true) };
 
             geometry.AddRange(sat);
 
@@ -48,8 +35,8 @@ namespace GameCore {
 
             double theta = 0;  // angle that will be increased each loop
                                //    double step = .01;  // amount to add to theta each time (degrees)
-            //   if(radius < 1)
-            //        radius = 1;
+                               //   if(radius < 1)
+                               //        radius = 1;
 
             float satRaduis = Radius * 2.2f;
             //  CoordPoint satSize = new CoordPoint(2000, 2000);
@@ -72,7 +59,7 @@ namespace GameCore {
                     )
                     down = !down;
 
-                var p = new CoordPoint(sx, sy).GetRotated(SelfRotation);
+                var p = new Vector2(sx, sy).GetRotated(SelfRotation);
 
                 //if(satRadius < Radius * 0.95 && p.X < Location.X) { }
                 //else {
@@ -80,7 +67,7 @@ namespace GameCore {
 
                 p = p + Location;
 
-                CoordPoint p2 = p + (Location - p).UnaryVector * Math.Max((Location - p).Length / 10, 200);
+                Vector2 p2 = p + (Location - p).UnaryVector() * Math.Max(Location.Substract(p).Length() / 10, 200);
 
                 byte color1 = (byte)Math.Abs(255 - theta / (Math.PI * 2) * 255 * 2);
 
@@ -95,21 +82,17 @@ namespace GameCore {
         }
     }
 
-    public class Planet: Body {
+    public class Planet: SpaceBody {
         bool clockwise;
 
-        float DistanceToSun { get { return CoordPoint.Distance(RotateCenter.Location, Location); } }
-        static Body RotateCenter { get { return CurrentSystem.Star; } }
-
-        protected internal override float Rotation { get { return SelfRotation; } }
+        float DistanceToSun { get { return Vector2.Distance(RotateCenter.Location, Location); } }
+        static SpaceBody RotateCenter { get { return CurrentSystem.Star; } }
 
         public override string Name { get; } = NameGenerator.Generate(Rnd.Get(0, 3));
 
-        public Planet(float distance, float diameter, float rotation, bool clockwise)
-            : base(new CoordPoint(RotateCenter.Location + new CoordPoint(distance, 0)), diameter / 2) {
-            starRotation = rotation;
-            this.clockwise = clockwise;
-            rotationSpeed = Rnd.Get(.0005f, .0015f);
+        public Planet(Vector2 location, float radius,  World world)
+            : base( location, radius, world) {
+            
         }
 
         protected override string GetName() {
@@ -118,15 +101,15 @@ namespace GameCore {
 
         float rotationSpeed = 0;
 
-        protected internal override void Step() {
-            if(starRotation >= 2 * Math.PI)
-                starRotation = 0;
-            Location = new CoordPoint((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Location.Y));
+        //protected internal override void Step() {
+        //    if(starRotation >= 2 * Math.PI)
+        //        starRotation = 0;
+        //    Location = new Vector2((float)(DistanceToSun * Math.Cos(starRotation) + RotateCenter.Location.X), (float)(DistanceToSun * Math.Sin(starRotation) + RotateCenter.Location.Y));
 
-            starRotation += clockwise ? rotationSpeed : -rotationSpeed;
-            SelfRotation += .005f;
+        //    starRotation += clockwise ? rotationSpeed : -rotationSpeed;
+        //    SelfRotation += .005f;
 
-        }
+        //}
         //public override IEnumerable<Item> GetItems() {
         //    return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size/2, "planet1.png", 5,4) };
         //}

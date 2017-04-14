@@ -49,8 +49,8 @@ namespace MonoGameDirectX {
 
             if(geom is Line) {
                 var line = geom as Line;
-                var p1 = WinAdapter.CoordPoint2Vector(MainCore.Instance.Viewport.World2ScreenPoint(line.Start));
-                var p2 = WinAdapter.CoordPoint2Vector(MainCore.Instance.Viewport.World2ScreenPoint(line.End));
+                var p1 = MainCore.Instance.Viewport.World2ScreenPoint(line.Start);
+                var p2 = MainCore.Instance.Viewport.World2ScreenPoint(line.End);
                 DrawLine(p1, p2, spriteBatch, 1, color);
                 return;
             }

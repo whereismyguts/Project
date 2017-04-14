@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FarseerPhysics.Dynamics;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,8 +9,6 @@ namespace GameCore {
 
         //  AIController controller;
         public event EventHandler OnDead;
-
-        protected internal override float Rotation { get { return (Direction.Angle); } }
 
         int fraction;
         public int Fraction {
@@ -20,7 +20,7 @@ namespace GameCore {
         }
         public int Health { get { return Hull.Health; } }
         public InternalColor Color { get; } // TODO remove
-        public CoordPoint Direction { get { return direction; } }
+        public Vector2 Direction { get { return Vector2.One.GetRotated(Circle.Rotation); } }
         string name;
         public override string Name {
             get {
@@ -36,9 +36,9 @@ namespace GameCore {
 
         //public CoordPoint Velosity { get { return velosity; } }
 
-        public Ship(int fraction = 1) {
+        public Ship(World world, int fraction = 1) : base(world, Vector2.Zero) {
             Fraction = fraction;
-            Hull = new ShipHull(2000) { Owner = this };
+            Hull = new ShipHull() { Owner = this };
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
@@ -56,19 +56,11 @@ namespace GameCore {
             //Inventory.Attach(Hull.Slots[2], w1);
             Inventory.Attach(Hull.Slots[3], w2);
 
-            Mass = 0.5f;
             Color = Rnd.GetColor();
             Reborn();
             //if(target != null)
             //    controller = new AIController(this, target, TaskType.Peersuit);
-
         }
-        public override bool IsDynamic {
-            get {
-                return true;
-            }
-        }
-
 
         internal void GetDamage(int d, string text) {
             Hull.Health -= d;
@@ -81,7 +73,7 @@ namespace GameCore {
             if(OnDead != null)
                 OnDead(this, EventArgs.Empty);
 
-            new Explosion(CurrentSystem, Location);
+            new Explosion(World, Location);
 
             ToRemove = true;
 
@@ -93,45 +85,25 @@ namespace GameCore {
                 if(slot.Type == SlotType.EngineSlot && !slot.IsEmpty)
                     slot.AttachedItem.Activate();
         }
-        public override CoordPoint Location {
-            get {
-                return base.Location;
-            }
 
-            set {
-                base.Location = value;
-                //  if(Calculator!=null)
-                //Calculator.Update();
-            }
-        }
         protected override string GetName() {
             return "SHIP " + Name;
         }
 
         //public TrajectoryCalculator Calculator { get; set; }
         void Reborn() {
-
-            bool correctPosition = false;
-
-            while(!correctPosition) {
-                Location = Fraction == 1 ? new CoordPoint(Rnd.Get(-91000, -90000), Rnd.Get(-25000, 25000)) :
-                     new CoordPoint(Rnd.Get(90000, 91000), Rnd.Get(-25000, 25000));
-                correctPosition = true;
-                foreach(GameObject obj in CurrentSystem.Objects) {
-                    if(obj != this && obj.ObjectBounds.Contains(Location)) {
-                        correctPosition = false;
-                        break;
-                    }
-
-                }
-            }
+            var location = GetNewLocation(this);
+            CreateCircle(Radius, location);
+            Circle.SetTransform(location, Rnd.GetPeriod());
+            Circle.LinearVelocity = Vector2.Zero;
             //acceleration = 0;
-            direction = new CoordPoint(1, Rnd.GetPeriod()).UnaryVector;
-            Velosity = new CoordPoint(0, 0);
+
             //Calculator= new TrajectoryCalculator(this);
 
         }
 
+     
+        
 
         protected internal override void Step() {
 
@@ -147,24 +119,21 @@ namespace GameCore {
 
             foreach(Item item in Inventory.Container)
                 item.Step();
+            var acc = GetAcceleration() * 0.5f;
+            Circle.ApplyLinearImpulse(acc);
 
-            Velosity += GetAcceleration() * 0.5f;
 
-            direction.Rotate(angleSpeed);
-            angleSpeed *= PhysicsHelper.RotationInertia;
 
             base.Step();
         }
 
-        public CoordPoint ForceVector {
-            get { return PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this) * 100; }
-        }
 
-        CoordPoint GetAcceleration() {
+
+        Vector2 GetAcceleration() {
             IEnumerable<DefaultEngine> engines = Hull.GetEngines();
-            CoordPoint sum = new CoordPoint();
+            Vector2 sum = new Vector2();
             foreach(DefaultEngine engine in engines)
-                sum += new CoordPoint(0, -1).GetRotated(engine.Rotation) * engine.GetAcceleration();
+                sum += new Vector2(0, -1).GetRotated(engine.Rotation) * engine.GetAcceleration();
             return sum;
         }
 
@@ -172,12 +141,6 @@ namespace GameCore {
             IEnumerable<DefaultWeapon> weapons = Hull.GetWeapons();
             foreach(DefaultWeapon W in weapons)
                 W.Fire();
-        }
-
-        public override float Radius {
-            get {
-                return ObjectBounds.Width / 2;
-            }
         }
 
         public override IEnumerable<Item> GetItems() {
@@ -191,10 +154,10 @@ namespace GameCore {
         }
 
         public void RotateL() {
-            angleSpeed -= .01f;
+            Circle.ApplyAngularImpulse(-.01f);
         }
         public void RotateR() {
-            angleSpeed += .01f;
+            Circle.ApplyAngularImpulse(.01f);
         }
 
         //public void SwitchAI() {
@@ -212,7 +175,7 @@ namespace GameCore {
             //    geom.Add(new ScreenGeometry(Viewport.World2ScreenPoint(Location), new CoordPoint(20, 20), 0, true));
             //}
             //else
-            geom.Add(new WorldGeometry(ObjectBounds.LeftTop, new CoordPoint(Hull.Health * ObjectBounds.Width / 10, 200)));
+            geom.Add(new WorldGeometry(ObjectBounds.LeftTop, new Vector2(Hull.Health * ObjectBounds.Width / 10, 200)));
 
             //geom.Add(new InternalCircle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
             return geom;
@@ -223,10 +186,6 @@ namespace GameCore {
         public Inventory Inventory { get; set; }
         protected internal ShipHull Hull { get; set; }
         #endregion
-
-        float angleSpeed = 0;
-        //public CoordPoint velosity = new CoordPoint();
-        CoordPoint direction = new CoordPoint(1, 0);
     }
 
     public struct InternalColor {

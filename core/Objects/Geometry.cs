@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ namespace GameCore {
 
     public abstract class Geometry: Renderable {
         //public ColorCore Color { get; protected set; } TODO add color
-        public Geometry(CoordPoint location, CoordPoint size, bool round, int padding = 0) {
+        public Geometry(Vector2 location, Vector2 size, bool round) {
             Location = location;
-            Size = size + 2 * padding;
-            Origin = size / 2 + padding;
+            Size = size;
+            Origin = size / 2;
             IsCircle = round;
         }
         public bool IsCircle;
@@ -19,27 +20,27 @@ namespace GameCore {
         public InternalColor Color { get; set; } = InternalColor.Black;
     }
     public class WorldGeometry: Geometry {
-        public WorldGeometry(CoordPoint location, CoordPoint size, bool round = false) : base(location, size, round) {
+        public WorldGeometry(Vector2 location, Vector2 size, bool round = false) : base(location, size, round) {
         }
     }
 
     public class ScreenGeometry: Geometry {
-        public ScreenGeometry(CoordPoint location, CoordPoint size, int padding = 0, bool round = false) : base(location, size, round, padding) {
+        public ScreenGeometry(Vector2 location, Vector2 size, int padding = 0, bool round = false) : base(location, size, round) {
         }
 
-        public override CoordPoint ScreenLocation {
+        public override Vector2 ScreenLocation {
             get {
                 return Location;
             }
         }
 
-        public override CoordPoint ScreenOrigin {
+        public override Vector2 ScreenOrigin {
             get {
                 return Origin;
             }
         }
 
-        public override CoordPoint ScreenSize {
+        public override Vector2 ScreenSize {
             get {
                 return Size;
             }
@@ -47,9 +48,9 @@ namespace GameCore {
     }
 
     public class Line: Geometry { // decorator
-        public CoordPoint End { get; private set; }
-        public CoordPoint Start { get; private set; }
-        public Line(CoordPoint start, CoordPoint end) : base(start, end - start, false) {
+        public Vector2 End { get; private set; }
+        public Vector2 Start { get; private set; }
+        public Line(Vector2 start, Vector2 end) : base(start, end - start, false) {
             Start = start;
             End = end;
         }

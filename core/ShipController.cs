@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,7 +61,7 @@ namespace GameCore {
     //    }
     //}
     public class DefaultAutoControl: AIController {
-        public CoordPoint TargetLocation { get; private set; }
+        public Vector2 TargetLocation { get; private set; }
 
         public Ship ToKill { get; set; }
 
@@ -78,7 +79,7 @@ namespace GameCore {
         GameObject GetDangerZone() {
             foreach(var obj in System.Objects)
 
-                if(obj != Owner && CoordPoint.Distance(obj.Location, Owner.Location) <= dangerZoneMultiplier * obj.Radius)
+                if(obj != Owner && Vector2.Distance(obj.Location, Owner.Location) <= dangerZoneMultiplier * obj.Radius)
                     return obj;
 
             //foreach(Ship s in MainCore.Instance.Ships)
@@ -90,8 +91,8 @@ namespace GameCore {
         void TaskLeaveDeathZone(GameObject obj) {
             // set target location as end of vector, normal to strait vector from center of danger obj
 
-            CoordPoint toTarget = TargetLocation == null ? new CoordPoint() : TargetLocation - Owner.Location;
-            CoordPoint leaveVector = (Owner.Location - obj.Location) * 2;
+            Vector2 toTarget = TargetLocation == null ? new Vector2() : TargetLocation - Owner.Location;
+            Vector2 leaveVector = (Owner.Location - obj.Location) * 2;
 
             //CoordPoint v1 = new CoordPoint(-leaveVector.Y, leaveVector.X);
             //CoordPoint v2 = new CoordPoint(leaveVector.Y, -leaveVector.X);
@@ -120,10 +121,10 @@ namespace GameCore {
 
             if(ToKill == null || ToKill.ToRemove)
                 ToKill = FindEnemy();
-            if(Owner.Health <= 5 && ToKill != null && CoordPoint.Distance(Owner.Location, ToKill.Location) < 10000)
+            if(Owner.Health <= 5 && ToKill != null && Vector2.Distance(Owner.Location, ToKill.Location) < 10000)
                 TaskLeaveDeathZone(ToKill);
 
-            if(Owner.Velosity.Length > 200)
+            if(Owner.Velosity.Length() > 200)
                 TaskDecreaseSpeed();
             else
                 if(danger != null)
@@ -139,7 +140,7 @@ namespace GameCore {
         }
 
         private Ship FindEnemy() {
-            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction && !s.ToRemove).OrderBy(s => CoordPoint.Distance(s.Location, Owner.Location)).ToList();
+            var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction && !s.ToRemove).OrderBy(s => Vector2.Distance(s.Location, Owner.Location)).ToList();
             return (e != null && e.Count > 0) ? e[Rnd.Get(0, e.Count - 1)] : null;
         }
 
@@ -153,7 +154,7 @@ namespace GameCore {
             return angle <= a / 2f && angle >= -a / 2f;
         }
 
-        private bool IsIntersectSomething(CoordPoint p1, CoordPoint p2) {
+        private bool IsIntersectSomething(Vector2 p1, Vector2 p2) {
             foreach(var body in System.Objects)
                 if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Location.X, body.Location.Y, body.Radius))
                     return true;
@@ -185,12 +186,12 @@ namespace GameCore {
         }
 
         private void TaskGoToGoal() {
-            if(ToKill != null && CoordPoint.Distance(ToKill.Location, Owner.Location) > 3000)
+            if(ToKill != null && Vector2.Distance(ToKill.Location, Owner.Location) > 3000)
                 TargetLocation = ToKill.Location;
         }
 
         private void TaskDecreaseSpeed() {
-            TargetLocation = Owner.Location - Owner.Velosity.UnaryVector * 10;
+            TargetLocation = Owner.Location - Owner.Velosity.UnaryVector() * 10;
         }
 
         //private void SetRandomLocationGoal() {

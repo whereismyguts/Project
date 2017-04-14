@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
-namespace GameCore {
+namespace GameCore {/*
     internal class CollideController {
 
 
@@ -15,14 +16,14 @@ namespace GameCore {
                 if(!o1.TemporaryNoclip)
                     foreach(GameObject o2 in objects)
                         if(o1 != o2)
-                            if((o1 is ProjectileBase || o1 is Ship) && (o2 is Body || o2 is Ship)) {
+                            if((o1 is ProjectileBase || o1 is Ship) && (o2 is SpaceBody || o2 is Ship)) {
 
                                 Ship s = o2 as Ship;
                                 ProjectileBase b = o1 as ProjectileBase;
                                 if(s != null && b != null) {
                                     if(b.Owner == s)
                                         continue;
-                                    if(CoordPoint.Distance(s.Hull.Location, b.Location) <= s.Hull.Size.X / 2) {
+                                    if(Vector2.Distance(s.Hull.Location, b.Location) <= s.Hull.Size.X / 2) {
                                         if(b.Impact())
                                             s.GetDamage(b.Damage, b.Owner == null ? "nothing" : b.Owner.Name);
 
@@ -54,4 +55,5 @@ namespace GameCore {
             //}
         }
     }
+    */
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FarseerPhysics.Dynamics;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +16,7 @@ namespace GameCore {
 
 
 
-        public Body Star { get; internal set; }
+        public SpaceBody Star { get; internal set; }
 
 
 
@@ -25,12 +27,14 @@ namespace GameCore {
             objects.RemoveAll(p => p.ToRemove);
         }
 
-        internal void CreatePlanets(int planetsNumber = 3) {
-
+        internal void CreatePlanets(World world, int planetsNumber = 3) {
             //TODO Data Driven Factory
-            Star = new Body(new CoordPoint(0, 0), 20000);
+
+
+
+            Star = new SpaceBody(new Vector2(0, 0), 20000, world);
             for(int i = 0; i < planetsNumber; i++)
-                new Planet(Rnd.Get(30000, 80000), Rnd.Get(7000, 15000), Rnd.GetPeriod(), Rnd.Bool());
+                new Planet(GameObject.GetNewLocation(null), Rnd.Get(7000, 15000), world);
         }
     }
 }

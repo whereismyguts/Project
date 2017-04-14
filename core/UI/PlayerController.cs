@@ -87,12 +87,12 @@ namespace GameCore {
         }
 
         void Update() {
-            ScreenSpriteItem item = new ScreenSpriteItem(Align.FillBottom, new CoordPoint(150, 150), new CoordPoint(), new SpriteInfo("256tile.png") { ZIndex = -2 });
+            //ScreenSpriteItem item = new ScreenSpriteItem(Align.FillBottom, new Vector2(150, 150), new Vector2(), new SpriteInfo("256tile.png") { ZIndex = -2 });
             items.Clear();
             geometry.Clear();
-            items.Add(item);
-            geometry.Add(new ScreenGeometry(item.ScreenLocation, item.ScreenSize) { ZIndex = -3, Origin = new CoordPoint() });
-            Debugger.Lines.Add("common interafce updated");
+            //items.Add(item);
+            //geometry.Add(new ScreenGeometry(item.ScreenLocation, item.ScreenSize) { ZIndex = -3, Origin = new Vector2() });
+            Debugger.Lines.Add("common interafce NOT updated");
         }
 
         public IEnumerable<Item> GetItems() {

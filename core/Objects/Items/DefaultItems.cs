@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace GameCore {
             }
         }
 
-        public DefaultWeapon() : base(new CoordPoint(1200, 1200), new CoordPoint(600, 600)) {
+        public DefaultWeapon() : base(new Vector2(1200, 1200), new Vector2(600, 600)) {
             fireCoolDownMax = Rnd.Get(100, 150);
         }
 
@@ -42,12 +43,12 @@ namespace GameCore {
         internal void Fire() {
             if(fireCoolDown == fireCoolDownMax) {
                 //var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
-                CreateProjectile(Location + Origin, Slot.Hull.Owner.Direction, Slot.Hull.Owner);
+                CreateProjectile(Location.Add(Origin), Slot.Hull.Owner.Direction, Slot.Hull.Owner);
                 fireCoolDown = 0;
             }
         }
 
-        protected virtual ProjectileBase CreateProjectile(CoordPoint location, CoordPoint direction, Ship owner) {
+        protected virtual ProjectileBase CreateProjectile(Vector2 location, Vector2 direction, Ship owner) {
             return new ProjectileBase(location, direction, owner);
         }
     }
@@ -66,7 +67,7 @@ namespace GameCore {
                 return "standard engine";
             }
         }
-        public DefaultEngine() : base(new CoordPoint(1200, 1200), new CoordPoint(600, 400)) {
+        public DefaultEngine() : base(new Vector2(1200, 1200), new Vector2(600, 400)) {
             accselerationUp = .1f;
             accselerationDown = accselerationUp / 5f;
         }
@@ -121,7 +122,7 @@ namespace GameCore {
                 return new SpriteInfo("gun.png");
             }
         }
-        protected override ProjectileBase CreateProjectile(CoordPoint location, CoordPoint direction, Ship owner) {
+        protected override ProjectileBase CreateProjectile(Vector2 location, Vector2 direction, Ship owner) {
             return new Rocket(location, direction, owner);
         }
 

@@ -27,7 +27,7 @@ namespace GameCore {
                 Changed(new RenderObjectChangedEventArgs(this));
         }
 
-        void UpdateItems() {
+        void UpdateItems() {/*
             Align align = player.Index == 1 ? Align.LeftBottom : Align.RightBottom;
             ScreenSpriteItem hull = new ScreenSpriteItem(
                 align, player.Ship.Hull.Size / 20,
@@ -50,6 +50,7 @@ namespace GameCore {
                 geometry.Add(new ScreenGeometry(
                 items[selectedIndex].ScreenLocation,
                 items[selectedIndex].ScreenSize));
+                */
         }
 
         internal void SelectPrev() {
@@ -76,7 +77,7 @@ namespace GameCore {
             RaiseChanged();
         }
 
-        List<ScreenSpriteItem> items = new List<ScreenSpriteItem>();
+        List<Item> items = new List<Item>();
         List<ScreenGeometry> geometry = new List<ScreenGeometry>();
 
         public bool Focused { get; set; }

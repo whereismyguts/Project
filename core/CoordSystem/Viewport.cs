@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace GameCore {
     public class Viewport {
@@ -8,22 +9,22 @@ namespace GameCore {
         float zoomStep = 12.8f;
         float scale = 128f;
         int lockTime = 0;
-        CoordPoint centerPoint = new CoordPoint();
+        Vector2 centerPoint = new Vector2();
 
         public delegate void ViewportChangedEventHandler(ViewportChangedEventArgs args);
         public event ViewportChangedEventHandler Changed;
 
         public Bounds Bounds {
             get {
-                return new Bounds(Centerpoint - new CoordPoint(pxlWidth * scale / 2, pxlHeight * scale / 2), Centerpoint + new CoordPoint(pxlWidth * scale / 2, pxlHeight * scale / 2));
+                return new Bounds(Centerpoint - new Vector2(pxlWidth * scale / 2, pxlHeight * scale / 2), Centerpoint + new Vector2(pxlWidth * scale / 2, pxlHeight * scale / 2));
             }
         }
-        public CoordPoint Centerpoint {
+        public Vector2 Centerpoint {
             get {
                 return centerPoint;
             }
             set {
-                if((centerPoint - value).Length < 10) {
+                if(Vector2.Subtract(centerPoint, value).Length() < 10) {
                     centerPoint = value;
                     return;
                 }
@@ -60,10 +61,10 @@ namespace GameCore {
         public Viewport() {
         }
 
-        public CoordPoint Screen2WorldPoint(CoordPoint scrPoint) {
-            double pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
-            double pixelFactorY = PxlHeight > 0 ? Bounds.Height / pxlHeight : 0;
-            return new CoordPoint(scrPoint.X * pixelFactorX + Bounds.LeftTop.X, scrPoint.Y * pixelFactorY + Bounds.LeftTop.Y);
+        public Vector2 Screen2WorldPoint(Vector2 scrPoint) {
+            float pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
+            float pixelFactorY = PxlHeight > 0 ? Bounds.Height / pxlHeight : 0;
+            return new Vector2(scrPoint.X * pixelFactorX + Bounds.LeftTop.X, scrPoint.Y * pixelFactorY + Bounds.LeftTop.Y);
         }
         public Bounds ScreenToWorldBounds(Bounds scrBounds) {
             return new Bounds(Screen2WorldPoint(scrBounds.LeftTop), Screen2WorldPoint(scrBounds.RightBottom));
@@ -79,10 +80,14 @@ namespace GameCore {
         public Bounds World2ScreenBounds(Bounds scrBounds) {
             return new Bounds(World2ScreenPoint(scrBounds.LeftTop), World2ScreenPoint(scrBounds.RightBottom));
         }
-        public CoordPoint World2ScreenPoint(CoordPoint wrlPoint) {
-            double unitFactorX = Bounds.Width > 0 ? PxlWidth / Bounds.Width : 0;
-            double unitFactorY = Bounds.Height > 0 ? PxlHeight / Bounds.Height : 0;
-            return new CoordPoint((wrlPoint.X - Bounds.LeftTop.X) * unitFactorX, (wrlPoint.Y - Bounds.LeftTop.Y) * unitFactorY);
+        public Vector2 World2ScreenPoint(float x, float y) {
+            float unitFactorX = Bounds.Width > 0 ? PxlWidth / Bounds.Width : 0;
+            float unitFactorY = Bounds.Height > 0 ? PxlHeight / Bounds.Height : 0;
+            return new Vector2((x - Bounds.LeftTop.X) * unitFactorX, (x - Bounds.LeftTop.Y) * unitFactorY);
+        }
+
+        public Vector2 World2ScreenPoint(Vector2 wrlPoint) {
+            return World2ScreenPoint(wrlPoint.X, wrlPoint.Y);
         }
         public void ZoomIn() {
             ChangeZoom(scale + scale / 10, scale / 50f);
@@ -104,9 +109,9 @@ namespace GameCore {
             if(Changed != null)
                 Changed(new ViewportChangedEventArgs(this));
         }
-        void SmoothScroll(CoordPoint value) {
+        void SmoothScroll(Vector2 value) {
             //  var step = (centerPoint - value).Length / 100f;
-            centerPoint = (value - centerPoint).UnaryVector * (Math.Abs((value - centerPoint).Length) / 100 + 50) + centerPoint;
+            centerPoint = Vector2.Normalize(Vector2.Subtract(value, centerPoint)) * (Math.Abs(value.Substract(centerPoint).Length()) / 100 + 50) + centerPoint;
         }
         void ChangeZoom(float target, float step) {
             this.zoomTarget = target;
@@ -122,8 +127,8 @@ namespace GameCore {
         }
 
         internal void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset = 2000) {
-            CoordPoint lt = new CoordPoint(left - clipOffset, top + clipOffset);
-            CoordPoint rb = new CoordPoint(right + clipOffset, bottom - clipOffset);
+            Vector2 lt = new Vector2(left - clipOffset, top - clipOffset);
+            Vector2 rb = new Vector2(right + clipOffset, bottom + clipOffset);
             Centerpoint = lt + (rb - lt) / 2;
 
             var scale1 = Math.Abs(((Centerpoint - lt) * 2).X / pxlWidth);

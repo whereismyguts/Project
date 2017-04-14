@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using GameCore;
+using Microsoft.Xna.Framework;
 
 namespace GameCore {
     public static class Rnd {
@@ -15,7 +16,7 @@ namespace GameCore {
         }
 
         internal static int Get(int v1, int v2) {
-            return rnd.Next(v1, v2+1);
+            return rnd.Next(v1, v2 + 1);
         }
 
         internal static bool Bool() {
@@ -30,5 +31,7 @@ namespace GameCore {
             var d = rnd.NextDouble() * (v2 - v1);
             return v1 + d;
         }
+
+        
     }
 }

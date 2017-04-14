@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FarseerPhysics.Dynamics;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,6 +16,9 @@ namespace GameCore {
         }
     }
     public class MainCore {
+
+        World world = new World(Vector2.Zero);
+
         static MainCore instance;
 
         static List<UIState> states = new List<UIState>();
@@ -69,28 +74,28 @@ namespace GameCore {
         //public event StateEventHandler StateChanged;
         //public bool TurnBasedMode { get; private set; } = false;
         public Viewport Viewport { get; set; }
-        public static CoordPoint Cursor { get; set; }
+        public static Vector2 Cursor { get; set; }
 
         MainCore() {
             System = new StarSystem();
             Viewport = new Viewport();
         }
-        public static void AddPlanets() {
-            Instance.System.CreatePlanets();
+        public void AddPlanets() {
+            Instance.System.CreatePlanets(world);
         }
 
         void CreatePlayers() {
             PlayerController.Clear();
-            Player p1 = new Player(new Ship(1), 1);
+            Player p1 = new Player(new Ship(world, 1), 1);
             PlayerController.AddPlayer(p1);
-            Player p2 = new Player(new Ship(2), 2);
+            Player p2 = new Player(new Ship(world, 2), 2);
             PlayerController.AddPlayer(p2);
 
             ships.Add(p1.Ship);
             ships.Add(p2.Ship);
 
             for(int i = 0; i < 6; i++) {
-                var ship = new Ship(i % 2 == 0 ? 1 : 2);
+                var ship = new Ship(world, i % 2 == 0 ? 1 : 2);
                 AIShipsController.AddController(new DefaultAutoControl(ship));
                 ships.Add(ship);
             }
@@ -117,10 +122,11 @@ namespace GameCore {
         }
 
 
-        public void Update() {
+        public void Step(GameTime gameTime) {
 
             //&& Controller.Keys.ToList().Contains(32)
             if(CurrentState.InGame) {
+                /*
                 if((ships.Count(s => s.Fraction == 1) == 0 || ships.Count(s => s.Fraction == 2) == 0)) {
                     foreach(Ship ship in ships)
                         ship.ToRemove = true;
@@ -129,19 +135,22 @@ namespace GameCore {
                     messages.Clear();
                 }
                 CleanObjects();
-
+                */
                 //if(turnIsActive || !TurnBasedMode) {
                 //   PlayerController.Step();
+                try { 
+                world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / 30f)));
+            }
+            catch(Exception e) {
 
+            }
 
+                //AIShipsController.Step();
 
+                //foreach(GameObject obj in Objects)
+                //    obj.Step();
 
-                AIShipsController.Step();
-
-                foreach(GameObject obj in Objects)
-                    obj.Step();
-
-                CollideController.Step(ships, GetAllObjects(1));
+                //CollideController.Step(ships, GetAllObjects(1));
 
                 //if(TurnBasedMode) {
                 //    turnTime++;
@@ -158,19 +167,19 @@ namespace GameCore {
         void UpdateViewport() {
             float left = float.MaxValue;
             float right = float.MinValue;
-            float top = float.MinValue;
-            float bottom = float.MaxValue;
+            float top = float.MaxValue;
+            float bottom = float.MinValue;
 
-            CoordPoint total = new CoordPoint();
+            //Vector2 total = new Vector2();
 
             foreach(var shp in Objects.Where(o => o is Planet || o is Ship)) {
                 if(shp.Location.X > right)
                     right = shp.Location.X;
                 if(shp.Location.X < left)
                     left = shp.Location.X;
-                if(shp.Location.Y > top)
+                if(shp.Location.Y < top)
                     top = shp.Location.Y;
-                if(shp.Location.Y < bottom)
+                if(shp.Location.Y > bottom)
                     bottom = shp.Location.Y;
             }
             //Cursor = total / Objects.Count;

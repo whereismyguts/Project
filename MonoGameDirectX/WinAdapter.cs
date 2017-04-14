@@ -18,9 +18,6 @@ namespace MonoGameDirectX {
         internal static Rectangle Bounds2Rectangle(Bounds bounds) {
             return new Rectangle((int)bounds.LeftTop.X, (int)bounds.LeftTop.Y, (int)bounds.Width, (int)bounds.Height);
         }
-        internal static Vector2 CoordPoint2Vector(CoordPoint point) {
-            return new Vector2(point.X, point.Y);
-        }
         internal static Texture2D GetCursor() {
             return contentLoader.GetTexture(string.Empty); // TODO get "cursor"
         }

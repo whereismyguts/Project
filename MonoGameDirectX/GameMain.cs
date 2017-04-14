@@ -59,7 +59,7 @@ namespace MonoGameDirectX {
             //}
             InterfaceController.ProcessInput(pressedKeys);
 
-          //  MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
+            //  MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
         }
 
 
@@ -135,8 +135,8 @@ namespace MonoGameDirectX {
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
             InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
-            Viewport.SetViewportSize(ScreenWidth , ScreenWidth);
-            MainCore.AddPlanets();
+            Viewport.SetViewportSize(ScreenWidth, ScreenWidth);
+            MainCore.Instance.AddPlanets();
 
             InterfaceController.AddState(new MenuState(), new GameState()); // order is matters
 
@@ -204,7 +204,7 @@ namespace MonoGameDirectX {
         protected override void Update(GameTime gameTime) {
             if(IsActive)
                 ProcessInput();
-            Instance.Update();
+            Instance.Step(gameTime);
             //    State = GameState.Space;
             //renderer.TraectoryPath = Player.Calculator.Calculate();
             base.Update(gameTime);

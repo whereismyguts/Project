@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FarseerPhysics.Dynamics;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +8,12 @@ using System.Threading.Tasks;
 
 namespace GameCore {
     public class ProjectileBase: GameObject {
-        public ProjectileBase(CoordPoint position, CoordPoint direction, Ship owner) {
-
-            Location = position;
-
+        public ProjectileBase(Vector2 position, Vector2 direction, Ship owner) : base(owner.World, position, 2000) {
             this.owner = owner;
-            Velosity = direction * 420;
+            ApplyForce(direction * 400);
         }
+
+
 
         Ship owner;
 
@@ -20,18 +21,6 @@ namespace GameCore {
 
         public Ship Owner {
             get { return owner; }
-        }
-
-        public override Bounds ObjectBounds {
-            get {
-                return new Bounds(Location.X - 800, Location.Y - 800, 1600, 1600);
-            }
-        }
-
-        protected internal override float Rotation {
-            get {
-                return Velosity.Angle;
-            }
         }
 
         public virtual int Damage {
@@ -47,12 +36,12 @@ namespace GameCore {
         }
 
         public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new WorldGeometry(Location, new CoordPoint(400, 400)) };
+            return new Geometry[] { new WorldGeometry(Location, new Vector2(400, 400)) };
         }
 
         internal bool Impact() {
             if(!ToRemove) {
-                new Explosion(CurrentSystem, Location, 1200);
+                new Explosion(World, Location, 1200);
                 ToRemove = true;
                 return true;
             }
@@ -74,16 +63,10 @@ namespace GameCore {
         protected override string GetName() {
             return "PROJECTILE: " + Owner.Name;
         }
-
-        public override bool IsDynamic {
-            get {
-                return true;
-            }
-        }
     }
 
     public class Rocket: ProjectileBase {
-        public Rocket(CoordPoint position, CoordPoint direction, Ship owner) : base(position, direction, owner) {
+        public Rocket(Vector2 position, Vector2 direction, Ship owner) : base(position, direction, owner) {
 
         }
 

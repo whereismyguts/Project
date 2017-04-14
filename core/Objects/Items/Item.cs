@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace GameCore {
@@ -15,9 +16,9 @@ namespace GameCore {
         public abstract float Rotation { get; }
         public string Content { get { return SpriteInfo.Content; } }
 
-        public Item(CoordPoint size, CoordPoint origin, int padding=0) { //TODO implement in children
-            Size = size+padding*2;
-            Origin = origin+padding;
+        public Item(Vector2 size, Vector2 origin) { //TODO implement in children
+            Size = size;
+            Origin = origin;
         }
 
         public abstract void Activate();
@@ -52,7 +53,7 @@ namespace GameCore {
         protected internal Ship Owner { get; set; }
 
 
-        public override CoordPoint Location { get { return Owner.Location; } set { } }
+        public override Vector2 Location { get { return Owner.Location; } set { } }
 
 
         public override SpriteInfo SpriteInfo {
@@ -66,11 +67,11 @@ namespace GameCore {
 
         public int Health { get; internal set; } = 10;
 
-        public ShipHull(int diameter) : base(new CoordPoint(diameter, diameter), new CoordPoint(diameter / 2, diameter / 2)) {
-            slots.Add(new Slot(new CoordPoint(-250, 150), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new CoordPoint(250, 150), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new CoordPoint(500, -400), this, SlotType.WeaponSlot));
-            slots.Add(new Slot(new CoordPoint(-500, -400), this, SlotType.WeaponSlot));
+        public ShipHull(float diameter = 2000) : base(new Vector2(diameter, diameter), new Vector2(diameter / 2, diameter / 2)) {
+            slots.Add(new Slot(new Vector2(-250, 150), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new Vector2(250, 150), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new Vector2(500, -400), this, SlotType.WeaponSlot));
+            slots.Add(new Slot(new Vector2(-500, -400), this, SlotType.WeaponSlot));
         }
         public override void Activate() { }
         public override void Deactivate() { }
@@ -102,7 +103,7 @@ namespace GameCore {
 
     public abstract class AttachedItem: Item {
 
-        public override CoordPoint Location {
+        public override Vector2 Location {
             get {
                 return Slot.Hull.Location + Slot.RelativePosition;
             }
@@ -122,7 +123,7 @@ namespace GameCore {
             }
         }
 
-        public AttachedItem(CoordPoint size, CoordPoint origin) : base(size, origin) {
+        public AttachedItem(Vector2 size, Vector2 origin) : base(size, origin) {
 
         }
         //public abstract SpriteInfo SpriteInfo {
@@ -151,7 +152,7 @@ namespace GameCore {
                 return new SpriteInfo("256tile.png", 1, 1, 1);
             }
         }
-        public EmptySlotItem(Slot slot) : base(new CoordPoint(200, 200), new CoordPoint(100, 100)) {
+        public EmptySlotItem(Slot slot) : base(new Vector2(200, 200), new Vector2(100, 100)) {
             Slot = slot;
         }
         public override void Activate() { }

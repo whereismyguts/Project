@@ -179,13 +179,13 @@ namespace MonoGameDirectX {
         }
 
         public void Step() {
-            Vector2 location = WinAdapter.CoordPoint2Vector(item.ScreenLocation);
+            Vector2 location = item.ScreenLocation;
             rotation = item.Rotation;
             ZIndex = item.SpriteInfo.ZIndex;
             texture = WinAdapter.GetTexture(item.SpriteInfo.Content);
             framesX = item.SpriteInfo.FramesX;
             framesY = item.SpriteInfo.FramesY;
-            DestRect = new Rectangle(location.ToPoint(), WinAdapter.CoordPoint2Vector(item.ScreenSize).ToPoint());
+            DestRect = new Rectangle(location.ToPoint(), item.ScreenSize.ToPoint());
 
             float xFactor = item.ScreenOrigin.X / DestRect.Size.X;
             float yFactor = item.ScreenOrigin.Y / DestRect.Size.Y;

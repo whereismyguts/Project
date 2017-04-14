@@ -42,8 +42,8 @@ namespace MonoGameDirectX {
             foreach(Ship ship in MainCore.Instance.Ships) {
                 Bounds shipBounds = ship.GetScreenBounds();
                 DrawPrimitives.DrawLine(
-                    WinAdapter.CoordPoint2Vector(shipBounds.Center),
-                    (WinAdapter.CoordPoint2Vector((shipBounds + ship.Direction * 10).Center)),
+                    shipBounds.Center,
+                    (shipBounds + ship.Direction * 10).Center,
                     SpriteBatch, 3, WinAdapter.Color(ship.Color));
                 //if(ship.Velosity.Length > 0)
                 //    DrawPrimitives.DrawLine(
@@ -57,16 +57,11 @@ namespace MonoGameDirectX {
                 //        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
                 //}
 
-                SpriteBatch.DrawString(Font, ship.Name, WinAdapter.CoordPoint2Vector(shipBounds.Center + new CoordPoint(0, -20)), WinAdapter.Color(ship.Color));
-
-                DrawPrimitives.DrawLine(
-                  WinAdapter.CoordPoint2Vector(shipBounds.Center),
-                  WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Location + ship.ForceVector * 1000)),
-                  SpriteBatch, 1, Color.Red);
+                SpriteBatch.DrawString(Font, ship.Name, shipBounds.Center + new Vector2(0, -20), WinAdapter.Color(ship.Color));
 
 
                 var rect = ship.GetScreenBounds();
-                DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, ship.Fraction > 1 ? Color.Red : Color.Blue);
+                DrawPrimitives.DrawCircle(rect.Center, rect.Width / 2, SpriteBatch, ship.Fraction > 1 ? Color.Red : Color.Blue);
             }
             //foreach(var c in AIShipsController.Controllers) {
             //    DefaultAutoControl ac = c as DefaultAutoControl;
@@ -83,7 +78,7 @@ namespace MonoGameDirectX {
 
             //    }
             if(MainCore.Cursor != null) {
-                DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(MainCore.Cursor)), 5, SpriteBatch, Color.Red);
+                DrawPrimitives.DrawCircle(Viewport.World2ScreenPoint(MainCore.Cursor), 5, SpriteBatch, Color.Red);
             }
             //var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
 
@@ -140,7 +135,7 @@ namespace MonoGameDirectX {
             int lines = ScreenHeight / 30;
             int line = Debugger.Lines.Count - 1;
             for(int i = ScreenHeight - 30; i > 10 && line >= 0; i -= 30) {
-                SpriteBatch.DrawString(Font, Debugger.Lines[line], new Vector2(0, i), new Color(Color.Black, 0.8f));
+                SpriteBatch.DrawString(Font, Debugger.Lines[line], new Microsoft.Xna.Framework.Vector2(0, i), new Color(Color.Black, 0.8f));
                 line--;
             }
         }
