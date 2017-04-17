@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 
 namespace GameCore {
-    public class SpaceBody: GameObject {
+    public abstract class SpaceBody: GameObject {
         protected float SelfRotation { get; set; }
 
         // public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
         public SpaceBody(Vector2 location, float radius, World world) : base(world, location, radius) {
-            Circle.BodyType = BodyType.Static;
+
         }
 
         List<Geometry> sat = new List<Geometry>();
@@ -77,9 +77,18 @@ namespace GameCore {
             }
         }
 
+
+    }
+    public class Star: SpaceBody {
+
+        public Star(float radius, World world) : base(Vector2.Zero, radius, world) {
+            Circle.BodyType = BodyType.Static;
+            Circle.Mass *= 100;
+        }
         protected override string GetName() {
             return "STAR" + ", mass = " + Mass; ;
         }
+
     }
 
     public class Planet: SpaceBody {
@@ -102,7 +111,7 @@ namespace GameCore {
         private void SetOrbitaVelosity() {
             Circle.LinearVelocity = Vector2.Zero;
 
-            var dir = Location.GetRotated((float)Math.PI / 2);
+            var dir = Location.GetRotated((Rnd.Bool() ? 1:-1 )*  (float)Math.PI / 2);
             var speed = (float)(Mass * Rnd.Get(0.01, 500));
             Circle.ApplyLinearImpulse(dir * speed);
             Circle.ApplyAngularImpulse(Mass);
@@ -110,10 +119,12 @@ namespace GameCore {
             name = speed.ToString() + ", " + NameGenerator.Generate(Rnd.Get(0, 3)); ;
 
         }
-
+        protected override string GetName() {
+            return name + "mass = " + Mass;
+        }
 
         protected internal override void Step() {
-            if(DistanceToSun > 1000) {
+            if(DistanceToSun > 1000 || DistanceToSun <180) {
                 Circle.Position = GetNewLocation(this);
                 SetOrbitaVelosity();
             }

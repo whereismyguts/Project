@@ -67,11 +67,11 @@ namespace GameCore {
 
         public int Health { get; internal set; } = 10;
 
-        public ShipHull(float diameter = 2000) : base(new Vector2(diameter, diameter), new Vector2(diameter / 2, diameter / 2)) {
-            slots.Add(new Slot(new Vector2(-250, 150), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new Vector2(250, 150), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new Vector2(500, -400), this, SlotType.WeaponSlot));
-            slots.Add(new Slot(new Vector2(-500, -400), this, SlotType.WeaponSlot));
+        public ShipHull(float diameter) : base(new Vector2(diameter, diameter), new Vector2(diameter / 2, diameter / 2)) {
+            slots.Add(new Slot(new Vector2(-12, 7), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new Vector2(12, 7), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new Vector2(25, -20), this, SlotType.WeaponSlot));
+            slots.Add(new Slot(new Vector2(-25, -20), this, SlotType.WeaponSlot));
         }
         public override void Activate() { }
         public override void Deactivate() { }

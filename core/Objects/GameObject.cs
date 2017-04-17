@@ -54,7 +54,7 @@ namespace GameCore {
 
                 correctPosition = true;
                 foreach(GameObject obj in CurrentSystem.Objects)
-                    if(obj != thisObject && obj.ObjectBounds.Contains(location)) {
+                        if(obj != thisObject && obj.ObjectBounds.Contains(location)) {
                         correctPosition = false;
                         break;
                     }
@@ -63,8 +63,8 @@ namespace GameCore {
         }
 
         protected void CreateCircle(float radius, Vector2 location) {
-            if(Circle != null && World.BodyList.Contains(Circle))
-                World.RemoveBody(Circle);
+            //if(Circle != null && World.BodyList.Contains(Circle))
+            //    World.RemoveBody(Circle);
             Circle = BodyFactory.CreateCircle(World, radius, 1f, location);
 
             Circle.BodyType = BodyType.Dynamic;

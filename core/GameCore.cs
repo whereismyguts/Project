@@ -86,21 +86,20 @@ namespace GameCore {
 
         void CreatePlayers() {
             PlayerController.Clear();
-            Player p1 = new Player(new Ship(world, 1), 1);
+            Player p1 = new Player(new Ship(world, GameObject.GetNewLocation(null), 1), 1);
             PlayerController.AddPlayer(p1);
-            Player p2 = new Player(new Ship(world, 2), 2);
+            Player p2 = new Player(new Ship(world, GameObject.GetNewLocation(null), 2), 2);
             PlayerController.AddPlayer(p2);
 
             ships.Add(p1.Ship);
             ships.Add(p2.Ship);
 
-            for(int i = 0; i < 6; i++) {
-                var ship = new Ship(world, i % 2 == 0 ? 1 : 2);
-                AIShipsController.AddController(new DefaultAutoControl(ship));
-                ships.Add(ship);
-            }
-            //for(int i = 0; i < 3; i++)
-            //    ships.Add(new Ship(StarSystems[0]));
+            //for(int i = 0; i < 6; i++) {
+            //    var ship = new Ship(world, i % 2 == 0 ? 1 : 2);
+            //    AIShipsController.AddController(new DefaultAutoControl(ship));
+            //    ships.Add(ship);
+            //}
+
         }
         IEnumerable<GameObject> GetAllObjects(int types = 0) {
             foreach(GameObject obj in System.Objects) {
@@ -126,16 +125,16 @@ namespace GameCore {
 
             //&& Controller.Keys.ToList().Contains(32)
             if(CurrentState.InGame) {
-                /*
+
                 if((ships.Count(s => s.Fraction == 1) == 0 || ships.Count(s => s.Fraction == 2) == 0)) {
-                    foreach(Ship ship in ships)
-                        ship.ToRemove = true;
-                    AIShipsController.Controllers.Clear();
+                    //foreach(Ship ship in ships)
+                    //    ship.ToRemove = true;
+                    //AIShipsController.Controllers.Clear();
                     CreatePlayers();
                     messages.Clear();
                 }
                 CleanObjects();
-                */
+
                 //if(turnIsActive || !TurnBasedMode) {
                 //   PlayerController.Step();
                 try {

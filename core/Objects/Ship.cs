@@ -36,9 +36,9 @@ namespace GameCore {
 
         //public CoordPoint Velosity { get { return velosity; } }
 
-        public Ship(World world, int fraction = 1) : base(world, Vector2.Zero) {
+        public Ship(World world, Vector2 location, int fraction = 1) : base(world, Vector2.Zero, 10) {
             Fraction = fraction;
-            Hull = new ShipHull() { Owner = this };
+            Hull = new ShipHull(10) { Owner = this };
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
@@ -57,7 +57,10 @@ namespace GameCore {
             Inventory.Attach(Hull.Slots[3], w2);
 
             Color = Rnd.GetColor();
-            Reborn();
+
+
+
+          //Reborn();
             //if(target != null)
             //    controller = new AIController(this, target, TaskType.Peersuit);
         }
@@ -91,16 +94,7 @@ namespace GameCore {
         }
 
         //public TrajectoryCalculator Calculator { get; set; }
-        void Reborn() {
-            var location = GetNewLocation(this);
-            CreateCircle(Radius, location);
-            Circle.SetTransform(location, Rnd.GetPeriod());
-            Circle.LinearVelocity = Vector2.Zero;
-            //acceleration = 0;
-
-            //Calculator= new TrajectoryCalculator(this);
-
-        }
+   
 
      
         
