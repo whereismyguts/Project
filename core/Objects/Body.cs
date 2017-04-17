@@ -10,7 +10,7 @@ namespace GameCore {
 
         // public SpriteInfo SpriteInfo { get; } = new SpriteInfo("", 1);
         public SpaceBody(Vector2 location, float radius, World world) : base(world, location, radius) {
-
+            Circle.BodyType = BodyType.Static;
         }
 
         List<Geometry> sat = new List<Geometry>();
@@ -83,24 +83,43 @@ namespace GameCore {
     }
 
     public class Planet: SpaceBody {
-        bool clockwise;
 
         float DistanceToSun { get { return Vector2.Distance(RotateCenter.Location, Location); } }
         static SpaceBody RotateCenter { get { return CurrentSystem.Star; } }
+        string name;
 
-        public override string Name { get; } = NameGenerator.Generate(Rnd.Get(0, 3));
 
-        public Planet(Vector2 location, float radius,  World world)
-            : base( location, radius, world) {
-            
+
+        public override string Name { get { return name; } }
+
+        public Planet(Vector2 location, float radius, World world)
+            : base(location, radius, world) {
+            Circle.BodyType = BodyType.Dynamic;
+
+            SetOrbitaVelosity();
         }
 
-        protected override string GetName() {
-            return "PLANET " + Name + ", mass = " + Mass;
+        private void SetOrbitaVelosity() {
+            Circle.LinearVelocity = Vector2.Zero;
+
+            var dir = Location.GetRotated((float)Math.PI / 2);
+            var speed = (float)(Mass * Rnd.Get(0.01, 500));
+            Circle.ApplyLinearImpulse(dir * speed);
+            Circle.ApplyAngularImpulse(Mass);
+
+            name = speed.ToString() + ", " + NameGenerator.Generate(Rnd.Get(0, 3)); ;
+
         }
 
-        float rotationSpeed = 0;
 
+        protected internal override void Step() {
+            if(DistanceToSun > 1000) {
+                Circle.Position = GetNewLocation(this);
+                SetOrbitaVelosity();
+            }
+
+            base.Step();
+        }
         //protected internal override void Step() {
         //    if(starRotation >= 2 * Math.PI)
         //        starRotation = 0;
@@ -114,7 +133,6 @@ namespace GameCore {
         //    return new Item[] { new JustSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size/2, "planet1.png", 5,4) };
         //}
 
-        float starRotation = 0;
     }
 
     static class NameGenerator {

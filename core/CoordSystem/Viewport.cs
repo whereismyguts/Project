@@ -24,7 +24,7 @@ namespace GameCore {
                 return centerPoint;
             }
             set {
-                if(Vector2.Subtract(centerPoint, value).Length() < 10) {
+                if(Vector2.Subtract(centerPoint, value).Length() < 5) {
                     centerPoint = value;
                     return;
                 }
@@ -52,8 +52,8 @@ namespace GameCore {
             }
             set {
                 var d = value - scale;
-                if(Math.Abs(d) > 4)
-                    d /= 10;
+                if(Math.Abs(d) > 1)
+                    d /= 100;
                 scale += d;
             }
         }
@@ -83,7 +83,7 @@ namespace GameCore {
         public Vector2 World2ScreenPoint(float x, float y) {
             float unitFactorX = Bounds.Width > 0 ? PxlWidth / Bounds.Width : 0;
             float unitFactorY = Bounds.Height > 0 ? PxlHeight / Bounds.Height : 0;
-            return new Vector2((x - Bounds.LeftTop.X) * unitFactorX, (x - Bounds.LeftTop.Y) * unitFactorY);
+            return new Vector2((x - Bounds.LeftTop.X) * unitFactorX, (y - Bounds.LeftTop.Y) * unitFactorY);
         }
 
         public Vector2 World2ScreenPoint(Vector2 wrlPoint) {
@@ -111,7 +111,7 @@ namespace GameCore {
         }
         void SmoothScroll(Vector2 value) {
             //  var step = (centerPoint - value).Length / 100f;
-            centerPoint = Vector2.Normalize(Vector2.Subtract(value, centerPoint)) * (Math.Abs(value.Substract(centerPoint).Length()) / 100 + 50) + centerPoint;
+            centerPoint = Vector2.Normalize(Vector2.Subtract(value, centerPoint)) * (Math.Abs(value.Substract(centerPoint).Length()) / 100) + centerPoint;
         }
         void ChangeZoom(float target, float step) {
             this.zoomTarget = target;
@@ -126,7 +126,12 @@ namespace GameCore {
                 lockTime--;
         }
 
-        internal void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset = 2000) {
+        internal void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset = 0) {
+
+            //  Scale = 1;
+            // Centerpoint = Vector2.Zero;
+            // return;
+
             Vector2 lt = new Vector2(left - clipOffset, top - clipOffset);
             Vector2 rb = new Vector2(right + clipOffset, bottom + clipOffset);
             Centerpoint = lt + (rb - lt) / 2;
@@ -138,6 +143,7 @@ namespace GameCore {
 
             Scale = Math.Max(Math.Max(scale1, scale2), Math.Max(scale3, scale4));
             //  scale  == (rb-cp)*2/(pxlWidth , pxlHeight)
+
         }
     }
 

@@ -135,7 +135,7 @@ namespace MonoGameDirectX {
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
             InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
-            Viewport.SetViewportSize(ScreenWidth, ScreenWidth);
+            Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             MainCore.Instance.AddPlanets();
 
             InterfaceController.AddState(new MenuState(), new GameState()); // order is matters

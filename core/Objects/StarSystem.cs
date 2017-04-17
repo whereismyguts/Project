@@ -32,9 +32,9 @@ namespace GameCore {
 
 
 
-            Star = new SpaceBody(new Vector2(0, 0), 20000, world);
+            Star = new SpaceBody(new Vector2(0, 0), 40, world);
             for(int i = 0; i < planetsNumber; i++)
-                new Planet(GameObject.GetNewLocation(null), Rnd.Get(7000, 15000), world);
+                new Planet(GameObject.GetNewLocation(null), Rnd.Get(10, 20), world);
         }
     }
 }

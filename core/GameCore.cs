@@ -138,17 +138,17 @@ namespace GameCore {
                 */
                 //if(turnIsActive || !TurnBasedMode) {
                 //   PlayerController.Step();
-                try { 
-                world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / 30f)));
-            }
-            catch(Exception e) {
+                try {
+                    world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / 30f)));
+                }
+                catch(Exception e) {
 
-            }
+                }
 
                 //AIShipsController.Step();
 
-                //foreach(GameObject obj in Objects)
-                //    obj.Step();
+                foreach(GameObject obj in Objects)
+                    obj.Step();
 
                 //CollideController.Step(ships, GetAllObjects(1));
 
@@ -172,22 +172,22 @@ namespace GameCore {
 
             //Vector2 total = new Vector2();
 
-            foreach(var shp in Objects.Where(o => o is Planet || o is Ship)) {
-                if(shp.Location.X > right)
-                    right = shp.Location.X;
-                if(shp.Location.X < left)
-                    left = shp.Location.X;
-                if(shp.Location.Y < top)
-                    top = shp.Location.Y;
-                if(shp.Location.Y > bottom)
-                    bottom = shp.Location.Y;
+            foreach(var obj in Objects.Where(o => o is SpaceBody || o is Ship)) {
+                if(obj.Location.X + obj.ObjectBounds.Width > right)
+                    right = obj.Location.X + obj.ObjectBounds.Width;
+                if(obj.Location.X - obj.ObjectBounds.Width < left)
+                    left = obj.Location.X - obj.ObjectBounds.Width;
+                if(obj.Location.Y - obj.ObjectBounds.Height < top)
+                    top = obj.Location.Y - obj.ObjectBounds.Height;
+                if(obj.Location.Y + obj.ObjectBounds.Height > bottom)
+                    bottom = obj.Location.Y + obj.ObjectBounds.Height;
             }
             //Cursor = total / Objects.Count;
             //var center = total / Objects.Count;
             // Viewport.Centerpoint = center;
             //Viewport.Centerpoint = new CoordPoint(left + (right - left) / 2, bottom + (top - bottom) / 2);
 
-            Viewport.SetWorldBounds(left, top, right, bottom);
+            Viewport.SetWorldBounds(left, top, right, bottom, 10);
             //Viewport.Scale = Math.Max(right - left, top - bottom) / 300;
             Viewport.Update();
         }

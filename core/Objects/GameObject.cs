@@ -9,7 +9,7 @@ namespace GameCore {
     public abstract class GameObject: IRenderableObject {
         static IEnumerable<Item> itemsEmpty = new Item[] { };
         static IEnumerable<Geometry> geometryEmpty = new Geometry[] { };
-     
+
 
         public event RenderObjectChangedEventHandler Changed;
 
@@ -23,7 +23,7 @@ namespace GameCore {
 
         public bool ToRemove { get; set; } = false;
 
-        
+
 
         public float Radius { get; }
         public virtual string Name { get { return string.Empty; } }
@@ -38,7 +38,7 @@ namespace GameCore {
 
         public World World { get; }
 
-        public GameObject(World world, Vector2 location, float radius=1) {
+        public GameObject(World world, Vector2 location, float radius = 1) {
             MainCore.Instance.System.Add(this);
             Radius = radius;
             World = world;
@@ -50,7 +50,7 @@ namespace GameCore {
             Vector2 location = Vector2.Zero;
             while(!correctPosition) {
 
-                location = new Vector2(Rnd.Get(-91000, 91000), Rnd.Get(-25000, 25000));
+                location = new Vector2(Rnd.Get(-300, 300), Rnd.Get(-300, 300));
 
                 correctPosition = true;
                 foreach(GameObject obj in CurrentSystem.Objects)
@@ -63,12 +63,18 @@ namespace GameCore {
         }
 
         protected void CreateCircle(float radius, Vector2 location) {
-            if(Circle!=null && World.BodyList.Contains(Circle))
+            if(Circle != null && World.BodyList.Contains(Circle))
                 World.RemoveBody(Circle);
             Circle = BodyFactory.CreateCircle(World, radius, 1f, location);
+
             Circle.BodyType = BodyType.Dynamic;
+
+            Circle.OnCollision += Circle_OnCollision;
         }
 
+        private bool Circle_OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
+            return true;
+        }
 
         protected void ApplyForce(Vector2 vector2) {
             Circle.ApplyForce(vector2);
@@ -78,8 +84,14 @@ namespace GameCore {
             //if(IsDynamic)
             //    Velosity = Velosity * 0.9999f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this) * 5;
 
+            foreach(var obj in CurrentSystem.Objects)
+                if(this != obj) {
+                    var attraction = PhysicsHelper.GravitationForceVector(obj, this);
 
-          
+                    //   Circle.ApplyLinearImpulse(-attraction);
+                    ApplyForce(attraction);
+                    //  Circle.ApplyAngularImpulse(10);
+                }
 
             //foreach(GameObject obj in MainCore.Instance.Objects)
             //    if(obj != this) {
