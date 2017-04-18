@@ -11,7 +11,7 @@ namespace GameCore {
         public ProjectileBase(Vector2 position, Vector2 direction, Ship owner) : base(owner.World, position, 5) {
             this.owner = owner;
             ApplyLinearImpulse(direction * 40);
-            Circle.IsBullet = true;
+            Body.IsBullet = true;
         }
 
         Ship owner;

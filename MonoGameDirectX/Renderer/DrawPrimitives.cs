@@ -47,6 +47,14 @@ namespace MonoGameDirectX {
         internal static void DrawGeometry(Geometry geom, SpriteBatch spriteBatch) {
             Color color = WinAdapter.Color(geom.Color);
 
+
+
+            if(geom is WorldShape) {
+                WorldShape shape = geom as WorldShape;
+                DrawPolygon(spriteBatch, shape.Points.ToArray(), shape.Points.Count, Color.Green, 1);
+                return;
+            }
+
             if(geom is Line) {
                 var line = geom as Line;
                 var p1 = MainCore.Instance.Viewport.World2ScreenPoint(line.Start);
@@ -81,7 +89,7 @@ namespace MonoGameDirectX {
         public static void DrawLine(Vector2 point1, Vector2 point2, SpriteBatch spriteBatch, int lineWidth, Color color) {
 
             float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
-            float length = Vector2.Distance(point1, point2) + 1;
+            float length = Vector2.Distance(point1, point2);
 
             spriteBatch.Draw(BlankTexture(spriteBatch), point1, null, color,
             angle, Vector2.Zero, new Vector2(length, lineWidth),

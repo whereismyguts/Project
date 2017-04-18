@@ -94,11 +94,11 @@ namespace GameCore {
             ships.Add(p1.Ship);
             ships.Add(p2.Ship);
 
-            //for(int i = 0; i < 6; i++) {
-            //    var ship = new Ship(world, i % 2 == 0 ? 1 : 2);
-            //    AIShipsController.AddController(new DefaultAutoControl(ship));
-            //    ships.Add(ship);
-            //}
+            for(int i = 0; i < 6; i++) {
+                var ship = new Ship(world, GameObject.GetNewLocation(null), i % 2 == 0 ? 1 : 2);
+                AIShipsController.AddController(new DefaultAutoControl(ship));
+                ships.Add(ship);
+            }
 
         }
         IEnumerable<GameObject> GetAllObjects(int types = 0) {
@@ -144,7 +144,7 @@ namespace GameCore {
 
                 }
 
-                //AIShipsController.Step();
+                AIShipsController.Step();
 
                 foreach(GameObject obj in Objects)
                     obj.Step();

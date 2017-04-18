@@ -115,8 +115,8 @@ namespace GameCore {
                 item.Step();
             //var acc = GetAcceleration() * 0.5f;
             //Circle.ApplyLinearImpulse(acc);
-            Circle.AngularVelocity = 0;
-            Circle.Rotation += angleSpeed;
+            Body.AngularVelocity = 0;
+            Body.Rotation += angleSpeed;
             angleSpeed *= .9f;
 
             base.Step();

@@ -34,7 +34,7 @@ namespace GameCore {
             var angle = Math.Atan2(det, dot);
 
             //var angle = (Math.Atan2(0 - X, Y - (-1)));
-            return -(float)angle;
+            return (float)angle;
         }
 
         public static Vector2 Clone(this Vector2 vector) {

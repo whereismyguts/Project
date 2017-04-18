@@ -32,6 +32,10 @@ namespace GameCore {
             return v1 + d;
         }
 
-        
+
+        public static Vector2 Vector2(float v1, float v2, float d=20) {
+            return new Microsoft.Xna.Framework.Vector2(Get(v1 - d, v1 + d), Get(v2 - d, v2 + d));
+        }
+
     }
 }

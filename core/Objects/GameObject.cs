@@ -13,15 +13,15 @@ namespace GameCore {
 
         public event RenderObjectChangedEventHandler Changed;
 
-        public Vector2 Velosity { get { return Circle.LinearVelocity; } }
+        public Vector2 Velosity { get { return Body.LinearVelocity; } }
 
-        protected string Image { get; set; }
+        
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
-        protected internal float Rotation { get { return Circle.Rotation; } }
+        protected internal float Rotation { get { return Body.Rotation; } }
 
         public static StarSystem CurrentSystem { get { return MainCore.Instance.System; } }
 
-        public Vector2 Direction { get { return Vector2.One.GetRotated(Circle.Rotation); } }
+        public Vector2 Direction { get { return Vector2.One.GetRotated(Body.Rotation); } }
 
         public bool ToRemove { get; set; } = false;
 
@@ -29,11 +29,11 @@ namespace GameCore {
 
         public float Radius { get; }
         public virtual string Name { get { return string.Empty; } }
-        public virtual Vector2 Location { get { return Circle.WorldCenter; } }
+        public virtual Vector2 Location { get { return Body.WorldCenter; } }
         public virtual Bounds ObjectBounds { get { return new Bounds(Location.Substract(Radius), Location.Add(Radius)); } }
 
         public float Mass {
-            get { return Circle.Mass; }
+            get { return Body.Mass; }
         }
 
 
@@ -43,7 +43,7 @@ namespace GameCore {
             }
         }
 
-        protected Body Circle { get; set; }
+        protected Body Body { get; set; }
 
         public World World { get; }
 
@@ -51,7 +51,7 @@ namespace GameCore {
             MainCore.Instance.System.Add(this);
             Radius = radius;
             World = world;
-            CreateCircle(radius, location);
+            CreateBody(radius, location);
         }
 
         public static Vector2 GetNewLocation(GameObject thisObject) {
@@ -71,25 +71,25 @@ namespace GameCore {
             return location;
         }
 
-        protected void CreateCircle(float radius, Vector2 location) {
-            Circle = BodyFactory.CreateCircle(World, radius, 1f, location);
-            Circle.BodyType = BodyType.Dynamic;
-            Circle.OnCollision += Circle_OnCollision;
+        protected virtual void CreateBody(float radius, Vector2 location) {
+            Body = BodyFactory.CreateCircle(World, radius, 1f, location);
+            Body.BodyType = BodyType.Dynamic;
+            Body.OnCollision += Circle_OnCollision;
         }
 
-        private bool Circle_OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
+        protected bool Circle_OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
             return true;
         }
 
         internal void ApplyLinearImpulse(Vector2 imp) {
-            Circle.ApplyLinearImpulse(imp);
+            Body.ApplyLinearImpulse(imp);
         }
 
         internal void ApplyForce(Vector2 vector2) {
-            Circle.ApplyForce(vector2);
+            Body.ApplyForce(vector2);
         }
         internal void ApplyForce(Vector2 vector2, Vector2 location) {
-            Circle.ApplyForce(vector2, location);
+            Body.ApplyForce(vector2, location);
         }
 
         protected internal virtual void Step() {

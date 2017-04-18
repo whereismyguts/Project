@@ -1,4 +1,6 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common;
+using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using System;
@@ -27,7 +29,7 @@ namespace GameCore {
             return geometry;
             */
             return base.GetPrimitives();
-            
+
         }
         protected internal override void Step() {
             UpdateSatellite();
@@ -80,8 +82,8 @@ namespace GameCore {
 
     public class Star: SpaceBody {
         public Star(float radius, World world) : base(Vector2.Zero, radius, world) {
-            Circle.BodyType = BodyType.Static;
-            Circle.Mass *= 50;
+         //   Body.BodyType = BodyType.Static;
+            //Circle.Mass;
         }
 
         protected override string GetName() {
@@ -97,17 +99,61 @@ namespace GameCore {
 
         public Planet(Vector2 location, float radius, World world)
             : base(location, radius, world) {
-
+            Body.Mass *= 10;
             SetOrbitaVelosity();
         }
 
+
+        List<Vector2> vlist = new List<Vector2>();
+
+        protected override void CreateBody(float radius, Vector2 location) {
+
+
+
+            double theta = -Math.PI;  // angle that will be increased each loop
+            
+            double step = Math.PI / 30;
+
+            while(theta < Math.PI) {
+                float x = (float)( radius * Math.Cos(theta));
+                float y = (float)( radius * Math.Sin(theta));
+
+
+                vlist.Add(Rnd.Vector2(x, y));
+
+                theta += step;
+            }
+
+
+            //vlist = new Vector2[]          {
+            //    Rnd.Vector2(25,0),
+            //    Rnd.Vector2(15,25),
+            //    Rnd.Vector2(-15,25),
+            //    Rnd.Vector2(-25,0),
+            //    Rnd.Vector2(-15,-10),
+            //    Rnd.Vector2(15,-10)
+            //};
+
+
+
+
+            //get farseer 'vertices' from vectors
+            Vertices _shapevertices = new Vertices(vlist);
+
+            //feed vertices array to BodyFactory.CreatePolygon to get a new farseer polygonal body
+            Body = BodyFactory.CreatePolygon(World, _shapevertices, 0.2f, location);
+            Body.BodyType = BodyType.Dynamic;
+            
+            Body.OnCollision += Circle_OnCollision;
+        }
+
         void SetOrbitaVelosity() {
-            Circle.LinearVelocity = Vector2.Zero;
+            Body.LinearVelocity = Vector2.Zero;
 
             var dir = Location.GetRotated((Rnd.Bool() ? 1 : -1) * (float)Math.PI / 2);
-            var speed = (float)(Mass * Rnd.Get(0.01, 500));
-            Circle.ApplyLinearImpulse(dir * speed);
-            Circle.ApplyAngularImpulse(Mass*2);
+            var speed = (float)(Mass * Rnd.Get(0.01, 200));
+            Body.ApplyLinearImpulse(dir * speed);
+            Body.ApplyAngularImpulse(Mass * 2);
 
             name = speed.ToString() + ", " + NameGenerator.Generate(Rnd.Get(0, 3)); ;
 
@@ -116,12 +162,29 @@ namespace GameCore {
             return name + "mass = " + Mass;
         }
         protected internal override void Step() {
-            if(DistanceToSun > 1000 || DistanceToSun < 180) {
-                Circle.Position = GetNewLocation(this);
+            if(DistanceToSun > 500 /*|| DistanceToSun < 180*/) {
+                Body.Position = GetNewLocation(this);
                 SetOrbitaVelosity();
             }
 
             base.Step();
+        }
+
+        public override IEnumerable<Geometry> GetPrimitives() {
+
+
+            var geom = base.GetPrimitives();
+
+            var pol = (Body.FixtureList[0].Shape as PolygonShape);
+            List<Vector2> res = new List<Vector2>();
+
+            foreach(var v in pol.Vertices) {
+                res.Add(v.GetRotated(Rotation));
+            }
+
+            List<Geometry> list = new List<Geometry>(geom);
+            list.Add(new WorldShape(Location+ (-pol.MassData.Centroid).GetRotated(Rotation), res));
+            return list;
         }
         //protected internal override void Step() {
         //    if(starRotation >= 2 * Math.PI)

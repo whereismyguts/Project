@@ -34,8 +34,8 @@ namespace MonoGameDirectX {
         //public List<CoordPoint> TraectoryPath { get; internal set; }
 
         static void DrawCursor() {
-         //   Point mPoint = Mouse.GetState().Position;
-         //   DrawPrimitives.DrawRect(new Rectangle(mPoint.X, mPoint.Y, 10, 10), SpriteBatch, 1, Color.White, Color.Red);
+            //   Point mPoint = Mouse.GetState().Position;
+            //   DrawPrimitives.DrawRect(new Rectangle(mPoint.X, mPoint.Y, 10, 10), SpriteBatch, 1, Color.White, Color.Red);
             //spriteBatch.Draw(WinAdapter.GetCursor(), new Rectangle(mPoint.X, mPoint.Y, 5, 5), Color.Black);
         }
         static void DrawDebugInfo() {
@@ -81,7 +81,7 @@ namespace MonoGameDirectX {
                 var scrPoint = Viewport.World2ScreenPoint(MainCore.Instance.Cursor);
 
                 DrawPrimitives.DrawCircle(scrPoint, 2, SpriteBatch, Color.Red);
-                SpriteBatch.DrawString(Font, MainCore.Instance.Cursor.X.ToString("f1") +":"+ MainCore.Instance.Cursor.Y.ToString("f1"), scrPoint, Color.Red);
+                SpriteBatch.DrawString(Font, MainCore.Instance.Cursor.X.ToString("f1") + ":" + MainCore.Instance.Cursor.Y.ToString("f1"), scrPoint, Color.Red);
             }
             //var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
 
@@ -176,11 +176,15 @@ namespace MonoGameDirectX {
             //}
 
             if(InterfaceController.CurrentState.InGame) {
-                DrawMiniMap();
+                DrawGrid();
                 if(debugMode == 0 || debugMode == 1)
                     DrawDebugInfo();
 
                 DrawObjects(gameTime);
+
+
+
+
             }
 
             DrawInterface(gameTime);
@@ -188,6 +192,28 @@ namespace MonoGameDirectX {
             WriteDebugInfo();
 
             SpriteBatch.End();
+        }
+
+
+        static int gridStep = 200;
+
+        private static void DrawGrid() {
+            for(int i = -1000; i <= 1000; i += gridStep) {
+
+                var x1 = i; var x2 = i; var y1 = -1000; var y2 = 1000;
+
+                var p1 = Viewport.World2ScreenPoint(x1, y1);
+                var p2 = Viewport.World2ScreenPoint(x2, y2);
+
+                DrawPrimitives.DrawLine(p1, p2, SpriteBatch, 1, Color.Gray);
+
+                 x1 = -1000;  x2 = 1000;  y1 = i;  y2 = i;
+
+                 p1 = Viewport.World2ScreenPoint(x1, y1);
+                 p2 = Viewport.World2ScreenPoint(x2, y2);
+
+                DrawPrimitives.DrawLine(p1, p2, SpriteBatch, 1, Color.Gray);
+            }
         }
     }
 }

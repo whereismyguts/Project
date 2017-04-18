@@ -121,10 +121,10 @@ namespace GameCore {
 
             if(ToKill == null || ToKill.ToRemove)
                 ToKill = FindEnemy();
-            if(Owner.Health <= 5 && ToKill != null && Vector2.Distance(Owner.Location, ToKill.Location) < 10000)
+            if(Owner.Health <= 5 && ToKill != null && Vector2.Distance(Owner.Location, ToKill.Location) < ToKill.Radius*2)
                 TaskLeaveDeathZone(ToKill);
 
-            if(Owner.Velosity.Length() > 200)
+            if(Owner.Velosity.Length() > Owner.Radius*10)
                 TaskDecreaseSpeed();
             else
                 if(danger != null)
@@ -186,7 +186,7 @@ namespace GameCore {
         }
 
         private void TaskGoToGoal() {
-            if(ToKill != null && Vector2.Distance(ToKill.Location, Owner.Location) > 3000)
+            if(ToKill != null && Vector2.Distance(ToKill.Location, Owner.Location) > (ToKill.Radius+Owner.Radius)*2)
                 TargetLocation = ToKill.Location;
         }
 
