@@ -57,7 +57,7 @@ namespace MonoGameDirectX {
                 //        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
                 //}
 
-                SpriteBatch.DrawString(Font, ship.Name, shipBounds.Center + new Vector2(0, -20), WinAdapter.Color(ship.Color));
+           //     SpriteBatch.DrawString(Font, ship.Name, shipBounds.Center + new Vector2(0, -20), WinAdapter.Color(ship.Color));
 
                 //var rect = ship.ScreenBounds;
                 //DrawPrimitives.DrawCircle(rect.Center, rect.Width / 2, SpriteBatch, ship.Fraction > 1 ? Color.Red : Color.Blue);

@@ -102,11 +102,13 @@ namespace GameCore {
 
         }
         IEnumerable<GameObject> GetAllObjects(int types = 0) {
-            foreach(GameObject obj in System.Objects) {
-                yield return obj;
-            }
-            if(types == 0 || types == 3)
-                foreach(Ship s in ships) yield return s;
+            return System.Objects;
+
+            //foreach(GameObject obj in System.Objects) {
+            //    yield return obj;
+            //}
+            //if(types == 0 || types == 3)
+            //    foreach(Ship s in ships) yield return s;
         }
 
         internal static void Console(string message) {
@@ -171,7 +173,10 @@ namespace GameCore {
 
             //Vector2 total = new Vector2();
 
-            foreach(var obj in Objects.Where(o => o is SpaceBody || o is Ship)) {
+            var viewed = Objects.Where(o => o is SpaceBody || o is Ship);
+            //var viewed = PlayerController.Players.Select(p => p.Ship);
+
+            foreach(var obj in viewed) {
                 if(obj.Location.X + obj.ObjectBounds.Width > right)
                     right = obj.Location.X + obj.ObjectBounds.Width;
                 if(obj.Location.X - obj.ObjectBounds.Width < left)

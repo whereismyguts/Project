@@ -15,7 +15,7 @@ namespace GameCore {
 
         public Vector2 Velosity { get { return Body.LinearVelocity; } }
 
-        
+
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
         protected internal float Rotation { get { return Body.Rotation; } }
 
@@ -103,11 +103,11 @@ namespace GameCore {
                     attraction += PhysicsHelper.GravitationForceVector(obj, this);
 
                     //   Circle.ApplyLinearImpulse(-attraction);
-                   
+
                     //  Circle.ApplyAngularImpulse(10);
                 }
-            if(attraction.Length()!=0)
-            ApplyForce(attraction);
+            if(attraction.Length() != 0)
+                ApplyForce(attraction);
             //foreach(GameObject obj in MainCore.Instance.Objects)
             //    if(obj != this) {
             //        var nextPos = Location + Velosity;
@@ -130,9 +130,12 @@ namespace GameCore {
             return itemsEmpty;
         }
         public virtual IEnumerable<Geometry> GetPrimitives() {
+
+
+            //     var Radius = this.Radius * 5;
             return new Geometry[] {
                 new WorldGeometry(Location , new Vector2(Radius * 2, Radius * 2), true),
-                new Line(Location, Location+Direction*Radius)
+                new Line(Location, Location+ new Vector2(0,Radius).GetRotated(Rotation))
             };
         }
     }

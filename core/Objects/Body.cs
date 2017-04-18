@@ -92,14 +92,13 @@ namespace GameCore {
     }
 
     public class Planet: SpaceBody {
-        string name;
+       
         float DistanceToSun { get { return Vector2.Distance(RotateCenter.Location, Location); } }
         static SpaceBody RotateCenter { get { return CurrentSystem.Star; } }
-        public override string Name { get { return name; } }
 
         public Planet(Vector2 location, float radius, World world)
             : base(location, radius, world) {
-            Body.Mass *= 10;
+            Body.Mass *= 5;
             SetOrbitaVelosity();
         }
 
@@ -112,14 +111,14 @@ namespace GameCore {
 
             double theta = -Math.PI;  // angle that will be increased each loop
             
-            double step = Math.PI / 30;
+            double step = Math.PI / 300;
 
             while(theta < Math.PI) {
                 float x = (float)( radius * Math.Cos(theta));
                 float y = (float)( radius * Math.Sin(theta));
 
 
-                vlist.Add(Rnd.Vector2(x, y));
+                vlist.Add(new Vector2(x,y).UnaryVector() * Rnd.Get(radius*0.1f, radius*1.5f));
 
                 theta += step;
             }
@@ -146,28 +145,32 @@ namespace GameCore {
             
             Body.OnCollision += Circle_OnCollision;
         }
-
+        string name = "";
         void SetOrbitaVelosity() {
             Body.LinearVelocity = Vector2.Zero;
 
             var dir = Location.GetRotated((Rnd.Bool() ? 1 : -1) * (float)Math.PI / 2);
             var speed = (float)(Mass * Rnd.Get(0.01, 200));
             Body.ApplyLinearImpulse(dir * speed);
-            Body.ApplyAngularImpulse(Mass * 2);
-
-            name = speed.ToString() + ", " + NameGenerator.Generate(Rnd.Get(0, 3)); ;
+            Body.ApplyAngularImpulse(Mass * 5);
+            name = NameGenerator.Generate(Rnd.Get(0, 3)); ;
 
         }
+
+
+
         protected override string GetName() {
-            return name + "mass = " + Mass;
+            return name +  ", mass = " + Mass;
         }
         protected internal override void Step() {
+            base.Step();
+            return;
             if(DistanceToSun > 500 /*|| DistanceToSun < 180*/) {
                 Body.Position = GetNewLocation(this);
                 SetOrbitaVelosity();
             }
 
-            base.Step();
+
         }
 
         public override IEnumerable<Geometry> GetPrimitives() {
