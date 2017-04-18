@@ -21,6 +21,8 @@ namespace GameCore {
 
         public static StarSystem CurrentSystem { get { return MainCore.Instance.System; } }
 
+        public Vector2 Direction { get { return Vector2.One.GetRotated(Circle.Rotation); } }
+
         public bool ToRemove { get; set; } = false;
 
 
@@ -34,7 +36,14 @@ namespace GameCore {
             get { return Circle.Mass; }
         }
 
-        public Body Circle { get; private set; }
+
+        public Bounds ScreenBounds {
+            get {
+                return Viewport.World2ScreenBounds(ObjectBounds);
+            }
+        }
+
+        protected Body Circle { get; set; }
 
         public World World { get; }
 
@@ -54,7 +63,7 @@ namespace GameCore {
 
                 correctPosition = true;
                 foreach(GameObject obj in CurrentSystem.Objects)
-                        if(obj != thisObject && obj.ObjectBounds.Contains(location)) {
+                    if(obj != thisObject && obj.ObjectBounds.Contains(location)) {
                         correctPosition = false;
                         break;
                     }
@@ -63,12 +72,8 @@ namespace GameCore {
         }
 
         protected void CreateCircle(float radius, Vector2 location) {
-            //if(Circle != null && World.BodyList.Contains(Circle))
-            //    World.RemoveBody(Circle);
             Circle = BodyFactory.CreateCircle(World, radius, 1f, location);
-
             Circle.BodyType = BodyType.Dynamic;
-
             Circle.OnCollision += Circle_OnCollision;
         }
 
@@ -76,23 +81,33 @@ namespace GameCore {
             return true;
         }
 
-        protected void ApplyForce(Vector2 vector2) {
+        internal void ApplyLinearImpulse(Vector2 imp) {
+            Circle.ApplyLinearImpulse(imp);
+        }
+
+        internal void ApplyForce(Vector2 vector2) {
             Circle.ApplyForce(vector2);
+        }
+        internal void ApplyForce(Vector2 vector2, Vector2 location) {
+            Circle.ApplyForce(vector2, location);
         }
 
         protected internal virtual void Step() {
             //if(IsDynamic)
             //    Velosity = Velosity * 0.9999f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this) * 5;
 
+            var attraction = Vector2.Zero;
+
             foreach(var obj in CurrentSystem.Objects)
                 if(this != obj) {
-                    var attraction = PhysicsHelper.GravitationForceVector(obj, this);
+                    attraction += PhysicsHelper.GravitationForceVector(obj, this);
 
                     //   Circle.ApplyLinearImpulse(-attraction);
-                    ApplyForce(attraction);
+                   
                     //  Circle.ApplyAngularImpulse(10);
                 }
-
+            if(attraction.Length()!=0)
+            ApplyForce(attraction);
             //foreach(GameObject obj in MainCore.Instance.Objects)
             //    if(obj != this) {
             //        var nextPos = Location + Velosity;
@@ -115,11 +130,10 @@ namespace GameCore {
             return itemsEmpty;
         }
         public virtual IEnumerable<Geometry> GetPrimitives() {
-            return geometryEmpty;
-        }
-
-        public Bounds GetScreenBounds() {
-            return Viewport.World2ScreenBounds(ObjectBounds);
+            return new Geometry[] {
+                new WorldGeometry(Location , new Vector2(Radius * 2, Radius * 2), true),
+                new Line(Location, Location+Direction*Radius)
+            };
         }
     }
 }

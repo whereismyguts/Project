@@ -74,7 +74,7 @@ namespace GameCore {
         //public event StateEventHandler StateChanged;
         //public bool TurnBasedMode { get; private set; } = false;
         public Viewport Viewport { get; set; }
-        public static Vector2 Cursor { get; set; }
+        public Vector2 Cursor { get; set; }
 
         MainCore() {
             System = new StarSystem();

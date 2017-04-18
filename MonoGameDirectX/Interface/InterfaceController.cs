@@ -18,7 +18,7 @@ namespace GameCore {
             get { return MainCore.Instance.CurrentState; }
         }
 
-        public static void ProcessInput(IEnumerable<Keys> newKeys) {
+        public static void ProcessInput(IEnumerable<Keys> newKeys, MouseState mouse) {
             List<Keys> toRemove = new List<Keys>();
             foreach(var key in KeysDown)
                 if(!newKeys.Contains(key)) {
@@ -38,6 +38,8 @@ namespace GameCore {
                     if(KeyActions.ContainsKey((int)key))
                         CurrentState.DoAction(KeyActions[(int)key], true);
                 }
+            MainCore.Instance.Cursor = MainCore.Instance.Viewport.Screen2WorldPoint(mouse.X, mouse.Y);
+
             DoActions();
         }
         public static void ProcessInput(IEnumerable<Buttons> newKeys) {

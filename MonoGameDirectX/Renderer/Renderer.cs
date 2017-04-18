@@ -34,17 +34,17 @@ namespace MonoGameDirectX {
         //public List<CoordPoint> TraectoryPath { get; internal set; }
 
         static void DrawCursor() {
-            Point mPoint = Mouse.GetState().Position;
-            DrawPrimitives.DrawRect(new Rectangle(mPoint.X, mPoint.Y, 10, 10), SpriteBatch, 1, Color.White, Color.Red);
+         //   Point mPoint = Mouse.GetState().Position;
+         //   DrawPrimitives.DrawRect(new Rectangle(mPoint.X, mPoint.Y, 10, 10), SpriteBatch, 1, Color.White, Color.Red);
             //spriteBatch.Draw(WinAdapter.GetCursor(), new Rectangle(mPoint.X, mPoint.Y, 5, 5), Color.Black);
         }
         static void DrawDebugInfo() {
             foreach(Ship ship in MainCore.Instance.Ships) {
-                Bounds shipBounds = ship.GetScreenBounds();
+                Bounds shipBounds = ship.ScreenBounds;
                 DrawPrimitives.DrawLine(
                     shipBounds.Center,
                     (shipBounds + ship.Direction * 10).Center,
-                    SpriteBatch, 3, WinAdapter.Color(ship.Color));
+                    SpriteBatch, 1, WinAdapter.Color(ship.Color));
                 //if(ship.Velosity.Length > 0)
                 //    DrawPrimitives.DrawLine(
                 //    WinAdapter.CoordPoint2Vector(shipBounds.Center),
@@ -59,9 +59,8 @@ namespace MonoGameDirectX {
 
                 SpriteBatch.DrawString(Font, ship.Name, shipBounds.Center + new Vector2(0, -20), WinAdapter.Color(ship.Color));
 
-
-                var rect = ship.GetScreenBounds();
-                DrawPrimitives.DrawCircle(rect.Center, rect.Width / 2, SpriteBatch, ship.Fraction > 1 ? Color.Red : Color.Blue);
+                //var rect = ship.ScreenBounds;
+                //DrawPrimitives.DrawCircle(rect.Center, rect.Width / 2, SpriteBatch, ship.Fraction > 1 ? Color.Red : Color.Blue);
             }
             //foreach(var c in AIShipsController.Controllers) {
             //    DefaultAutoControl ac = c as DefaultAutoControl;
@@ -77,8 +76,12 @@ namespace MonoGameDirectX {
             //        //DrawPrimitives.DrawLine(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i])), WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(TraectoryPath[i + 1])), spriteBatch, 1, Color.Violet);
 
             //    }
-            if(MainCore.Cursor != null) {
-                DrawPrimitives.DrawCircle(Viewport.World2ScreenPoint(MainCore.Cursor), 5, SpriteBatch, Color.Red);
+            if(MainCore.Instance.Cursor != null) {
+
+                var scrPoint = Viewport.World2ScreenPoint(MainCore.Instance.Cursor);
+
+                DrawPrimitives.DrawCircle(scrPoint, 2, SpriteBatch, Color.Red);
+                SpriteBatch.DrawString(Font, MainCore.Instance.Cursor.X.ToString("f1") +":"+ MainCore.Instance.Cursor.Y.ToString("f1"), scrPoint, Color.Red);
             }
             //var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
 

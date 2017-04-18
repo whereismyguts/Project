@@ -20,7 +20,6 @@ namespace GameCore {
         }
         public int Health { get { return Hull.Health; } }
         public InternalColor Color { get; } // TODO remove
-        public Vector2 Direction { get { return Vector2.One.GetRotated(Circle.Rotation); } }
         string name;
         public override string Name {
             get {
@@ -36,9 +35,9 @@ namespace GameCore {
 
         //public CoordPoint Velosity { get { return velosity; } }
 
-        public Ship(World world, Vector2 location, int fraction = 1) : base(world, Vector2.Zero, 10) {
+        public Ship(World world, Vector2 location, int fraction = 1) : base(world, location, 2) {
             Fraction = fraction;
-            Hull = new ShipHull(10) { Owner = this };
+            Hull = new ShipHull(2) { Owner = this };
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
@@ -83,6 +82,7 @@ namespace GameCore {
             MainCore.Console(Name + " is dead cause of " + cause);
         }
 
+
         public void Accselerate() {
             foreach(Slot slot in Hull.Slots)
                 if(slot.Type == SlotType.EngineSlot && !slot.IsEmpty)
@@ -113,23 +113,24 @@ namespace GameCore {
 
             foreach(Item item in Inventory.Container)
                 item.Step();
-            var acc = GetAcceleration() * 0.5f;
-            Circle.ApplyLinearImpulse(acc);
-
-
+            //var acc = GetAcceleration() * 0.5f;
+            //Circle.ApplyLinearImpulse(acc);
+            Circle.AngularVelocity = 0;
+            Circle.Rotation += angleSpeed;
+            angleSpeed *= .9f;
 
             base.Step();
         }
 
 
 
-        Vector2 GetAcceleration() {
-            IEnumerable<DefaultEngine> engines = Hull.GetEngines();
-            Vector2 sum = new Vector2();
-            foreach(DefaultEngine engine in engines)
-                sum += new Vector2(0, -1).GetRotated(engine.Rotation) * engine.GetAcceleration();
-            return sum;
-        }
+        //Vector2 GetAcceleration() {
+        //    IEnumerable<DefaultEngine> engines = Hull.GetEngines();
+        //    Vector2 sum = new Vector2();
+        //    foreach(DefaultEngine engine in engines)
+        //        sum += new Vector2(0, -1).GetRotated(engine.Rotation) * engine.GetAcceleration();
+        //    return sum;
+        //}
 
         internal void Fire() {
             IEnumerable<DefaultWeapon> weapons = Hull.GetWeapons();
@@ -147,11 +148,13 @@ namespace GameCore {
             yield return Hull;
         }
 
+        float angleSpeed = 0;
+
         public void RotateL() {
-            Circle.ApplyAngularImpulse(-.01f);
+            angleSpeed -= .01f;
         }
         public void RotateR() {
-            Circle.ApplyAngularImpulse(.01f);
+            angleSpeed += .01f;
         }
 
         //public void SwitchAI() {
@@ -159,21 +162,6 @@ namespace GameCore {
         //        controller = null;
         //    else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
         //}
-
-        public override IEnumerable<Geometry> GetPrimitives() {
-            List<Geometry> geom = new List<Geometry>();
-
-            InternalColor color = Hull.Health > 6 ? InternalColor.Green : Hull.Health > 3 ? InternalColor.Yellow : InternalColor.Red;
-
-            //if(GetScreenBounds().Size.X < 10) {
-            //    geom.Add(new ScreenGeometry(Viewport.World2ScreenPoint(Location), new CoordPoint(20, 20), 0, true));
-            //}
-            //else
-            geom.Add(new WorldGeometry(ObjectBounds.LeftTop, new Vector2(Hull.Health * ObjectBounds.Width / 10, 200)));
-
-            //geom.Add(new InternalCircle(Position, ObjectBounds.Width / 2, Fraction == 0 ? ColorCore.Red : ColorCore.Blue));
-            return geom;
-        }
 
         #region inventory
         //protected List<Item> ActiveItems { get { return new Item[](Hull.Slots.Select(p => p.AttachedItem).Where(i => i != null)) { Hull }; } }

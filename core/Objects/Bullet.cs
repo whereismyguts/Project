@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace GameCore {
     public class ProjectileBase: GameObject {
-        public ProjectileBase(Vector2 position, Vector2 direction, Ship owner) : base(owner.World, position, 2000) {
+        public ProjectileBase(Vector2 position, Vector2 direction, Ship owner) : base(owner.World, position, 5) {
             this.owner = owner;
-            ApplyForce(direction * 400);
+            ApplyLinearImpulse(direction * 40);
+            Circle.IsBullet = true;
         }
-
-
 
         Ship owner;
 
@@ -35,13 +34,9 @@ namespace GameCore {
             return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "slime.png", 4, 2) };
         }
 
-        public override IEnumerable<Geometry> GetPrimitives() {
-            return new Geometry[] { new WorldGeometry(Location, new Vector2(400, 400)) };
-        }
-
         internal bool Impact() {
             if(!ToRemove) {
-                new Explosion(World, Location, 1200);
+                new Explosion(World, Location, 30);
                 ToRemove = true;
                 return true;
             }

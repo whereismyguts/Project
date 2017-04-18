@@ -61,10 +61,14 @@ namespace GameCore {
         public Viewport() {
         }
 
-        public Vector2 Screen2WorldPoint(Vector2 scrPoint) {
+        public Vector2 Screen2WorldPoint(float x, float y) {
             float pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
             float pixelFactorY = PxlHeight > 0 ? Bounds.Height / pxlHeight : 0;
-            return new Vector2(scrPoint.X * pixelFactorX + Bounds.LeftTop.X, scrPoint.Y * pixelFactorY + Bounds.LeftTop.Y);
+            return new Vector2(x * pixelFactorX + Bounds.LeftTop.X, y * pixelFactorY + Bounds.LeftTop.Y);
+        }
+
+        public Vector2 Screen2WorldPoint(Vector2 scrPoint) {
+            return Screen2WorldPoint(scrPoint.X, scrPoint.Y);
         }
         public Bounds ScreenToWorldBounds(Bounds scrBounds) {
             return new Bounds(Screen2WorldPoint(scrBounds.LeftTop), Screen2WorldPoint(scrBounds.RightBottom));

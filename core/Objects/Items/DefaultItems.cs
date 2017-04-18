@@ -9,6 +9,7 @@ namespace GameCore {
     public class DefaultWeapon: AttachedItem {
         int fireCoolDownMax;
         int fireCoolDown = 10;
+
         public override string Name {
             get {
                 return "standard weapon";
@@ -19,27 +20,26 @@ namespace GameCore {
                 return fireCoolDown < 10 ? new SpriteInfo("retrogunfire.png", 6, 1, 1) : new SpriteInfo("retrogun.png", 1, 1, 1); ;
             }
         }
-
-        public DefaultWeapon() : base(new Vector2(1200, 1200), new Vector2(600, 600)) {
-            fireCoolDownMax = Rnd.Get(100, 150);
-        }
-
         public override float Rotation {
             get {
                 return base.Rotation;
             }
         }
 
+        public DefaultWeapon() : base(new Vector2(.5f, .5f), new Vector2(.25f, .25f)) {
+            fireCoolDownMax = Rnd.Get(100, 150);
+        }
+
         public override void Activate() {
         }
         public override void Deactivate() {
         }
-
         public override void Step() {
             if(fireCoolDown < fireCoolDownMax)
                 fireCoolDown++;
             base.Step();
         }
+
         internal void Fire() {
             if(fireCoolDown == fireCoolDownMax) {
                 //var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
@@ -52,11 +52,20 @@ namespace GameCore {
             return new ProjectileBase(location, direction, owner);
         }
     }
+
     public class DefaultEngine: AttachedItem {
-        float acceleration = 0;
-        float accelerationMax = 0.7f;
-        float accselerationDown;
-        float accselerationUp;
+        //float acceleration = 0;
+        //float accelerationMax = 0.7f;
+        //float accselerationDown;
+        //float accselerationUp;
+        int activetimer = 0;
+        bool active = false;
+
+        public override SpriteInfo SpriteInfo {
+            get {
+                return active ? new SpriteInfo("eng_active.png", 4, 1, 1) : new SpriteInfo("eng.png", 1, 1, 1);
+            }
+        }
         public override float Rotation {
             get {
                 return base.Rotation;
@@ -67,15 +76,13 @@ namespace GameCore {
                 return "standard engine";
             }
         }
-        public DefaultEngine() : base(new Vector2(1200, 1200), new Vector2(600, 400)) {
-            accselerationUp = .1f;
-            accselerationDown = accselerationUp / 5f;
+
+        public DefaultEngine() : base(new Vector2(.5f, .5f), new Vector2(0.25f, 0.25f)) {
+
         }
-        bool active = false;
-        public override SpriteInfo SpriteInfo {
-            get {
-                return active ? new SpriteInfo("eng_active.png", 4, 1, 1) : new SpriteInfo("eng.png", 1, 1, 1);
-            }
+
+        void AccselerateEngine() {
+            Slot.Hull.Owner.ApplyForce(Slot.Hull.Owner.Direction * 550);
         }
         public override void Activate() {
             active = true; //TODO check fuel
@@ -84,37 +91,14 @@ namespace GameCore {
         public override void Deactivate() {
             active = false;
         }
-        void AccselerateEngine() {
-            if(acceleration + accselerationUp <= accelerationMax)
-                acceleration = acceleration + accselerationUp;
-            else
-                acceleration = accelerationMax;
-
-        }
-        void LowEngine() {
-            if(acceleration - accselerationDown >= 0)
-                acceleration = acceleration - accselerationDown;
-            else
-                acceleration = 0;
-
-        }
-        int activetimer = 0;
         public override void Step() {
-
             if(active)
                 AccselerateEngine();
             if(activetimer == 0)
                 Deactivate();
-            LowEngine();
             activetimer--;
         }
-
-        internal float GetAcceleration() {
-            return acceleration;
-        }
     }
-
-
 
     public class RocketLauncher: DefaultWeapon {
         public override SpriteInfo SpriteInfo {
@@ -125,6 +109,5 @@ namespace GameCore {
         protected override ProjectileBase CreateProjectile(Vector2 location, Vector2 direction, Ship owner) {
             return new Rocket(location, direction, owner);
         }
-
     }
 }

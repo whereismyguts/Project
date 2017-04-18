@@ -57,7 +57,7 @@ namespace MonoGameDirectX {
             //        }
             //    }
             //}
-            InterfaceController.ProcessInput(pressedKeys);
+            InterfaceController.ProcessInput(pressedKeys, mouseState);
 
             //  MainCore.Cursor = Viewport.Screen2WorldPoint(new CoordPoint(mouseState.X, mouseState.Y));
         }
