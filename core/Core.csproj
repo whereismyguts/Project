@@ -69,12 +69,15 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FarseerPhysics MonoGame, Version=3.5.0.40766, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\FarseerPhysicsMonogameDemos-master\packages\FarseerPhysics.MonoGame.Unofficial.3.5.0\lib\FarseerPhysics MonoGame.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\FarseerPhysics MonoGame.dll</HintPath>
     </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>..\bin\MonoGame.Framework.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages\FarseerPhysics MonoGame.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
