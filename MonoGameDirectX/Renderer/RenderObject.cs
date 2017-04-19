@@ -33,7 +33,7 @@ namespace MonoGameDirectX {
             Step();
             drawQueue = drawQueue.OrderBy(q => q.ZIndex).ToList();
 
-            foreach(var selfDrawn in drawQueue)
+            foreach(IDrawMyself selfDrawn in drawQueue)
                 selfDrawn.Draw(spriteBatch, time, false);
         }
 

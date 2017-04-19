@@ -10,7 +10,7 @@ namespace MonoGameDirectX {
         //  static GraphicsDevice graphDevice;
 
         static Texture2D texture;
-        static Texture2D BlankTexture(SpriteBatch sb) {
+        public static Texture2D BlankTexture(SpriteBatch sb) {
             if(texture == null) {
                 texture = new Texture2D(sb.GraphicsDevice, 1, 1);
                 texture.SetData(new Color[] { Color.White });

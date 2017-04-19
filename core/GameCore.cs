@@ -27,8 +27,6 @@ namespace GameCore {
         public StarSystem System;
         public static MainCore Instance {
             get {
-                if(instance == null)
-                    instance = new MainCore();
                 return instance;
             }
         }
@@ -95,9 +93,9 @@ namespace GameCore {
         public Viewport Viewport { get; set; }
         public Vector2 Cursor { get; set; }
 
-        MainCore() {
+        MainCore(Viewport view) {
             System = new StarSystem();
-            Viewport = new Viewport();
+            Viewport = view;
         }
         public void AddPlanets() {
             Instance.System.CreatePlanets(world);
@@ -160,7 +158,7 @@ namespace GameCore {
                     obj.Step();
 
                 if(CursorPressed && HookedObject != null)
-                    HookedObject.ApplyForce((Cursor - HookedObject.Location) * HookedObject.Mass / 2);
+                    HookedObject.ApplyForce((Cursor - HookedObject.Location) * HookedObject.Mass * HookedObject.Mass);
 
                 //CollideController.Step(ships, GetAllObjects(1));
 
@@ -177,6 +175,11 @@ namespace GameCore {
         }
 
         void UpdateViewport() {
+
+            //Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
+            //Viewport.Scale = 1.1f;
+            //return;
+
             float left = float.MaxValue;
             float right = float.MinValue;
             float top = float.MaxValue;
@@ -204,7 +207,12 @@ namespace GameCore {
 
             Viewport.SetWorldBounds(left, top, right, bottom, 10);
             //Viewport.Scale = Math.Max(right - left, top - bottom) / 300;
+            Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
             Viewport.Update();
+        }
+
+        public static void Initialize(Viewport view) {
+            instance = new MainCore(view);
         }
 
         static Random rnd = new Random();

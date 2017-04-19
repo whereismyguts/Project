@@ -71,7 +71,7 @@ namespace GameCore {
             }
         }
         public override IEnumerable<Geometry> GetPrimitives() {
-            List<Geometry> list = new List<Geometry>(base.GetPrimitives());
+            List<Geometry> list = new List<Geometry>();
             list.Add(Body2PolygonShape(Body));
             return list;
         }
@@ -81,7 +81,7 @@ namespace GameCore {
             while(theta < Math.PI) {
                 float x = (float)(radius * Math.Cos(theta));
                 float y = (float)(radius * Math.Sin(theta));
-                vlist.Add(new Vector2(x, y).Add( Vector2.One.GetRotated(Rnd.GetPeriod()) * Rnd.Get(0, 50)));
+                vlist.Add(new Vector2(x, y).Add(new Vector2(0,40).GetRotated(Rnd.GetPeriod())));
                 theta += step;
             }
             Vertices _shapevertices = new Vertices(vlist);
@@ -117,9 +117,9 @@ namespace GameCore {
             Body.LinearVelocity = Vector2.Zero;
 
             var dir = Location.GetRotated((Rnd.Bool() ? 1 : -1) * (float)Math.PI / 2);
-            var speed = (float)(Mass * Rnd.Get(0.01, 200));
+            var speed = Mass;
             Body.ApplyLinearImpulse(dir * speed);
-            Body.ApplyAngularImpulse(Mass * 5);
+            Body.ApplyAngularImpulse(Mass );
             name = NameGenerator.Generate(Rnd.Get(0, 3)); ;
         }
 
@@ -127,11 +127,13 @@ namespace GameCore {
             return name + ", mass = " + Mass;
         }
         protected internal override void Step() {
+            base.Step();
+            //return;
             if(DistanceToSun > 500) {
-                ApplyForce((RotateCenter.Location - Location) * 1000);
+                ApplyForce((RotateCenter.Location - Location) * Mass/2);
             }
             if(DistanceToSun < 180) {
-                ApplyForce((Location - RotateCenter.Location) * 1000);
+                ApplyForce((Location - RotateCenter.Location) * Mass/2);
             }
             base.Step();
 

@@ -149,7 +149,8 @@ namespace MonoGameDirectX {
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
             InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
-            Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
+            MainCore.Initialize(new GameCore.Viewport( new Vector2(100,100), new Vector2(300,300) ));
+            //Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             MainCore.Instance.AddPlanets();
 
             InterfaceController.AddState(new MenuState(), new GameState()); // order is matters
@@ -191,6 +192,8 @@ namespace MonoGameDirectX {
             InterfaceController.AddButtonBinding(Buttons.LeftThumbstickRight, 2, PlayerAction.Right);
             InterfaceController.AddButtonBinding(Buttons.X, 2, PlayerAction.Yes);
             InterfaceController.AddButtonBinding(Buttons.B, 2, PlayerAction.Tab);
+
+            Renderer.Cover = Renderer.CreateTexture(GraphicsDevice, ScreenWidth, ScreenHeight);
 
             base.Initialize();
         }

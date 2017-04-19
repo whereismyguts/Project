@@ -24,7 +24,7 @@ namespace GameCore {
                 return centerPoint;
             }
             set {
-                if(Vector2.Subtract(centerPoint, value).Length() < 5) {
+                if(Vector2.Subtract(centerPoint, value).Length() < 1) {
                     centerPoint = value;
                     return;
                 }
@@ -52,34 +52,34 @@ namespace GameCore {
             }
             set {
                 var d = value - scale;
-                if(Math.Abs(d) > 1)
+                if(Math.Abs(d) > 0.1)
                     d /= 100;
                 scale += d;
             }
         }
 
-        public Viewport() {
+        public Vector2 Location { get; set; }
+        public Vector2 PxlSize { get { return new Vector2(pxlWidth, pxlHeight); } }
+
+        public Rectangle Rectangle { get { return new Rectangle(Location.ToPoint(), PxlSize.ToPoint()); } }
+
+        public Viewport(Vector2 location, Vector2 size) {
+            this.pxlWidth = size.X;
+            this.pxlHeight = size.Y;
+            Location = location;
         }
 
         public Vector2 Screen2WorldPoint(float x, float y) {
             float pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
             float pixelFactorY = PxlHeight > 0 ? Bounds.Height / pxlHeight : 0;
-            return new Vector2(x * pixelFactorX + Bounds.LeftTop.X, y * pixelFactorY + Bounds.LeftTop.Y);
+            return new Vector2(x * pixelFactorX + Bounds.LeftTop.X, y * pixelFactorY + Bounds.LeftTop.Y)-Location ;
         }
 
         public Vector2 Screen2WorldPoint(Vector2 scrPoint) {
-            return Screen2WorldPoint(scrPoint.X, scrPoint.Y);
+            return Screen2WorldPoint(scrPoint.X, scrPoint.Y) ;
         }
         public Bounds ScreenToWorldBounds(Bounds scrBounds) {
             return new Bounds(Screen2WorldPoint(scrBounds.LeftTop), Screen2WorldPoint(scrBounds.RightBottom));
-        }
-        public void SetViewportSize(int width, int height) {
-            this.pxlWidth = width;
-            this.pxlHeight = height;
-            RaiseChanged();
-        }
-        public override string ToString() {
-            return string.Format("Bounds: {0}:{1} | Size: {2}x{3} | Centerpoint: {4}", Bounds.LeftTop, Bounds.RightBottom, pxlWidth, pxlHeight, Centerpoint);
         }
         public Bounds World2ScreenBounds(Bounds scrBounds) {
             return new Bounds(World2ScreenPoint(scrBounds.LeftTop), World2ScreenPoint(scrBounds.RightBottom));
@@ -87,11 +87,14 @@ namespace GameCore {
         public Vector2 World2ScreenPoint(float x, float y) {
             float unitFactorX = Bounds.Width > 0 ? PxlWidth / Bounds.Width : 0;
             float unitFactorY = Bounds.Height > 0 ? PxlHeight / Bounds.Height : 0;
-            return new Vector2((x - Bounds.LeftTop.X) * unitFactorX, (y - Bounds.LeftTop.Y) * unitFactorY);
+            return new Vector2((x - Bounds.LeftTop.X) * unitFactorX, (y - Bounds.LeftTop.Y) * unitFactorY) + Location;
         }
 
         public Vector2 World2ScreenPoint(Vector2 wrlPoint) {
             return World2ScreenPoint(wrlPoint.X, wrlPoint.Y);
+        }
+        public override string ToString() {
+            return string.Format("Bounds: {0}:{1} | Size: {2}x{3} | Centerpoint: {4}", Bounds.LeftTop, Bounds.RightBottom, pxlWidth, pxlHeight, Centerpoint);
         }
         public void ZoomIn() {
             ChangeZoom(scale + scale / 10, scale / 50f);
@@ -115,7 +118,7 @@ namespace GameCore {
         }
         void SmoothScroll(Vector2 value) {
             //  var step = (centerPoint - value).Length / 100f;
-            centerPoint = Vector2.Normalize(Vector2.Subtract(value, centerPoint)) * (Math.Abs(value.Substract(centerPoint).Length()) / 100) + centerPoint;
+            centerPoint = Vector2.Normalize(Vector2.Subtract(value, centerPoint)) * (Math.Abs(value.Substract(centerPoint).Length()) / 10) + centerPoint;
         }
         void ChangeZoom(float target, float step) {
             this.zoomTarget = target;

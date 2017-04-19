@@ -31,12 +31,14 @@ namespace MonoGameDirectX {
 
         public static int DebugMode { get { return debugMode; } }
 
+        public static Texture2D Cover { get; internal set; }
+
         //public List<CoordPoint> TraectoryPath { get; internal set; }
 
         static void DrawCursor() {
-            //   Point mPoint = Mouse.GetState().Position;
-            //   DrawPrimitives.DrawRect(new Rectangle(mPoint.X, mPoint.Y, 10, 10), SpriteBatch, 1, Color.White, Color.Red);
-            //spriteBatch.Draw(WinAdapter.GetCursor(), new Rectangle(mPoint.X, mPoint.Y, 5, 5), Color.Black);
+            Point mPoint = Mouse.GetState().Position;
+            // DrawPrimitives.DrawRect(new Rectangle(mPoint.X, mPoint.Y, 10, 10), SpriteBatch, 1, Color.White, Color.Red);
+            SpriteBatch.Draw(WinAdapter.GetCursor(), new Rectangle(mPoint.X, mPoint.Y, 5, 5), Color.Black);
         }
         static void DrawDebugInfo() {
             foreach(Ship ship in MainCore.Instance.Ships) {
@@ -57,7 +59,7 @@ namespace MonoGameDirectX {
                 //        DrawPrimitives.DrawPixel(WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(ship.Calculator.Path[i])), spriteBatch, Color.Black);
                 //}
 
-           //     SpriteBatch.DrawString(Font, ship.Name, shipBounds.Center + new Vector2(0, -20), WinAdapter.Color(ship.Color));
+                //     SpriteBatch.DrawString(Font, ship.Name, shipBounds.Center + new Vector2(0, -20), WinAdapter.Color(ship.Color));
 
                 //var rect = ship.ScreenBounds;
                 //DrawPrimitives.DrawCircle(rect.Center, rect.Width / 2, SpriteBatch, ship.Fraction > 1 ? Color.Red : Color.Blue);
@@ -126,6 +128,7 @@ namespace MonoGameDirectX {
             WinAdapter.UpdateRenderObjects(ref renderObjects);
             foreach(RenderObject renderObject in renderObjects) {
                 //DONT remove!!
+
                 renderObject.Draw(SpriteBatch, gameTime);
                 //if(renderObject.GameObject is Body)
                 //    renderObject.Draw(SpriteBatch, gameTime);
@@ -144,16 +147,53 @@ namespace MonoGameDirectX {
         }
 
         static void DrawInterface(GameTime time) {
+            // DrawPrimitives.DrawRect(new Rectangle(Viewport.Location.ToPoint(), Viewport.PxlSize.ToPoint()), SpriteBatch, 2, Color.Purple);
+
             InterfaceController.GetActualControls().ToList().ForEach(con => con.Draw(SpriteBatch, time));
             //foreach(Control c in controls)
             //c.Draw(SpriteBatch, time);
         }
 
 
+        public static Texture2D CreateTexture(GraphicsDevice device, int width, int height) {
+            //initialize a texture
+
+            var view = Viewport.Rectangle;
+
+            Texture2D texture = new Texture2D(device, width, height);
+
+            //the array holds the color for each pixel in the texture
+
+            Color[] data = new Color[width * height];
+            int x = 0, y = 0;
+
+            for(int pixel = 0; pixel < data.Count(); pixel++) {
+
+                if((x == view.Left || x == view.Right) && (y > view.Top && y < view.Bottom)
+                    ||
+                    (y == view.Top || y == view.Bottom) && (x > view.Left && x < view.Right))
+                    data[pixel] = Color.Black;
+                else
+                if(view.Contains(x, y))
+                    data[pixel] = Color.Transparent;
+                else data[pixel] = Color.White;
+
+                x++;
+                if(x == width) {
+                    x = 0; y++;
+                }
+            }
+
+            texture.SetData(data);
+            return texture;
+        }
+
         public static void Render(GameTime gameTime) {
 
+
+
             GraphicsDevice.Clear(Color.White);
-            SpriteBatch.Begin(SpriteSortMode.Immediate);
+            SpriteBatch.Begin();
 
             //cells = new StationGenerator().Generate();
             //if(GameState == GameState.Station) {
@@ -181,36 +221,32 @@ namespace MonoGameDirectX {
                     DrawDebugInfo();
 
                 DrawObjects(gameTime);
-
-
-
-
             }
-
+            SpriteBatch.Draw(Cover, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
             DrawInterface(gameTime);
-            DrawCursor();
             WriteDebugInfo();
+            DrawCursor();
 
             SpriteBatch.End();
         }
 
-
-        static int gridStep = 200;
+        static int gridStep = 500;
+        static int gridSize = 3000;
 
         private static void DrawGrid() {
-            for(int i = -1000; i <= 1000; i += gridStep) {
+            for(int i = -gridSize; i <= gridSize; i += gridStep) {
 
-                var x1 = i; var x2 = i; var y1 = -1000; var y2 = 1000;
+                var x1 = i; var x2 = i; var y1 = -gridSize; var y2 = gridSize;
 
                 var p1 = Viewport.World2ScreenPoint(x1, y1);
                 var p2 = Viewport.World2ScreenPoint(x2, y2);
 
                 DrawPrimitives.DrawLine(p1, p2, SpriteBatch, 1, Color.Gray);
 
-                 x1 = -1000;  x2 = 1000;  y1 = i;  y2 = i;
+                x1 = -gridSize; x2 = gridSize; y1 = i; y2 = i;
 
-                 p1 = Viewport.World2ScreenPoint(x1, y1);
-                 p2 = Viewport.World2ScreenPoint(x2, y2);
+                p1 = Viewport.World2ScreenPoint(x1, y1);
+                p2 = Viewport.World2ScreenPoint(x2, y2);
 
                 DrawPrimitives.DrawLine(p1, p2, SpriteBatch, 1, Color.Gray);
             }
