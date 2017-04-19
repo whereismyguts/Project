@@ -58,7 +58,7 @@
     <Compile Include="CoordSystem\Bounds.cs" />
     <Compile Include="Objects\Ship.cs" />
     <Compile Include="Objects\GameObject.cs" />
-    <Compile Include="CoordSystem\CoordPoint.cs" />
+    <Compile Include="CoordSystem\ExtendClasses.cs" />
     <Compile Include="GameCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CoordSystem\Viewport.cs" />

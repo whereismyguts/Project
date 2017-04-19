@@ -40,8 +40,17 @@ namespace GameCore {
                 }
             MainCore.Instance.Cursor = MainCore.Instance.Viewport.Screen2WorldPoint(mouse.X, mouse.Y);
 
+            if(!mousePrevPressed && mouse.LeftButton == ButtonState.Pressed)
+                MainCore.Instance.MousePressed();
+            if(mousePrevPressed && mouse.LeftButton == ButtonState.Released)
+                MainCore.Instance.MouseReleased();
+
+            mousePrevPressed = mouse.LeftButton == ButtonState.Pressed;
             DoActions();
         }
+
+        static bool mousePrevPressed = false;
+
         public static void ProcessInput(IEnumerable<Buttons> newKeys) {
             List<Buttons> toRemove = new List<Buttons>();
             foreach(var key in ButtonsDown)

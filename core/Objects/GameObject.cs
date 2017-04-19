@@ -1,4 +1,5 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using System;
@@ -17,7 +18,7 @@ namespace GameCore {
 
 
         protected Viewport Viewport { get { return MainCore.Instance.Viewport; } }
-        protected internal float Rotation { get { return Body.Rotation; } }
+        protected internal virtual float Rotation { get { return Body.Rotation; } }
 
         public static StarSystem CurrentSystem { get { return MainCore.Instance.System; } }
 
@@ -52,17 +53,29 @@ namespace GameCore {
             Radius = radius;
             World = world;
             CreateBody(radius, location);
+            if(Body != null) {
+                Body.OnCollision += OnCollision;
+                Body.UserData = this;
+            }
+        }
+
+        protected Geometry Body2PolygonShape(Body body) {
+            var pol = (Body.FixtureList[0].Shape as PolygonShape);
+            List<Vector2> res = new List<Vector2>();
+
+            foreach(var v in pol.Vertices) {
+                res.Add(v.GetRotated(Rotation));
+            }
+            return new WorldShape(Location + (-pol.MassData.Centroid).GetRotated(Rotation), res);
         }
 
         public static Vector2 GetNewLocation(GameObject thisObject) {
             bool correctPosition = false;
             Vector2 location = Vector2.Zero;
             while(!correctPosition) {
-
                 location = new Vector2(Rnd.Get(-300, 300), Rnd.Get(-300, 300));
-
                 correctPosition = true;
-                foreach(GameObject obj in CurrentSystem.Objects)
+                foreach(GameObject obj in CurrentSystem.Objects(false))
                     if(obj != thisObject && obj.ObjectBounds.Contains(location)) {
                         correctPosition = false;
                         break;
@@ -72,19 +85,21 @@ namespace GameCore {
         }
 
         protected virtual void CreateBody(float radius, Vector2 location) {
-            Body = BodyFactory.CreateCircle(World, radius, 1f, location);
+            Body = BodyFactory.CreateCircle(World, radius, 1f, location, this);
             Body.BodyType = BodyType.Dynamic;
-            Body.OnCollision += Circle_OnCollision;
         }
 
-        protected bool Circle_OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
+        protected bool OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
+            //if(this is Ship) {
+            //    Vector2 point = Body.WorldCenter + Body.ContactList.Contact.Manifold.LocalPoint.GetRotated(Rotation);
+            //    new Explosion(World, point);
+            //}
             return true;
         }
 
         internal void ApplyLinearImpulse(Vector2 imp) {
             Body.ApplyLinearImpulse(imp);
         }
-
         internal void ApplyForce(Vector2 vector2) {
             Body.ApplyForce(vector2);
         }
@@ -98,7 +113,7 @@ namespace GameCore {
 
             var attraction = Vector2.Zero;
 
-            foreach(var obj in CurrentSystem.Objects)
+            foreach(var obj in CurrentSystem.Objects(false))
                 if(this != obj) {
                     attraction += PhysicsHelper.GravitationForceVector(obj, this);
 
@@ -130,13 +145,11 @@ namespace GameCore {
             return itemsEmpty;
         }
         public virtual IEnumerable<Geometry> GetPrimitives() {
+            yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
+            yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
 
-
-            //     var Radius = this.Radius * 5;
-            return new Geometry[] {
-                new WorldGeometry(Location , new Vector2(Radius * 2, Radius * 2), true),
-                new Line(Location, Location+ new Vector2(0,Radius).GetRotated(Rotation))
-            };
+            if(MainCore.Instance.HookedObject == this)
+                yield return new Line(Location, MainCore.Instance.Cursor);
         }
     }
 }

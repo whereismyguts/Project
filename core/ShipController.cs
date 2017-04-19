@@ -77,7 +77,7 @@ namespace GameCore {
         }
 
         GameObject GetDangerZone() {
-            foreach(var obj in System.Objects)
+            foreach(var obj in System.Objects(false))
 
                 if(obj != Owner && Vector2.Distance(obj.Location, Owner.Location) <= dangerZoneMultiplier * obj.Radius)
                     return obj;
@@ -155,7 +155,7 @@ namespace GameCore {
         }
 
         private bool IsIntersectSomething(Vector2 p1, Vector2 p2) {
-            foreach(var body in System.Objects)
+            foreach(var body in System.Objects(false))
                 if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Location.X, body.Location.Y, body.Radius))
                     return true;
             return false;

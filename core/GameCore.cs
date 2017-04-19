@@ -67,6 +67,25 @@ namespace GameCore {
 
         public delegate void StateEventHandler(object sender, StateEventArgs e);
 
+        internal bool CursorPressed { get; private set; } = false;
+
+        public GameObject HookedObject { get; private set; } = null;
+
+        public void MousePressed() {
+            CursorPressed = true;
+            foreach(var obj in Objects) {
+                if(obj.ObjectBounds.Contains(Cursor)) {
+                    HookedObject = obj;
+                    return;
+                }
+            }
+        }
+
+        public void MouseReleased() {
+            CursorPressed = false;
+            HookedObject = null;
+        }
+
         public static void AddStates(UIState[] newstates) {
             states.AddRange(newstates);
         }
@@ -101,30 +120,20 @@ namespace GameCore {
             }
 
         }
-        IEnumerable<GameObject> GetAllObjects(int types = 0) {
-            return System.Objects;
-
+        IEnumerable<GameObject> GetAllObjects(bool all = true) {
+            return System.Objects(all);
             //foreach(GameObject obj in System.Objects) {
             //    yield return obj;
             //}
             //if(types == 0 || types == 3)
             //    foreach(Ship s in ships) yield return s;
         }
-
-        internal static void Console(string message) {
-            messages.Add(message);
-        }
-
-        static List<string> messages = new List<string>();
-
         void CleanObjects() {
             System.CleanObjects();
             ships.RemoveAll(s => s.ToRemove);
         }
 
-
         public void Step(GameTime gameTime) {
-
             //&& Controller.Keys.ToList().Contains(32)
             if(CurrentState.InGame) {
 
@@ -133,7 +142,6 @@ namespace GameCore {
                     //    ship.ToRemove = true;
                     //AIShipsController.Controllers.Clear();
                     CreatePlayers();
-                    messages.Clear();
                 }
                 CleanObjects();
 
@@ -143,13 +151,16 @@ namespace GameCore {
                     world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / 30f)));
                 }
                 catch(Exception e) {
-
+                    Debugger.Lines.Add(e.Message);
                 }
 
                 AIShipsController.Step();
 
                 foreach(GameObject obj in Objects)
                     obj.Step();
+
+                if(CursorPressed && HookedObject != null)
+                    HookedObject.ApplyForce((Cursor - HookedObject.Location) * HookedObject.Mass / 2);
 
                 //CollideController.Step(ships, GetAllObjects(1));
 

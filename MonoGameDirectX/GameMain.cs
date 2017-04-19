@@ -25,9 +25,22 @@ namespace MonoGameDirectX {
 
         public MainCore Instance { get { return MainCore.Instance; } }
 
+
+        public static WMPLib.WindowsMediaPlayer player = new WMPLib.WindowsMediaPlayer();
+
+        public static void PlayMusicFromURL(string url) {
+            player.URL = url;
+
+            player.settings.volume = 100;
+
+            player.controls.play();
+        }
+
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            PlayMusicFromURL("SpaceOddity.mp3");
+            //PlayMusicFromURL("http://s1.castserver.net:8006");
         }
 
         void ProcessInput() {

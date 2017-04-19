@@ -1,4 +1,5 @@
 ﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -59,18 +60,18 @@ namespace GameCore {
 
 
 
-          //Reborn();
+            //Reborn();
             //if(target != null)
             //    controller = new AIController(this, target, TaskType.Peersuit);
         }
 
-        internal void GetDamage(int d, string text) {
+        internal void GetDamage(int d) {
             Hull.Health -= d;
             if(Hull.Health <= 0)
-                Dead("from " + text);
+                Dead();
         }
 
-        internal void Dead(string cause) {
+        internal void Dead() {
 
             if(OnDead != null)
                 OnDead(this, EventArgs.Empty);
@@ -78,8 +79,6 @@ namespace GameCore {
             new Explosion(World, Location);
 
             ToRemove = true;
-
-            MainCore.Console(Name + " is dead cause of " + cause);
         }
 
 
@@ -94,13 +93,17 @@ namespace GameCore {
         }
 
         //public TrajectoryCalculator Calculator { get; set; }
-   
 
-     
-        
+        protected override void CreateBody(float radius, Vector2 location) {
+            Body = BodyFactory.CreateRectangle(World, radius * 2, radius * 2, 0.5f, location);
+            Body.BodyType = BodyType.Dynamic;
+        }
+
+        public override IEnumerable<Geometry> GetPrimitives() {
+            yield return Body2PolygonShape(Body);
+        }
 
         protected internal override void Step() {
-
             //if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 25000) {
             //    Dead("lost in the Void");
             //}
@@ -110,15 +113,15 @@ namespace GameCore {
             //    foreach(Action a in actions)
             //        a();
             //}
-
             foreach(Item item in Inventory.Container)
                 item.Step();
             //var acc = GetAcceleration() * 0.5f;
             //Circle.ApplyLinearImpulse(acc);
-            Body.AngularVelocity = 0;
+            if(angleSpeed > 0.001) {
+                Body.AngularVelocity = 0;
+            }
             Body.Rotation += angleSpeed;
             angleSpeed *= .9f;
-
             base.Step();
         }
 
