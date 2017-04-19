@@ -77,11 +77,11 @@ namespace GameCore {
         }
         protected override void CreateBody(float radius, Vector2 location) {
             double theta = -Math.PI;  // angle that will be increased each loop
-            double step = Math.PI / 600;
+            double step = Math.PI / 100;
             while(theta < Math.PI) {
                 float x = (float)(radius * Math.Cos(theta));
                 float y = (float)(radius * Math.Sin(theta));
-                vlist.Add(new Vector2(x, y).UnaryVector() * Rnd.Get(radius * 0.1f, radius * 1.5f));
+                vlist.Add(new Vector2(x, y).Add( Vector2.One.GetRotated(Rnd.GetPeriod()) * Rnd.Get(0, 50)));
                 theta += step;
             }
             Vertices _shapevertices = new Vertices(vlist);

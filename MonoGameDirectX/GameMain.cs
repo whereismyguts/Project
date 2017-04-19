@@ -30,7 +30,7 @@ namespace MonoGameDirectX {
 
         public static void PlayMusicFromURL(string url) {
             player.URL = url;
-
+            
             player.settings.volume = 100;
 
             player.controls.play();
@@ -39,7 +39,7 @@ namespace MonoGameDirectX {
         public GameMain() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            PlayMusicFromURL("SpaceOddity.mp3");
+            //PlayMusicFromURL("SpaceOddity.mp3");
             //PlayMusicFromURL("http://s1.castserver.net:8006");
         }
 
@@ -90,7 +90,8 @@ namespace MonoGameDirectX {
             //    Debugger.Lines.Add("key released: " + e.Keys + "; ");
             switch(e.Keys) {
                 case Keys.F:
-                    SwitchFullScreen(); break;
+                    if(ctrlpressed)
+                        SwitchFullScreen(); break;
                 case Keys.D:
                     if(ctrlpressed)
                         Renderer.SwitchDebugMode(); break;
