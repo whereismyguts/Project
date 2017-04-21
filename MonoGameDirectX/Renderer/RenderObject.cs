@@ -153,7 +153,7 @@ namespace MonoGameDirectX {
 
         public void Draw(SpriteBatch spBatch, GameTime t, bool fit) {
 
-            if(DestRect.Size != new Point() && DestRect.Intersects(spBatch.GraphicsDevice.Viewport.Bounds)) {
+            if(DestRect.Size != new Point() /*&& DestRect.Intersects(spBatch.GraphicsDevice.Viewport.Bounds)*/) {
 
                 if(texture == null)
                     return;

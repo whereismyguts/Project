@@ -15,6 +15,12 @@ namespace MonoGameDirectX {
         int width = 0;
         int height = 0;
         GraphicsDeviceManager graphics;
+
+        Microsoft.Xna.Framework.Graphics.Viewport defaultViewport;
+        Microsoft.Xna.Framework.Graphics.Viewport leftViewport;
+        Microsoft.Xna.Framework.Graphics.Viewport rightViewport;
+        Microsoft.Xna.Framework.Graphics.Viewport bottomViewport;
+
         int ScreenHeight { get { return Renderer.ScreenHeight; } }
         int ScreenWidth { get { return Renderer.ScreenWidth; } }
         UIState State {
@@ -30,7 +36,7 @@ namespace MonoGameDirectX {
 
         public static void PlayMusicFromURL(string url) {
             player.URL = url;
-            
+
             player.settings.volume = 100;
 
             player.controls.play();
@@ -135,10 +141,22 @@ namespace MonoGameDirectX {
         //int mouseWheel = 0;
 
         protected override void Draw(GameTime gameTime) {
+            GraphicsDevice.Viewport = defaultViewport;
+            GraphicsDevice.Clear(Color.White);
+            //GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //   System.Threading.Thread.Sleep(1000);
-            //  if(Controller.Keys.ToList().Contains(32))
-            Renderer.Render(gameTime);
+            if(PlayerController.Players.Count > 1) {
+                Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
+                GraphicsDevice.Viewport = leftViewport;
+                Renderer.Render(gameTime);
+
+                Viewport.Centerpoint = PlayerController.Players[1].Ship.Location;
+                GraphicsDevice.Viewport = rightViewport;
+                Renderer.Render(gameTime);
+            }
+            // GraphicsDevice.Viewport = bottomViewport;
+            //Renderer.Render(gameTime);
+
             base.Draw(gameTime);
         }
         protected override void Initialize() {
@@ -149,7 +167,23 @@ namespace MonoGameDirectX {
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
             InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
-            MainCore.Initialize(new GameCore.Viewport( new Vector2(100,100), new Vector2(300,300) ));
+
+            defaultViewport = GraphicsDevice.Viewport;
+            leftViewport = defaultViewport;
+            rightViewport = defaultViewport;
+            bottomViewport = defaultViewport;
+
+            leftViewport.Width /= 2;
+            rightViewport.Width /= 2;
+            rightViewport.X = leftViewport.Width;
+            bottomViewport.Y = bottomViewport.Height - 100;
+            bottomViewport.Height = 100;
+
+            rightViewport.Height = bottomViewport.Y;
+            leftViewport.Height = bottomViewport.Y;
+
+            MainCore.Initialize(new GameCore.Viewport(new Vector2(0, 0), new Vector2(leftViewport.Width, leftViewport.Height)));
+
             //Viewport.SetViewportSize(ScreenWidth, ScreenHeight);
             MainCore.Instance.AddPlanets();
 
@@ -176,8 +210,8 @@ namespace MonoGameDirectX {
             InterfaceController.AddKeyBinding(Keys.Down, 1, PlayerAction.Down);
             InterfaceController.AddKeyBinding(Keys.Left, 1, PlayerAction.Left);
             InterfaceController.AddKeyBinding(Keys.Right, 1, PlayerAction.Right);
-            InterfaceController.AddKeyBinding(Keys.RightControl, 1, PlayerAction.Yes);
-            InterfaceController.AddKeyBinding(Keys.Tab, 1, PlayerAction.Tab);
+            InterfaceController.AddKeyBinding(Keys.NumPad1, 1, PlayerAction.Yes);
+            InterfaceController.AddKeyBinding(Keys.NumPad0, 1, PlayerAction.Tab);
 
             InterfaceController.AddKeyBinding(Keys.W, 2, PlayerAction.Up);
             InterfaceController.AddKeyBinding(Keys.S, 2, PlayerAction.Down);

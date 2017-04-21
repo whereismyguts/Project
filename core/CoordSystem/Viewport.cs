@@ -24,11 +24,11 @@ namespace GameCore {
                 return centerPoint;
             }
             set {
-                if(Vector2.Subtract(centerPoint, value).Length() < 1) {
+               // if(true || Vector2.Subtract(centerPoint, value).Length() < 1) {
                     centerPoint = value;
                     return;
-                }
-                SmoothScroll(value);
+             //   }
+             //   SmoothScroll(value);
             }
         }
         public float MiniMapScale {
@@ -53,7 +53,7 @@ namespace GameCore {
             set {
                 var d = value - scale;
                 if(Math.Abs(d) > 0.1)
-                    d /= 100;
+                    d /= 50;
                 scale += d;
             }
         }

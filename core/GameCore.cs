@@ -177,8 +177,8 @@ namespace GameCore {
         void UpdateViewport() {
 
             //Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
-            //Viewport.Scale = 1.1f;
-            //return;
+            Viewport.Scale = .9f;
+            return;
 
             float left = float.MaxValue;
             float right = float.MinValue;

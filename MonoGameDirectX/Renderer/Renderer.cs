@@ -192,7 +192,7 @@ namespace MonoGameDirectX {
 
 
 
-            GraphicsDevice.Clear(Color.White);
+            
             SpriteBatch.Begin();
 
             //cells = new StationGenerator().Generate();
@@ -222,7 +222,11 @@ namespace MonoGameDirectX {
 
                 DrawObjects(gameTime);
             }
-            SpriteBatch.Draw(Cover, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
+
+            DrawPrimitives.DrawRect(new Rectangle(1, 1, ScreenWidth-2, ScreenHeight-2), SpriteBatch, 3, Color.Black);
+
+          //  SpriteBatch.Draw(Cover, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
+
             DrawInterface(gameTime);
             WriteDebugInfo();
             DrawCursor();

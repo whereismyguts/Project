@@ -181,7 +181,7 @@ namespace MonoGameDirectX {
             new Vector2(rect.Right, rect.Bottom),
              new Vector2(rect.Right, rect.Top)
 
-        }, 4, borderColor, 1);
+        }, 4, borderColor, width);
 
             spBatch.Draw(BlankTexture(spBatch), rect, null, fillColor, 0f, new Vector2(), SpriteEffects.None, 0f);
             return;
