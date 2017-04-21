@@ -22,7 +22,7 @@ namespace GameCore {
 
         public static StarSystem CurrentSystem { get { return MainCore.Instance.System; } }
 
-        public Vector2 Direction { get { return Vector2.One.GetRotated(Body.Rotation); } }
+        public Vector2 Direction { get { return new Vector2(0,-1).GetRotated(Body.Rotation); } }
 
         public bool ToRemove { get; set; } = false;
 
