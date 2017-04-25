@@ -41,9 +41,9 @@ namespace GameCore {
         }
 
         internal void Fire() {
-            if(fireCoolDown == fireCoolDownMax) {
+            if(fireCoolDown >= fireCoolDownMax) {
                 //var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
-                CreateProjectile(Location.Add(Origin), Slot.Hull.Owner.Direction, Slot.Hull.Owner);
+                CreateProjectile(Location.Add(Origin) + Slot.Hull.Owner.Direction * 10, Slot.Hull.Owner.Direction, Slot.Hull.Owner);
                 fireCoolDown = 0;
             }
         }

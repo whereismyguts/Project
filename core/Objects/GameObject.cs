@@ -22,7 +22,7 @@ namespace GameCore {
 
         public static StarSystem CurrentSystem { get { return MainCore.Instance.System; } }
 
-        public Vector2 Direction { get { return new Vector2(0,-1).GetRotated(Body.Rotation); } }
+        public Vector2 Direction { get { return new Vector2(0, -1).GetRotated(Body.Rotation); } }
 
         public bool ToRemove { get; set; } = false;
 
@@ -44,7 +44,12 @@ namespace GameCore {
             }
         }
 
-        protected Body Body { get; set; }
+        Body body;
+
+        protected virtual internal Body Body {
+            get { return body; }
+            set { body = value; }
+        }
 
         public World World { get; }
 
@@ -53,8 +58,7 @@ namespace GameCore {
             Radius = radius;
             World = world;
             CreateBody(radius, location);
-            if(Body != null) {
-                Body.OnCollision += OnCollision;
+            if(body != null) {
                 Body.UserData = this;
             }
         }
@@ -73,7 +77,7 @@ namespace GameCore {
             bool correctPosition = false;
             Vector2 location = Vector2.Zero;
             while(!correctPosition) {
-                location = new Vector2(Rnd.Get(-300, 300), Rnd.Get(-300, 300));
+                location = new Vector2(Rnd.Get(-600, 600), Rnd.Get(-600, 600));
                 correctPosition = true;
                 foreach(GameObject obj in CurrentSystem.Objects(false))
                     if(obj != thisObject && obj.ObjectBounds.Contains(location)) {
@@ -88,23 +92,17 @@ namespace GameCore {
             Body = BodyFactory.CreateCircle(World, radius, 1f, location, this);
             Body.BodyType = BodyType.Dynamic;
         }
-
-        protected bool OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
-            //if(this is Ship) {
-            //    Vector2 point = Body.WorldCenter + Body.ContactList.Contact.Manifold.LocalPoint.GetRotated(Rotation);
-            //    new Explosion(World, point);
-            //}
-            return true;
-        }
-
         internal void ApplyLinearImpulse(Vector2 imp) {
-            Body.ApplyLinearImpulse(imp);
+            if(Body != null)
+                Body.ApplyLinearImpulse(imp);
         }
         internal void ApplyForce(Vector2 vector2) {
-            Body.ApplyForce(vector2);
+            if(Body != null)
+                Body.ApplyForce(vector2);
         }
         internal void ApplyForce(Vector2 vector2, Vector2 location) {
-            Body.ApplyForce(vector2, location);
+            if(Body != null)
+                Body.ApplyForce(vector2, location);
         }
 
         protected internal virtual void Step() {
@@ -145,11 +143,38 @@ namespace GameCore {
             return itemsEmpty;
         }
         public virtual IEnumerable<Geometry> GetPrimitives() {
-            yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
-            yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
-
+            foreach(var fix in Body.FixtureList)
+                if(fix.Shape is PolygonShape) {
+                    yield return Body2PolygonShape(Body);
+                }
+                else {
+                    yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
+                    yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
+                }
             if(MainCore.Instance.HookedObject == this)
                 yield return new Line(Location, MainCore.Instance.Cursor);
+        }
+    }
+    public static class CollideProcessing {
+        public static bool OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
+            ProjectileBase subj = fixtureA.Body.UserData as ProjectileBase;
+            Ship obj = fixtureB.Body.UserData as Ship;
+
+            if(subj != null && !subj.ToRemove) {
+                if(obj != null) {
+                    if(obj == subj.Owner)
+                        return false;
+                    else
+                        obj.GetDamage(subj.Damage);
+                }
+                if(fixtureB.Body.UserData is ProjectileBase) {
+                    (fixtureB.Body.UserData as ProjectileBase).ToRemove = true;
+                }
+                Vector2 point = subj.Location + subj.Body.ContactList.Contact.Manifold.Points[0].LocalPoint.GetRotated(subj.Rotation);
+                new Explosion(subj.World, point);
+                subj.ToRemove = true;
+            }
+            return true;
         }
     }
 }

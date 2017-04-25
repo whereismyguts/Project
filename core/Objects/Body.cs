@@ -70,18 +70,14 @@ namespace GameCore {
                 theta += step;
             }
         }
-        public override IEnumerable<Geometry> GetPrimitives() {
-            List<Geometry> list = new List<Geometry>();
-            list.Add(Body2PolygonShape(Body));
-            return list;
-        }
+
         protected override void CreateBody(float radius, Vector2 location) {
             double theta = -Math.PI;  // angle that will be increased each loop
-            double step = Math.PI / 100;
+            double step = Math.PI / 32;
             while(theta < Math.PI) {
                 float x = (float)(radius * Math.Cos(theta));
                 float y = (float)(radius * Math.Sin(theta));
-                vlist.Add(new Vector2(x, y).Add(new Vector2(0,40).GetRotated(Rnd.GetPeriod())));
+                vlist.Add(new Vector2(x, y).UnaryVector() * radius * Rnd.Get(0.5f, 1.5f));
                 theta += step;
             }
             Vertices _shapevertices = new Vertices(vlist);
@@ -93,12 +89,23 @@ namespace GameCore {
 
     public class Star: SpaceBody {
         public Star(float radius, World world) : base(Vector2.Zero, radius, world) {
-            //   Body.BodyType = BodyType.Static;
+            Body.BodyType = BodyType.Static;
             //Circle.Mass;
         }
 
         protected override string GetName() {
             return "STAR" + ", mass = " + Mass; ;
+        }
+
+        protected override void CreateBody(float radius, Vector2 location) {
+            Body = BodyFactory.CreateCircle(World, radius, 1, location);
+            Body.BodyType = BodyType.Static;
+        }
+
+        public override IEnumerable<Geometry> GetPrimitives() {
+            List<Geometry> list = new List<Geometry>();
+            list.Add(new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true));
+            return list;
         }
     }
 
@@ -109,7 +116,7 @@ namespace GameCore {
 
         public Planet(Vector2 location, float radius, World world)
             : base(location, radius, world) {
-            Body.Mass *= 5;
+            //Body.Mass *= 5;
             SetOrbitaVelosity();
         }
 
@@ -117,9 +124,9 @@ namespace GameCore {
             Body.LinearVelocity = Vector2.Zero;
 
             var dir = Location.GetRotated((Rnd.Bool() ? 1 : -1) * (float)Math.PI / 2);
-            var speed = Mass;
+            var speed = Mass * Rnd.Get(1, 10);
             Body.ApplyLinearImpulse(dir * speed);
-            Body.ApplyAngularImpulse(Mass );
+            Body.ApplyAngularImpulse(Mass);
             name = NameGenerator.Generate(Rnd.Get(0, 3)); ;
         }
 
@@ -127,21 +134,17 @@ namespace GameCore {
             return name + ", mass = " + Mass;
         }
         protected internal override void Step() {
-            base.Step();
-            //return;
             if(DistanceToSun > 500) {
-                ApplyForce((RotateCenter.Location - Location) * Mass/2);
+                ApplyForce((RotateCenter.Location - Location) * Mass);
             }
             if(DistanceToSun < 180) {
-                ApplyForce((Location - RotateCenter.Location) * Mass/2);
+                ApplyForce((Location - RotateCenter.Location) * Mass);
             }
-            base.Step();
-
-            //    return;
-            //if(DistanceToSun > 500 /*|| DistanceToSun < 180*/) {
+            //if(DistanceToSun > 1000 || DistanceToSun < 180) {
             //    Body.Position = GetNewLocation(this);
             //    SetOrbitaVelosity();
             //}
+            base.Step();
         }
         //protected internal override void Step() {
         //    if(starRotation >= 2 * Math.PI)

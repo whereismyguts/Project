@@ -24,11 +24,13 @@ namespace GameCore {
                 return centerPoint;
             }
             set {
-               // if(true || Vector2.Subtract(centerPoint, value).Length() < 1) {
+                if(centerPoint == value)
+                    return;
+                if(!SmoothUpdate || Vector2.Subtract(centerPoint, value).Length() < 1) {
                     centerPoint = value;
                     return;
-             //   }
-             //   SmoothScroll(value);
+                }
+                SmoothScroll(value);
             }
         }
         public float MiniMapScale {
@@ -40,10 +42,21 @@ namespace GameCore {
             get {
                 return pxlHeight;
             }
+            set {
+                if(pxlHeight == value)
+                    return;
+                pxlHeight = value;
+            }
         }
         public float PxlWidth {
             get {
+
                 return pxlWidth;
+            }
+            set {
+                if(pxlWidth == value)
+                    return;
+                pxlWidth = value;
             }
         }
         public float Scale {
@@ -51,8 +64,10 @@ namespace GameCore {
                 return scale;
             }
             set {
+                if(scale == value)
+                    return;
                 var d = value - scale;
-                if(Math.Abs(d) > 0.1)
+                if(SmoothUpdate && Math.Abs(d) > 0.1)
                     d /= 50;
                 scale += d;
             }
@@ -60,8 +75,8 @@ namespace GameCore {
 
         public Vector2 Location { get; set; }
         public Vector2 PxlSize { get { return new Vector2(pxlWidth, pxlHeight); } }
-
         public Rectangle Rectangle { get { return new Rectangle(Location.ToPoint(), PxlSize.ToPoint()); } }
+        public bool SmoothUpdate { get; set; } = false;
 
         public Viewport(Vector2 location, Vector2 size) {
             this.pxlWidth = size.X;
@@ -72,11 +87,11 @@ namespace GameCore {
         public Vector2 Screen2WorldPoint(float x, float y) {
             float pixelFactorX = PxlWidth > 0 ? Bounds.Width / PxlWidth : 0;
             float pixelFactorY = PxlHeight > 0 ? Bounds.Height / pxlHeight : 0;
-            return new Vector2(x * pixelFactorX + Bounds.LeftTop.X, y * pixelFactorY + Bounds.LeftTop.Y)-Location ;
+            return new Vector2(x * pixelFactorX + Bounds.LeftTop.X, y * pixelFactorY + Bounds.LeftTop.Y) - Location;
         }
 
         public Vector2 Screen2WorldPoint(Vector2 scrPoint) {
-            return Screen2WorldPoint(scrPoint.X, scrPoint.Y) ;
+            return Screen2WorldPoint(scrPoint.X, scrPoint.Y);
         }
         public Bounds ScreenToWorldBounds(Bounds scrBounds) {
             return new Bounds(Screen2WorldPoint(scrBounds.LeftTop), Screen2WorldPoint(scrBounds.RightBottom));
@@ -118,7 +133,9 @@ namespace GameCore {
         }
         void SmoothScroll(Vector2 value) {
             //  var step = (centerPoint - value).Length / 100f;
-            centerPoint = Vector2.Normalize(Vector2.Subtract(value, centerPoint)) * (Math.Abs(value.Substract(centerPoint).Length()) / 10) + centerPoint;
+            centerPoint = (Vector2.Subtract(value, centerPoint)).UnaryVector()
+                * (Math.Abs(value.Substract(centerPoint).Length()) / 50)
+                + centerPoint;
         }
         void ChangeZoom(float target, float step) {
             this.zoomTarget = target;
@@ -134,11 +151,9 @@ namespace GameCore {
         }
 
         internal void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset = 0) {
-
             //  Scale = 1;
             // Centerpoint = Vector2.Zero;
             // return;
-
             Vector2 lt = new Vector2(left - clipOffset, top - clipOffset);
             Vector2 rb = new Vector2(right + clipOffset, bottom + clipOffset);
             Centerpoint = lt + (rb - lt) / 2;
@@ -150,7 +165,6 @@ namespace GameCore {
 
             Scale = Math.Max(Math.Max(scale1, scale2), Math.Max(scale3, scale4));
             //  scale  == (rb-cp)*2/(pxlWidth , pxlHeight)
-
         }
     }
 

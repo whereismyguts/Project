@@ -36,9 +36,9 @@ namespace GameCore {
 
         //public CoordPoint Velosity { get { return velosity; } }
 
-        public Ship(World world, Vector2 location, int fraction = 1) : base(world, location, 2) {
+        public Ship(World world, Vector2 location, int fraction = 1) : base(world, location, 5) {
             Fraction = fraction;
-            Hull = new ShipHull(2) { Owner = this };
+            Hull = new ShipHull(5) { Owner = this };
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
@@ -58,11 +58,7 @@ namespace GameCore {
 
             Color = Rnd.GetColor();
 
-
-
-            //Reborn();
-            //if(target != null)
-            //    controller = new AIController(this, target, TaskType.Peersuit);
+            Body.OnCollision += CollideProcessing.OnCollision;
         }
 
         internal void GetDamage(int d) {
@@ -76,7 +72,7 @@ namespace GameCore {
             if(OnDead != null)
                 OnDead(this, EventArgs.Empty);
 
-            new Explosion(World, Location);
+            //       new Explosion(World, Location);
 
             ToRemove = true;
         }
@@ -95,13 +91,11 @@ namespace GameCore {
         //public TrajectoryCalculator Calculator { get; set; }
 
         protected override void CreateBody(float radius, Vector2 location) {
-            Body = BodyFactory.CreateRectangle(World, radius * 2, radius * 2, 0.5f, location);
+            Body = BodyFactory.CreateRectangle(World, radius * 2, radius * 2, 0.1f, location);
+
             Body.BodyType = BodyType.Dynamic;
         }
 
-        public override IEnumerable<Geometry> GetPrimitives() {
-            yield return Body2PolygonShape(Body);
-        }
 
         protected internal override void Step() {
             //if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 25000) {

@@ -8,11 +8,14 @@ namespace GameCore {
     public class StarSystem {
         List<GameObject> objects = new List<GameObject>();
 
-        public List<GameObject> Objects(bool all) {
+        public List<GameObject> Objects(bool all, bool onlyBodies = false) {
             if(all)
                 return objects;
-            else
+            else {
+                if(onlyBodies)
+                    return objects.Where(o => (o is SpaceBody)).ToList(); ;
                 return objects.Where(o => !(o is Explosion)).ToList(); ;
+            }
         }
         public SpaceBody Star { get; internal set; }
 
@@ -20,6 +23,10 @@ namespace GameCore {
             objects.Add(obj);
         }
         internal void CleanObjects() {
+            foreach(var obj in objects.Where(p => p.ToRemove)) {
+                if(obj.Body != null)
+                    obj.World.RemoveBody(obj.Body);
+            }
             objects.RemoveAll(p => p.ToRemove);
         }
         internal void CreatePlanets(World world, int planetsNumber = 3) {

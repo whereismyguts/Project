@@ -121,13 +121,13 @@ namespace GameCore {
 
             if(ToKill == null || ToKill.ToRemove)
                 ToKill = FindEnemy();
-            if(Owner.Health <= 5 && ToKill != null && Vector2.Distance(Owner.Location, ToKill.Location) < ToKill.Radius*2)
+            if(Owner.Health <= 5 && ToKill != null && Vector2.Distance(Owner.Location, ToKill.Location) < ToKill.Radius * 2)
                 TaskLeaveDeathZone(ToKill);
 
-            if(Owner.Velosity.Length() > Owner.Radius*10)
-                TaskDecreaseSpeed();
-            else
-                if(danger != null)
+            //    if(Owner.Velosity.Length() > Owner.Radius*10)
+            //        TaskDecreaseSpeed();
+            //    else
+            if(danger != null)
                 TaskLeaveDeathZone(danger);
             else
                 TaskGoToGoal();
@@ -155,7 +155,7 @@ namespace GameCore {
         }
 
         private bool IsIntersectSomething(Vector2 p1, Vector2 p2) {
-            foreach(var body in System.Objects(false))
+            foreach(var body in System.Objects(false, true))
                 if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Location.X, body.Location.Y, body.Radius))
                     return true;
             return false;
@@ -186,7 +186,7 @@ namespace GameCore {
         }
 
         private void TaskGoToGoal() {
-            if(ToKill != null && Vector2.Distance(ToKill.Location, Owner.Location) > (ToKill.Radius+Owner.Radius)*2)
+            if(ToKill != null && Vector2.Distance(ToKill.Location, Owner.Location) > (ToKill.Radius + Owner.Radius) * 2)
                 TargetLocation = ToKill.Location;
         }
 

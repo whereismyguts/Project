@@ -20,6 +20,7 @@ namespace MonoGameDirectX {
         Microsoft.Xna.Framework.Graphics.Viewport leftViewport;
         Microsoft.Xna.Framework.Graphics.Viewport rightViewport;
         Microsoft.Xna.Framework.Graphics.Viewport bottomViewport;
+        Microsoft.Xna.Framework.Graphics.Viewport mapViewport;
 
         int ScreenHeight { get { return Renderer.ScreenHeight; } }
         int ScreenWidth { get { return Renderer.ScreenWidth; } }
@@ -103,6 +104,22 @@ namespace MonoGameDirectX {
                         Renderer.SwitchDebugMode(); break;
                 case Keys.LeftControl:
                     ctrlpressed = false; break;
+                case Keys.C:
+                    if(ctrlpressed)
+                        SwitchCameraMOde();
+                    break;
+            }
+        }
+
+        void SwitchCameraMOde() {
+            if(cameraMode > 1)
+                cameraMode = 0;
+            else cameraMode++;
+
+            if(cameraMode == 2) {
+                objIndex++;
+                if(objIndex > MainCore.Instance.Objects.Count - 1)
+                    objIndex = 0;
             }
         }
 
@@ -140,25 +157,65 @@ namespace MonoGameDirectX {
         //int height = 0;
         //int mouseWheel = 0;
 
+        int cameraMode = 0;
+
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Viewport = defaultViewport;
             GraphicsDevice.Clear(Color.White);
             //GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            if(PlayerController.Players.Count > 1) {
-                Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
-                GraphicsDevice.Viewport = leftViewport;
-                Renderer.Render(gameTime);
 
-                Viewport.Centerpoint = PlayerController.Players[1].Ship.Location;
-                GraphicsDevice.Viewport = rightViewport;
-                Renderer.Render(gameTime);
+            switch(cameraMode) {
+                case 0: // overall 
+                    Viewport.PxlWidth = defaultViewport.Width;
+                    Viewport.PxlHeight = defaultViewport.Height;
+
+                    Viewport.SmoothUpdate = true;
+                    MainCore.Instance.ZoomToObjects();
+
+                    GraphicsDevice.Viewport = defaultViewport;
+                    Renderer.Render(gameTime);
+
+                    break;
+                case 1:
+                    if(PlayerController.Players.Count > 1) {
+                        Viewport.PxlWidth = leftViewport.Width;
+                        Viewport.PxlHeight = leftViewport.Height;
+
+                        Viewport.Scale = .005f;
+                        Viewport.SmoothUpdate = false;
+
+                        Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
+                        GraphicsDevice.Viewport = leftViewport;
+                        Renderer.Render(gameTime);
+
+                        Viewport.Centerpoint = PlayerController.Players[1].Ship.Location;
+                        GraphicsDevice.Viewport = rightViewport;
+                        Renderer.Render(gameTime);
+                    }
+                    break;
+                case 2:
+                    Viewport.PxlWidth = defaultViewport.Width;
+                    Viewport.PxlHeight = defaultViewport.Height;
+
+                    Viewport.SmoothUpdate = true;
+
+                    Viewport.Scale = .9f;
+                    Viewport.Centerpoint = MainCore.Instance.Objects[objIndex].Location;
+
+                    GraphicsDevice.Viewport = defaultViewport;
+                    Renderer.Render(gameTime);
+                    break;
             }
+
             // GraphicsDevice.Viewport = bottomViewport;
             //Renderer.Render(gameTime);
 
             base.Draw(gameTime);
         }
+
+        int objIndex = 0;
+
         protected override void Initialize() {
             //Renderer.Set(GraphicsDevice, Content.Load<SpriteFont>("Arial"));
             Renderer.Set(GraphicsDevice, Content.Load<SpriteFont>("Font"));
@@ -167,11 +224,15 @@ namespace MonoGameDirectX {
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
             InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
-
             defaultViewport = GraphicsDevice.Viewport;
             leftViewport = defaultViewport;
             rightViewport = defaultViewport;
             bottomViewport = defaultViewport;
+
+            mapViewport = defaultViewport;
+            mapViewport.X = leftViewport.Width / 2 - 50;
+            mapViewport.Width = 100;
+            mapViewport.Height = 100;
 
             leftViewport.Width /= 2;
             rightViewport.Width /= 2;

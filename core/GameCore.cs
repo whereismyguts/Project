@@ -132,19 +132,11 @@ namespace GameCore {
         }
 
         public void Step(GameTime gameTime) {
-            //&& Controller.Keys.ToList().Contains(32)
             if(CurrentState.InGame) {
-
                 if((ships.Count(s => s.Fraction == 1) == 0 || ships.Count(s => s.Fraction == 2) == 0)) {
-                    //foreach(Ship ship in ships)
-                    //    ship.ToRemove = true;
-                    //AIShipsController.Controllers.Clear();
                     CreatePlayers();
                 }
-                CleanObjects();
 
-                //if(turnIsActive || !TurnBasedMode) {
-                //   PlayerController.Step();
                 try {
                     world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / 30f)));
                 }
@@ -153,42 +145,23 @@ namespace GameCore {
                 }
 
                 AIShipsController.Step();
-
                 foreach(GameObject obj in Objects)
                     obj.Step();
-
                 if(CursorPressed && HookedObject != null)
                     HookedObject.ApplyForce((Cursor - HookedObject.Location) * HookedObject.Mass * HookedObject.Mass);
 
+                CleanObjects();
                 //CollideController.Step(ships, GetAllObjects(1));
-
-                //if(TurnBasedMode) {
-                //    turnTime++;
-                //    if(turnTime == TurnLong) {
-                //        turnTime = 0;
-                //        turnIsActive = false;
-                //    }
-                //}
-                //}
-                UpdateViewport();
             }
         }
 
-        void UpdateViewport() {
-
-            //Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
-            Viewport.Scale = .9f;
-            return;
-
+        public void ZoomToObjects() {
             float left = float.MaxValue;
             float right = float.MinValue;
             float top = float.MaxValue;
             float bottom = float.MinValue;
 
-            //Vector2 total = new Vector2();
-
             var viewed = Objects.Where(o => o is SpaceBody || o is Ship);
-            //var viewed = PlayerController.Players.Select(p => p.Ship);
 
             foreach(var obj in viewed) {
                 if(obj.Location.X + obj.ObjectBounds.Width > right)
@@ -200,15 +173,8 @@ namespace GameCore {
                 if(obj.Location.Y + obj.ObjectBounds.Height > bottom)
                     bottom = obj.Location.Y + obj.ObjectBounds.Height;
             }
-            //Cursor = total / Objects.Count;
-            //var center = total / Objects.Count;
-            // Viewport.Centerpoint = center;
-            //Viewport.Centerpoint = new CoordPoint(left + (right - left) / 2, bottom + (top - bottom) / 2);
 
             Viewport.SetWorldBounds(left, top, right, bottom, 10);
-            //Viewport.Scale = Math.Max(right - left, top - bottom) / 300;
-            Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
-            Viewport.Update();
         }
 
         public static void Initialize(Viewport view) {

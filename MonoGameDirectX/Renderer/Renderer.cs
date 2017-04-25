@@ -141,7 +141,7 @@ namespace MonoGameDirectX {
             int lines = ScreenHeight / 30;
             int line = Debugger.Lines.Count - 1;
             for(int i = ScreenHeight - 30; i > 10 && line >= 0; i -= 30) {
-                SpriteBatch.DrawString(Font, Debugger.Lines[line], new Microsoft.Xna.Framework.Vector2(0, i), new Color(Color.Black, 0.8f));
+                //   SpriteBatch.DrawString(Font, Debugger.Lines[line], new Microsoft.Xna.Framework.Vector2(0, i), new Color(Color.Black, 0.8f));
                 line--;
             }
         }
@@ -192,7 +192,7 @@ namespace MonoGameDirectX {
 
 
 
-            
+
             SpriteBatch.Begin();
 
             //cells = new StationGenerator().Generate();
@@ -223,9 +223,9 @@ namespace MonoGameDirectX {
                 DrawObjects(gameTime);
             }
 
-            DrawPrimitives.DrawRect(new Rectangle(1, 1, ScreenWidth-2, ScreenHeight-2), SpriteBatch, 3, Color.Black);
+            DrawPrimitives.DrawRect(new Rectangle(1, 1, ScreenWidth - 2, ScreenHeight - 2), SpriteBatch, 3, Color.Black);
 
-          //  SpriteBatch.Draw(Cover, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
+            //  SpriteBatch.Draw(Cover, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
 
             DrawInterface(gameTime);
             WriteDebugInfo();
