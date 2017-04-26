@@ -92,6 +92,7 @@ namespace GameCore {
         //public bool TurnBasedMode { get; private set; } = false;
         public Viewport Viewport { get; set; }
         public Vector2 Cursor { get; set; }
+        public bool Pause { get; set; } = false;
 
         MainCore(Viewport view) {
             System = new StarSystem();
@@ -132,6 +133,9 @@ namespace GameCore {
         }
 
         public void Step(GameTime gameTime) {
+            if(Pause)
+                return;
+
             if(CurrentState.InGame) {
                 if((ships.Count(s => s.Fraction == 1) == 0 || ships.Count(s => s.Fraction == 2) == 0)) {
                     CreatePlayers();

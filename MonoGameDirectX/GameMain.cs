@@ -122,6 +122,9 @@ namespace MonoGameDirectX {
                     zoom += zoom / 2f;
                     Debugger.Lines.Add("z: " + zoom.ToString());
                     break;
+                case Keys.Space:
+                    MainCore.Instance.Pause = !MainCore.Instance.Pause;
+                    break;
             }
         }
 
@@ -151,6 +154,8 @@ namespace MonoGameDirectX {
 
                 graphics.ApplyChanges();
 
+
+                ArrangeViewports();
                 //Viewport.SetViewportSize(
                 //    graphics.PreferredBackBufferWidth / 3,
                 //    graphics.PreferredBackBufferHeight / 3,
@@ -169,12 +174,18 @@ namespace MonoGameDirectX {
         int cameraMode = 0;
 
         protected override void Draw(GameTime gameTime) {
-            if(time < delay - 1) 
-                return;
+            return;
 
+
+            Render(gameTime);
+
+            base.Draw(gameTime);
+        }
+
+        private void Render(GameTime gameTime) {
             GraphicsDevice.Viewport = defaultViewport;
-            GraphicsDevice.Clear(Color.White);
-            //GraphicsDevice.Clear(Color.CornflowerBlue);
+       //     GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
 
             switch(cameraMode) {
@@ -218,7 +229,7 @@ namespace MonoGameDirectX {
 
                     if(objIndex >= objects.Count)
                         objIndex = objects.Count - 1;
-                 //   var index = Math.Min(objects.Count-1, objIndex);
+                    //   var index = Math.Min(objects.Count-1, objIndex);
 
                     Viewport.Centerpoint = objects[objIndex].Location;
 
@@ -230,8 +241,8 @@ namespace MonoGameDirectX {
             // GraphicsDevice.Viewport = bottomViewport;
             //Renderer.Render(gameTime);
 
-            base.Draw(gameTime);
         }
+
         float zoom = 1;
         int objIndex = 0;
 
@@ -243,24 +254,7 @@ namespace MonoGameDirectX {
             InterfaceController.OnKeysDown += InterfaceController_OnKeysDown;
             InterfaceController.OnButtonsUp += InterfaceController_OnButtonsUp;
 
-            defaultViewport = GraphicsDevice.Viewport;
-            leftViewport = defaultViewport;
-            rightViewport = defaultViewport;
-            bottomViewport = defaultViewport;
-
-            mapViewport = defaultViewport;
-            mapViewport.X = leftViewport.Width / 2 - 50;
-            mapViewport.Width = 100;
-            mapViewport.Height = 100;
-
-            leftViewport.Width /= 2;
-            rightViewport.Width /= 2;
-            rightViewport.X = leftViewport.Width;
-            bottomViewport.Y = bottomViewport.Height - 100;
-            bottomViewport.Height = 100;
-
-            rightViewport.Height = bottomViewport.Y;
-            leftViewport.Height = bottomViewport.Y;
+            ArrangeViewports();
 
             MainCore.Initialize(new GameCore.Viewport(new Vector2(0, 0), new Vector2(leftViewport.Width, leftViewport.Height)));
 
@@ -281,6 +275,14 @@ namespace MonoGameDirectX {
             startButton.ButtonClick += StartButton_ButtonClick;
             quitButton.ButtonClick += QuitButton_ButtonClick;
 
+            SetKeys(startButton, quitButton);
+
+            Renderer.Cover = Renderer.CreateTexture(GraphicsDevice, ScreenWidth, ScreenHeight);
+
+            base.Initialize();
+        }
+
+        private static void SetKeys(Button startButton, Button quitButton) {
             InterfaceController.AddControl(0, startButton);
             //InterfaceController.AddControl(0, b2);
             //InterfaceController.AddControl(0, b3);
@@ -306,10 +308,27 @@ namespace MonoGameDirectX {
             InterfaceController.AddButtonBinding(Buttons.LeftThumbstickRight, 2, PlayerAction.Right);
             InterfaceController.AddButtonBinding(Buttons.X, 2, PlayerAction.Yes);
             InterfaceController.AddButtonBinding(Buttons.B, 2, PlayerAction.Tab);
+        }
 
-            Renderer.Cover = Renderer.CreateTexture(GraphicsDevice, ScreenWidth, ScreenHeight);
+        private void ArrangeViewports() {
+            defaultViewport = GraphicsDevice.Viewport;
+            leftViewport = defaultViewport;
+            rightViewport = defaultViewport;
+            bottomViewport = defaultViewport;
 
-            base.Initialize();
+            mapViewport = defaultViewport;
+            mapViewport.X = leftViewport.Width / 2 - 50;
+            mapViewport.Width = 100;
+            mapViewport.Height = 100;
+
+            leftViewport.Width /= 2;
+            rightViewport.Width /= 2;
+            rightViewport.X = leftViewport.Width;
+            bottomViewport.Y = bottomViewport.Height - 100;
+            bottomViewport.Height = 100;
+
+            rightViewport.Height = bottomViewport.Y;
+            leftViewport.Height = bottomViewport.Y;
         }
 
         private void QuitButton_ButtonClick(object sender, EventArgs e) {
@@ -332,7 +351,7 @@ namespace MonoGameDirectX {
             Content.Unload();
             // TODO: Unload any non ContentManager content here
         }
-        int delay { get { return 0; } }
+        int delay { get { return 2; } }
         int time = 0;
         protected override void Update(GameTime gameTime) {
           
@@ -350,6 +369,10 @@ namespace MonoGameDirectX {
             //    State = GameState.Space;
             //renderer.TraectoryPath = Player.Calculator.Calculate();
             base.Update(gameTime);
+
+
+
+            Render(gameTime);
         }
     }
 }

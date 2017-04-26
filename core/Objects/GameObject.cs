@@ -184,18 +184,22 @@ namespace GameCore {
                 if(obj == projectile.Owner)
                     return false;
 
-                var relativeVelosity = projectile.Velosity.Substract(obj.Velosity).Length();
-                if(relativeVelosity <= projectile.Resistance) {
+                var relativeVelosity = projectile.Velosity.Substract(obj.Velosity);
+                if(relativeVelosity.Length() <= projectile.Resistance) {
                     return true;
                 }
 
-                if(fixtureB.Body.UserData is ProjectileBase) {
+                if(obj is ProjectileBase) {
+
+                    if((obj as ProjectileBase).Owner == projectile.Owner)
+                        return false;
+
                     (fixtureB.Body.UserData as ProjectileBase).ToRemove = true;
                 }
                 Vector2 point = projectile.Location + projectile.Body.ContactList.Contact.Manifold.Points[0].LocalPoint.GetRotated(projectile.Rotation);
-                new Explosion(projectile.World, point);
+                projectile.CreateExplosion(relativeVelosity.Angle(), projectile.Damage*10);
                 projectile.ToRemove = true;
-                obj.GetDamage((int)(projectile.Damage * relativeVelosity / 200));
+                obj.GetDamage((int)(projectile.Damage * relativeVelosity.Length() / 200));
             }
             return true;
         }

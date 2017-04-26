@@ -26,21 +26,28 @@ namespace MonoGameDirectX {
         }
 
         internal Texture2D GetTexture(string key) {
+            if(string.IsNullOrEmpty(key))
+                return dummyTexture;
+            if(textures == null)
+                textures = new Dictionary<string, Texture2D>();
             if(textures.ContainsKey(key))
+                return textures[key];
+            if(SetTexture(key))
                 return textures[key];
             return dummyTexture;
             throw new Exception("null texture!");
         }
-        internal void SetTexture(string key) {
-            SetTexture(key, Color.White);
+        internal bool SetTexture(string key) {
+            return SetTexture(key, Color.White);
         }
-        internal void SetTexture(string key, Color mask) {
+        internal bool SetTexture(string key, Color mask) {
             Texture2D texture;
             try {
                 texture = content.Load<Texture2D>(key);
             }
             catch {
                 texture = dummyTexture;
+                return false;
             }
            if(textures == null)
                 textures = new Dictionary<string, Texture2D>();
@@ -49,6 +56,8 @@ namespace MonoGameDirectX {
             if(masks == null)
                 masks = new Dictionary<string, Color>();
             masks[key] = mask;
+
+            return true;
         }
 
         internal void Unload() {

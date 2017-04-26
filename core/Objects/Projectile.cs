@@ -34,18 +34,20 @@ namespace GameCore {
         }
         protected internal override void GetDamage(int d) {
             if(!ToRemove) {
-                new Explosion(World, Location, 30);
+                new FireExplosion(World, Location,  30);
                 ToRemove = true;
             }
         }
         protected internal override void Step() {
             if(liveTime > MaxLiveTime && !ToRemove) {
-                new Explosion(World, Location, Damage * 10);
+                CreateExplosion(Direction.Angle(), Damage * 10);
                 ToRemove = true;
             }
             liveTime++;
             base.Step();
         }
+
+        internal abstract void CreateExplosion(float rotation, int radius);
     }
 
     public class Slime: ProjectileBase {
@@ -66,6 +68,8 @@ namespace GameCore {
         //    }
         //}
 
+
+
         public Slime(Vector2 position, Vector2 direction, Ship owner) : base(position, direction, owner) {
 
        //     Body = null;
@@ -75,6 +79,7 @@ namespace GameCore {
 
             ApplyLinearImpulse(direction * 10000);
         }
+
         public override IEnumerable<Geometry> GetPrimitives() {
             var list = base.GetPrimitives().ToList();
 
@@ -85,23 +90,30 @@ namespace GameCore {
             return "SLIME: " + Owner.Name;
         }
         public override IEnumerable<Item> GetItems() {
-            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "slime.png", 4, 2) };
+            return new Item[] { new WordSpriteItem(this, Vector2.Zero, -(float)(Math.PI/2), ObjectBounds.Size*2, ObjectBounds.Size , "slime.png", 10, 1) };
         }
         protected internal override void Step() {
 
-            Body.Position += Direction*10;
+            Body.Position += Direction*5;
 //            location += direction*30;
             base.Step();
             //Body.LinearVelocity = direction * 9999999999;
         }
+
+        internal override void CreateExplosion(float rotation, int raduis) {
+            new SlimeExplosion(World, Location, rotation, raduis);
+        }
     }
 
     public class Rocket: ProjectileBase {
+        float force;
+
         public Rocket(Vector2 position, Vector2 direction, Ship owner) : base(position, direction, owner) {
             Body.Mass *= 2;
             Body.Restitution = 0.3f;
+            force = Rnd.Get(5000, 10000);
         }
-
+        
         public override int Resistance {
             get {
                 return 80;
@@ -123,6 +135,9 @@ namespace GameCore {
             };
         }
 
+        internal override void CreateExplosion(float rotation, int radius) {
+            new FireExplosion(World, Location, radius);
+        }
         public override IEnumerable<Geometry> GetPrimitives() {
             var list = base.GetPrimitives().ToList();
             //     list.Add(new Line(Location + new Vector2(0, -100).GetRotated(Rotation), Location + new Vector2(0, Radius*1.1f).GetRotated(Rotation)){ Color =  InternalColor.Green});
@@ -133,7 +148,7 @@ namespace GameCore {
         }
 
         protected internal override void Step() {
-            Body.ApplyForce(new Vector2(0, -100000).GetRotated(Rotation), Location + new Vector2(0, Radius * 1.1f).GetRotated(Rotation /*+ Rnd.Get(-1.1f, 1.1f)*/));
+            Body.ApplyForce(new Vector2(0, -force).GetRotated(Rotation), Location + new Vector2(0, Radius * 1.1f).GetRotated(Rotation /*+ Rnd.Get(-1.1f, 1.1f)*/));
             base.Step();
         }
     }

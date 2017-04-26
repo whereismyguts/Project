@@ -7,10 +7,33 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GameCore {
-    class Explosion: GameObject {
+
+    class SlimeExplosion : Explosion {
+        public SlimeExplosion(World world, Vector2 position, float rotation, int radius ) : base(world, position, rotation, radius) {
+
+        }
+
+        public override IEnumerable<Item> GetItems() {
+             return new Item[] { new WordSpriteItem(this,Vector2.Zero, (float)(-Math.PI/2), 
+                 ObjectBounds.Size, new Vector2(ObjectBounds.Size.X/1.3f, ObjectBounds.Size.Y / 2) , "blob.png", 10, 1) };
+        }
+    }
+
+    class FireExplosion : Explosion {
+        public FireExplosion(World world, Vector2 position, int radius ) : base(world, position, Rnd.GetPeriod(), radius) {
+
+        }
+
+        public override IEnumerable<Item> GetItems() {
+            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "exp2.png", 4 ,4) };
+        }
+    }
+
+
+    class Explosion : GameObject {
         int lifeTime = 0;
         Vector2 location;
-        float rotation = Rnd.GetPeriod();
+        float rotation;
 
         protected internal override float Rotation {
             get {
@@ -23,30 +46,27 @@ namespace GameCore {
             }
         }
 
-        public Explosion(World world, Vector2 position, int radius = 30) : base(world, position, radius) {
+        public Explosion(World world, Vector2 position, float rotation, int radius) : base(world, position, radius) {
+            this.rotation = rotation;
             location = position;
             //rotation = (float)Rnd.Get(-Math.PI, Math.PI);
         }
 
         protected internal override void Step() {
             lifeTime++;
-            if(lifeTime > 45)
+            if(lifeTime >= 13)
                 ToRemove = true;
             if(lifeTime < 15)
                 foreach(var obj in MainCore.Instance.Objects)
                     if((obj is Ship || obj is ProjectileBase) && Vector2.Distance(obj.Location, Location) <= Radius) {
-                        obj.ApplyLinearImpulse((obj.Location - Location).UnaryVector() * Radius * 10000000);
+                        obj.ApplyLinearImpulse((obj.Location - Location).UnaryVector() * Radius * Radius);
                         obj.GetDamage(1);
                     }
         }
         public override IEnumerable<Geometry> GetPrimitives() {
             yield return new WorldGeometry(Location, ObjectBounds.Size, true);
         }
-        public override IEnumerable<Item> GetItems() {
-            //return new Item[] { };
-            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "exp2.png", 4, 4) };
-            //return new Item[] { new JustSpriteItem(this, new CoordPoint(200,200), new CoordPoint(100,100), "exp.png", 10) };
-        }
+        
         protected override void CreateBody(float radius, Vector2 location) {
             // do nothing, because its not a physic body; perhaps later
         }
