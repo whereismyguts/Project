@@ -193,8 +193,11 @@ namespace MonoGameDirectX {
 
 
 
-            SpriteBatch.Begin();
-
+            //SpriteBatch.Begin();
+            SpriteBatch.Begin(SpriteSortMode.Deferred,
+      BlendState.AlphaBlend,
+      SamplerState.PointClamp,
+      null, null, null, null);
             //cells = new StationGenerator().Generate();
             //if(GameState == GameState.Station) {
             //    for(int i = 0; i < 400; i++)

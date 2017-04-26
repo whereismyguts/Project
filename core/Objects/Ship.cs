@@ -38,7 +38,7 @@ namespace GameCore {
 
         public Ship(World world, Vector2 location, int fraction = 1) : base(world, location, 5) {
             Fraction = fraction;
-            Hull = new ShipHull(5) { Owner = this };
+            Hull = new ShipHull(10) { Owner = this };
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
@@ -60,23 +60,18 @@ namespace GameCore {
 
             Body.OnCollision += CollideProcessing.OnCollision;
         }
-
-        internal void GetDamage(int d) {
+        protected internal override void GetDamage(int d) {
             Hull.Health -= d;
             if(Hull.Health <= 0)
                 Dead();
         }
 
         internal void Dead() {
-
             if(OnDead != null)
                 OnDead(this, EventArgs.Empty);
-
             //       new Explosion(World, Location);
-
             ToRemove = true;
         }
-
 
         public void Accselerate() {
             foreach(Slot slot in Hull.Slots)
@@ -92,21 +87,10 @@ namespace GameCore {
 
         protected override void CreateBody(float radius, Vector2 location) {
             Body = BodyFactory.CreateRectangle(World, radius * 2, radius * 2, 0.1f, location);
-
             Body.BodyType = BodyType.Dynamic;
         }
 
-
         protected internal override void Step() {
-            //if(CoordPoint.Distance(CurrentSystem.Star.Position, Position) > 25000) {
-            //    Dead("lost in the Void");
-            //}
-
-            //if(IsBot) {
-            //    List<Action> actions = controller.Step();
-            //    foreach(Action a in actions)
-            //        a();
-            //}
             foreach(Item item in Inventory.Container)
                 item.Step();
             //var acc = GetAcceleration() * 0.5f;
@@ -118,8 +102,6 @@ namespace GameCore {
             angleSpeed *= .9f;
             base.Step();
         }
-
-
 
         //Vector2 GetAcceleration() {
         //    IEnumerable<DefaultEngine> engines = Hull.GetEngines();

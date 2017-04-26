@@ -36,6 +36,7 @@ namespace GameCore {
                 foreach(var obj in MainCore.Instance.Objects)
                     if((obj is Ship || obj is ProjectileBase) && Vector2.Distance(obj.Location, Location) <= Radius) {
                         obj.ApplyLinearImpulse((obj.Location - Location).UnaryVector() * Radius * 10000000);
+                        obj.GetDamage(1);
                     }
         }
         public override IEnumerable<Geometry> GetPrimitives() {

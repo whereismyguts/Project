@@ -13,10 +13,7 @@ namespace GameCore {
         int liveTime = 0;
         public ProjectileBase(Vector2 position, Vector2 direction, Ship owner) : base(owner.World, position, 3) {
             this.owner = owner;
-            //Body.Mass *= 10;
             Body.Restitution = 1f;
-            //  Body.IsBullet = true;
-            //   Body.LinearVelocity = direction * 140000000;
             Body.OnCollision += CollideProcessing.OnCollision;
             Body.Rotation = direction.Angle();
         }
@@ -46,14 +43,20 @@ namespace GameCore {
             }
             return false;
         }
-
-        protected internal override void Step() {
-            if(liveTime > MaxLiveTime)
+        protected internal override void GetDamage(int d) {
+            if(!ToRemove) {
+                new Explosion(World, Location, 30);
                 ToRemove = true;
+            }
+        }
+        protected internal override void Step() {
+            if(liveTime > MaxLiveTime && !ToRemove) {
+                new Explosion(World, Location, Damage*10);
+                ToRemove = true;
+            }
             liveTime++;
             base.Step();
         }
-
         protected override string GetName() {
             return "PROJECTILE: " + Owner.Name;
         }
@@ -61,23 +64,28 @@ namespace GameCore {
 
     public class Rocket: ProjectileBase {
         public Rocket(Vector2 position, Vector2 direction, Ship owner) : base(position, direction, owner) {
-
+            Body.Mass *= 2;
+            Body.Restitution = 0.3f;
         }
         protected override void CreateBody(float radius, Vector2 location) {
-            Body = BodyFactory.CreateRectangle(World, radius, radius * 4, 1.6f, location, this);
+            Body = BodyFactory.CreateEllipse(World, radius * 0.5f, radius * 1f, 32, 1.2f, location);// CreateRectangle(World, radius , radius * 2, 1.6f, location, this);
             Body.BodyType = BodyType.Dynamic;
             //base.CreateBody(radius, location);
         }
         protected override int Speed { get { return 200; } }
-        protected override int MaxLiveTime { get { return 4000; } }
+        protected override int MaxLiveTime { get { return 1000; } }
         public override int Damage { get { return 3; } }
 
         public override IEnumerable<Item> GetItems() {
-            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "flame_sprite.png", 6, 1) };
+            return new Item[] {
+                new WordSpriteItem(this,  new Vector2(0, Radius*1.1f).GetRotated(Rotation),- (float)Math.PI/2, new Vector2(Radius*2,Radius*2), new Vector2(Radius, Radius), "flame_sprite.png", 6,1 ),
+                 new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "rocket.png")
+            };
         }
+
         public override IEnumerable<Geometry> GetPrimitives() {
             var list = base.GetPrimitives().ToList();
-            //   list.Add(new Line(Location+new Vector2(0, -10).GetRotated(Rotation) , Location + new Vector2(0, Radius).GetRotated(Rotation)));
+            //     list.Add(new Line(Location + new Vector2(0, -100).GetRotated(Rotation), Location + new Vector2(0, Radius*1.1f).GetRotated(Rotation)){ Color =  InternalColor.Green});
             return list;
         }
         protected override string GetName() {
@@ -85,7 +93,7 @@ namespace GameCore {
         }
 
         protected internal override void Step() {
-            Body.ApplyForce(new Vector2(0, -10000).GetRotated(Rotation), Location + new Vector2(0, Radius).GetRotated(Rotation + Rnd.Get(-0.01f, 0.01f)));
+            Body.ApplyForce(new Vector2(0, -100000).GetRotated(Rotation), Location + new Vector2(0, Radius * 1.1f).GetRotated(Rotation /*+ Rnd.Get(-1.1f, 1.1f)*/));
             base.Step();
         }
     }

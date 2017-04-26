@@ -46,6 +46,7 @@ namespace MonoGameDirectX {
             contentLoader.SetTexture("retrogunfire.png");
             contentLoader.SetTexture("circle.png");
             contentLoader.SetTexture("earth.png");
+            contentLoader.SetTexture("rocket.png");
         }
 
         internal static Color Color(InternalColor color) {
@@ -56,21 +57,24 @@ namespace MonoGameDirectX {
             contentLoader.Unload();
         }
 
-        internal static void UpdateRenderObjects(ref List<RenderObject> renderObjects) {
-            if(renderObjects == null)
-                renderObjects = CreateRenderObjects();
-            else {
-                var newrenderObjects = CreateRenderObjects();
-                foreach(var newObj in newrenderObjects) {
+        static bool ShouldUpdateRenderObjects {
+            get { return false; }
+        }
 
-                    var oldObj = renderObjects.FirstOrDefault(o => o.GameObject == newObj.GameObject);
-                    if(oldObj == null)
-                        renderObjects.Add(newObj);
-                }
-                renderObjects.RemoveAll(o => newrenderObjects.FirstOrDefault(n => n.GameObject == o.GameObject) == null);
+        internal static void UpdateRenderObjects(ref List<RenderObject> renderObjects) {
+
+            if(renderObjects == null || ShouldUpdateRenderObjects) {
+                renderObjects = CreateRenderObjects();
+                return;
             }
-            //foreach(RenderObject obj in renderObjects)
-            //    obj.Step();
+
+            var newrenderObjects = CreateRenderObjects();
+            foreach(var newObj in newrenderObjects) {
+                var oldObj = renderObjects.FirstOrDefault(o => o.GameObject == newObj.GameObject);
+                if(oldObj == null)
+                    renderObjects.Add(newObj);
+            }
+            renderObjects.RemoveAll(o => newrenderObjects.FirstOrDefault(n => n.GameObject == o.GameObject) == null);
         }
 
         private static List<RenderObject> CreateRenderObjects() {

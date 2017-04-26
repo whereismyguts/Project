@@ -1,4 +1,6 @@
 ﻿using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common;
+using FarseerPhysics.Common.TextureTools;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
@@ -89,6 +91,11 @@ namespace GameCore {
         }
 
         protected virtual void CreateBody(float radius, Vector2 location) {
+
+            //Vertices vertices;
+            //vertices = TextureConverter.DetectVertices(texData, tex.Width);
+
+
             Body = BodyFactory.CreateCircle(World, radius, 1f, location, this);
             Body.BodyType = BodyType.Dynamic;
         }
@@ -154,25 +161,35 @@ namespace GameCore {
             if(MainCore.Instance.HookedObject == this)
                 yield return new Line(Location, MainCore.Instance.Cursor);
         }
+
+        protected internal virtual void GetDamage(int v) {
+            // base: do nothing
+        }
     }
     public static class CollideProcessing {
         public static bool OnCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
-            ProjectileBase subj = fixtureA.Body.UserData as ProjectileBase;
-            Ship obj = fixtureB.Body.UserData as Ship;
+            //    return true;
+            ProjectileBase projectile = fixtureA.Body.UserData as ProjectileBase;
+            //Ship ship = fixtureB.Body.UserData as Ship;
+            GameObject obj = fixtureB.Body.UserData as GameObject;
 
-            if(subj != null && !subj.ToRemove) {
-                if(obj != null) {
-                    if(obj == subj.Owner)
-                        return false;
-                    else
-                        obj.GetDamage(subj.Damage);
+            if(projectile != null && !projectile.ToRemove) {
+
+                if(obj == projectile.Owner)
+                    return false;
+
+                var relativeVelosity = projectile.Velosity.Substract(obj.Velosity).Length();
+                if(relativeVelosity <= 80) {
+                    return true;
                 }
+
                 if(fixtureB.Body.UserData is ProjectileBase) {
                     (fixtureB.Body.UserData as ProjectileBase).ToRemove = true;
                 }
-                Vector2 point = subj.Location + subj.Body.ContactList.Contact.Manifold.Points[0].LocalPoint.GetRotated(subj.Rotation);
-                new Explosion(subj.World, point);
-                subj.ToRemove = true;
+                Vector2 point = projectile.Location + projectile.Body.ContactList.Contact.Manifold.Points[0].LocalPoint.GetRotated(projectile.Rotation);
+                new Explosion(projectile.World, point);
+                projectile.ToRemove = true;
+                obj.GetDamage((int)(projectile.Damage * relativeVelosity / 200));
             }
             return true;
         }

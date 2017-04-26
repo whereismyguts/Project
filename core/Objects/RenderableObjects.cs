@@ -20,7 +20,7 @@ namespace GameCore {
                 //                    new Bounds(Location - Size / 2f, Location + Size / 2f).Size;
             }
         }
-        
+
         public virtual Vector2 Location { get; set; }
 
         //public bool IsWorldSize { get; set; } = true;
@@ -113,7 +113,7 @@ namespace GameCore {
         SpriteInfo info;
 
         public override float Rotation {
-            get { return Owner.Rotation; }
+            get { return Owner.Rotation + relRotation; }
         }
 
         public override SpriteInfo SpriteInfo {
@@ -121,16 +121,27 @@ namespace GameCore {
         }
 
         public override Vector2 Location {
-            get { return Owner.Location; }
+            get { return Owner.Location + relLocation; }
             set { throw new Exception("it didt suppose to happen!"); }
         }
 
         public GameObject Owner { get; private set; }
 
+        Vector2 relLocation = Vector2.Zero;
+        float relRotation = 0;
+
         public WordSpriteItem(GameObject owner, Vector2 size, Vector2 origin, string content, int framesX = 1, int framesY = 1) : base(size, origin) {
             info = new SpriteInfo(content, framesX, framesY);
             Owner = owner;
         }
+
+        public WordSpriteItem(GameObject owner, Vector2 relLocation, float relRotation, Vector2 size, Vector2 origin, string content, int framesX = 1, int framesY = 1) : base(size, origin) {
+            info = new SpriteInfo(content, framesX, framesY);
+            this.relLocation = relLocation;
+            this.relRotation = relRotation;
+            Owner = owner;
+        }
+
 
         public override void Activate() {
         }

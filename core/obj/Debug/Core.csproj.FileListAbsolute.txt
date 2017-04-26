@@ -32,4 +32,3 @@ D:\karmanov\code\white\bin\Core.dll
 D:\karmanov\code\white\bin\Core.pdb
 D:\karmanov\code\white\core\obj\Debug\Core.dll
 D:\karmanov\code\white\core\obj\Debug\Core.pdb
-D:\karmanov\code\white\core\obj\Debug\Core.csprojResolveAssemblyReference.cache

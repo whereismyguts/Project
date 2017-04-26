@@ -108,6 +108,20 @@ namespace MonoGameDirectX {
                     if(ctrlpressed)
                         SwitchCameraMOde();
                     break;
+
+                case Keys.O:
+                    objIndex++;
+                    if(objIndex > MainCore.Instance.Objects.Count - 1)
+                        objIndex = 0;
+                    break;
+                case Keys.OemPlus:
+                    zoom -= zoom / 2f;
+                    Debugger.Lines.Add("z: "+zoom.ToString());
+                    break;
+                case Keys.OemMinus:
+                    zoom += zoom / 2f;
+                    Debugger.Lines.Add("z: " + zoom.ToString());
+                    break;
             }
         }
 
@@ -116,11 +130,6 @@ namespace MonoGameDirectX {
                 cameraMode = 0;
             else cameraMode++;
 
-            if(cameraMode == 2) {
-                objIndex++;
-                if(objIndex > MainCore.Instance.Objects.Count - 1)
-                    objIndex = 0;
-            }
         }
 
         void InterfaceController_OnButtonsUp(object sender, ButtonsEventArgs e) {
@@ -160,6 +169,9 @@ namespace MonoGameDirectX {
         int cameraMode = 0;
 
         protected override void Draw(GameTime gameTime) {
+            if(time < delay - 1) 
+                return;
+
             GraphicsDevice.Viewport = defaultViewport;
             GraphicsDevice.Clear(Color.White);
             //GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -182,7 +194,7 @@ namespace MonoGameDirectX {
                         Viewport.PxlWidth = leftViewport.Width;
                         Viewport.PxlHeight = leftViewport.Height;
 
-                        Viewport.Scale = .005f;
+                        Viewport.Scale = zoom;
                         Viewport.SmoothUpdate = false;
 
                         Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
@@ -198,10 +210,17 @@ namespace MonoGameDirectX {
                     Viewport.PxlWidth = defaultViewport.Width;
                     Viewport.PxlHeight = defaultViewport.Height;
 
-                    Viewport.SmoothUpdate = true;
+                    Viewport.SmoothUpdate = false;
 
-                    Viewport.Scale = .9f;
-                    Viewport.Centerpoint = MainCore.Instance.Objects[objIndex].Location;
+                    Viewport.Scale = zoom;
+
+                    var objects = MainCore.Instance.Objects;
+
+                    if(objIndex >= objects.Count)
+                        objIndex = objects.Count - 1;
+                 //   var index = Math.Min(objects.Count-1, objIndex);
+
+                    Viewport.Centerpoint = objects[objIndex].Location;
 
                     GraphicsDevice.Viewport = defaultViewport;
                     Renderer.Render(gameTime);
@@ -213,7 +232,7 @@ namespace MonoGameDirectX {
 
             base.Draw(gameTime);
         }
-
+        float zoom = 1;
         int objIndex = 0;
 
         protected override void Initialize() {
@@ -313,9 +332,20 @@ namespace MonoGameDirectX {
             Content.Unload();
             // TODO: Unload any non ContentManager content here
         }
+        int delay { get { return 0; } }
+        int time = 0;
         protected override void Update(GameTime gameTime) {
+          
+
             if(IsActive)
                 ProcessInput();
+
+
+            time++;
+            if(time >= delay)
+                time = 0;
+            else return;
+
             Instance.Step(gameTime);
             //    State = GameState.Space;
             //renderer.TraectoryPath = Player.Calculator.Calculate();

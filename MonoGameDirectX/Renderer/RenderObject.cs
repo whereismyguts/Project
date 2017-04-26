@@ -22,10 +22,17 @@ namespace MonoGameDirectX {
         }
 
         void Update() {
-            IEnumerable<Item> items = GameObject.GetItems();
-            sprites.Clear();
-            foreach(Item item in items) {
-                sprites.Add(new Sprite(item));
+            List<Item> items = GameObject.GetItems().ToList();
+            if(sprites.Count != items.Count) {
+                sprites.Clear();
+                foreach(Item item in items) {
+                    sprites.Add(new Sprite(item));
+                }
+            }
+            else {
+                for(int i=0; i<  items.Count;i++) {
+                    sprites[i].Update(items[i]);
+                }
             }
         }
 
@@ -39,7 +46,7 @@ namespace MonoGameDirectX {
 
         internal void Step() {
             drawQueue.Clear();
-
+            Update();
             if(Renderer.DebugMode > 0) {
                 sprites.ForEach(s => s.Step());
                 drawQueue.AddRange(sprites);
@@ -76,12 +83,17 @@ namespace MonoGameDirectX {
         public void Step() {
 
         }
+
+        public void Update(Item item) {
+         //   throw new NotImplementedException();
+        }
     }
 
     interface IDrawMyself {
         int ZIndex { get; }
         void Draw(SpriteBatch spriteBatch, GameTime time, bool fit);
         void Step();
+        void Update(Item item);
     }
 
     class Sprite: IDrawMyself {
@@ -195,6 +207,11 @@ namespace MonoGameDirectX {
             frameHeight = texture.Height / framesY;
             frameWidth = texture.Width / framesX;
         }
+
+        public void Update(Item item) {
+            this.item = item;
+        }
+
         int framesX = 1;
         int framesY = 1;
     }
