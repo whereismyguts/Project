@@ -30,12 +30,7 @@ namespace GameCore {
         private void UpdateSatellite() {
 
             double theta = 0;  // angle that will be increased each loop
-                               //    double step = .01;  // amount to add to theta each time (degrees)
-                               //   if(radius < 1)
-                               //        radius = 1;
-
             float satRaduis = Radius * 2.2f;
-            //  CoordPoint satSize = new CoordPoint(2000, 2000);
 
             double c = 2 * Math.PI * satRaduis;
             double step = Math.PI / c * 50;
@@ -135,10 +130,10 @@ namespace GameCore {
         }
         protected internal override void Step() {
             if(DistanceToSun > 500) {
-                ApplyForce((RotateCenter.Location - Location) * Mass);
+                ApplyForce((RotateCenter.Location - Location) * Mass / 2);
             }
             if(DistanceToSun < 180) {
-                ApplyForce((Location - RotateCenter.Location) * Mass);
+                ApplyForce((Location - RotateCenter.Location) * Mass / 2);
             }
             //if(DistanceToSun > 1000 || DistanceToSun < 180) {
             //    Body.Position = GetNewLocation(this);

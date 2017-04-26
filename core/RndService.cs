@@ -20,7 +20,7 @@ namespace GameCore {
         }
 
         internal static bool Bool() {
-            return rnd.Next(0, 1) == 0;
+            return rnd.Next(0, 2) == 0;
         }
 
         internal static float Get(float v1, float v2) {

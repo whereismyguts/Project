@@ -87,10 +87,10 @@ namespace GameCore {
                     yield return slots[i].AttachedItem as DefaultEngine;
         }
 
-        internal IEnumerable<DefaultWeapon> GetWeapons() {
+        internal IEnumerable<WeaponBase> GetWeapons() {
             for(int i = 0; i < slots.Count; i++)
-                if(slots[i].AttachedItem is DefaultWeapon)
-                    yield return slots[i].AttachedItem as DefaultWeapon;
+                if(slots[i].AttachedItem is WeaponBase)
+                    yield return slots[i].AttachedItem as WeaponBase;
         }
     }
 

@@ -23,11 +23,17 @@ namespace GameCore {
             objects.Add(obj);
         }
         internal void CleanObjects() {
-            foreach(var obj in objects.Where(p => p.ToRemove)) {
-                if(obj.Body != null)
-                    obj.World.RemoveBody(obj.Body);
+            try {
+
+                foreach(var obj in objects.Where(p => p.ToRemove)) {
+                    if(obj.Body != null)
+                        obj.World.RemoveBody(obj.Body);
+                }
+                objects.RemoveAll(p => p.ToRemove);
             }
-            objects.RemoveAll(p => p.ToRemove);
+            catch(Exception e) {
+                Debugger.Lines.Add(e.Message);
+            }
         }
         internal void CreatePlanets(World world, int planetsNumber = 3) {
             //TODO Data Driven Factory

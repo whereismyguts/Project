@@ -36,7 +36,7 @@ namespace GameCore {
         public virtual Bounds ObjectBounds { get { return new Bounds(Location.Substract(Radius), Location.Add(Radius)); } }
 
         public float Mass {
-            get { return Body.Mass; }
+            get { return body != null ? body.Mass : 0; }
         }
 
 
@@ -116,6 +116,9 @@ namespace GameCore {
             //if(IsDynamic)
             //    Velosity = Velosity * 0.9999f + PhysicsHelper.GetSummaryAttractingForce(CurrentSystem.Objects, this) * 5;
 
+            if(body == null)
+                return;
+
             var attraction = Vector2.Zero;
 
             foreach(var obj in CurrentSystem.Objects(false))
@@ -150,14 +153,17 @@ namespace GameCore {
             return itemsEmpty;
         }
         public virtual IEnumerable<Geometry> GetPrimitives() {
-            foreach(var fix in Body.FixtureList)
-                if(fix.Shape is PolygonShape) {
-                    yield return Body2PolygonShape(Body);
-                }
-                else {
-                    yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
-                    yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
-                }
+
+
+            if(Body != null) {
+                foreach(var fix in Body.FixtureList)
+                    if(fix.Shape is PolygonShape)
+                        yield return Body2PolygonShape(Body);
+            }
+            
+                yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
+                yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
+            
             if(MainCore.Instance.HookedObject == this)
                 yield return new Line(Location, MainCore.Instance.Cursor);
         }
@@ -179,7 +185,7 @@ namespace GameCore {
                     return false;
 
                 var relativeVelosity = projectile.Velosity.Substract(obj.Velosity).Length();
-                if(relativeVelosity <= 80) {
+                if(relativeVelosity <= projectile.Resistance) {
                     return true;
                 }
 

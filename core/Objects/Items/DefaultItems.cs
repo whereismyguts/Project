@@ -6,28 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GameCore {
-    public class DefaultWeapon: AttachedItem {
+    public abstract class WeaponBase: AttachedItem {
         int fireCoolDownMax;
         int fireCoolDown = 10;
 
-        public override string Name {
-            get {
-                return "standard weapon";
-            }
-        }
-        public override SpriteInfo SpriteInfo {
-            get {
-                return fireCoolDown < 10 ? new SpriteInfo("retrogunfire.png", 6, 1, 1) : new SpriteInfo("retrogun.png", 1, 1, 1); ;
-            }
-        }
         public override float Rotation {
             get {
                 return base.Rotation;
             }
         }
-
-        public DefaultWeapon() : base(new Vector2(.5f, .5f), new Vector2(.25f, .25f)) {
-            fireCoolDownMax = Rnd.Get(100, 150);
+        public WeaponBase() : base(new Vector2(1, 1), new Vector2(.5f, .5f)) {
+            fireCoolDownMax = Rnd.Get(100, 150); //TODO: customizesize, origine & cooldowntime
         }
 
         public override void Activate() {
@@ -48,11 +37,8 @@ namespace GameCore {
             }
         }
 
-        protected virtual ProjectileBase CreateProjectile(Vector2 location, Vector2 direction, Ship owner) {
-            return new ProjectileBase(location, direction, owner);
-        }
+        protected abstract ProjectileBase CreateProjectile(Vector2 location, Vector2 direction, Ship owner);
     }
-
     public class DefaultEngine: AttachedItem {
         //float acceleration = 0;
         //float accelerationMax = 0.7f;
@@ -100,7 +86,25 @@ namespace GameCore {
         }
     }
 
-    public class RocketLauncher: DefaultWeapon {
+    public class SlimeGun: WeaponBase {
+        public override SpriteInfo SpriteInfo {
+            get {
+                return new SpriteInfo("retrogunfire.png", 6, 1, 1);// : new SpriteInfo("retrogun.png", 1, 1, 1); ;
+                // TODO: return animation when fireing;
+            }
+        }
+
+        protected override ProjectileBase CreateProjectile(Vector2 location, Vector2 direction, Ship owner) {
+            return new Slime(location, direction, owner);
+        }
+        public override string Name {
+            get {
+                return "slime gun";
+            }
+        }
+    }
+
+    public class RocketLauncher: WeaponBase {
         public override SpriteInfo SpriteInfo {
             get {
                 return new SpriteInfo("gun.png");
@@ -108,6 +112,12 @@ namespace GameCore {
         }
         protected override ProjectileBase CreateProjectile(Vector2 location, Vector2 direction, Ship owner) {
             return new Rocket(location, direction, owner);
+        }
+
+        public override string Name {
+            get {
+                return "rocket launcher";
+            }
         }
     }
 }

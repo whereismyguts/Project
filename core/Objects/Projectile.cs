@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GameCore {
-    public class ProjectileBase: GameObject {
+    public abstract class ProjectileBase: GameObject {
         Ship owner;
         int liveTime = 0;
         public ProjectileBase(Vector2 position, Vector2 direction, Ship owner) : base(owner.World, position, 3) {
@@ -17,11 +17,13 @@ namespace GameCore {
             Body.OnCollision += CollideProcessing.OnCollision;
             Body.Rotation = direction.Angle();
         }
-        protected virtual int Speed { get { return 420; } }
+        
 
         public Ship Owner {
             get { return owner; }
         }
+
+        public virtual int Resistance { get { return 0; } } // 0 minds explodes everytime touching someting;
 
         public virtual int Damage {
             get { return 1; }
@@ -29,19 +31,6 @@ namespace GameCore {
 
         protected virtual int MaxLiveTime {
             get { return 100; }
-        }
-
-        public override IEnumerable<Item> GetItems() {
-            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "slime.png", 4, 2) };
-        }
-
-        internal bool Impact() {
-            if(!ToRemove) {
-                new Explosion(World, Location, 30);
-                ToRemove = true;
-                return true;
-            }
-            return false;
         }
         protected internal override void GetDamage(int d) {
             if(!ToRemove) {
@@ -51,14 +40,59 @@ namespace GameCore {
         }
         protected internal override void Step() {
             if(liveTime > MaxLiveTime && !ToRemove) {
-                new Explosion(World, Location, Damage*10);
+                new Explosion(World, Location, Damage * 10);
                 ToRemove = true;
             }
             liveTime++;
             base.Step();
         }
+    }
+
+    public class Slime: ProjectileBase {
+     //   Vector2 direction = Vector2.Zero;
+     //   Vector2 location;
+        Vector2 startPos;
+
+
+        //public override Vector2 Location {
+        //    get {
+        //        return location;
+        //    }
+        //}
+
+        //protected internal override float Rotation {
+        //    get {
+        //        return direction.Angle();
+        //    }
+        //}
+
+        public Slime(Vector2 position, Vector2 direction, Ship owner) : base(position, direction, owner) {
+
+       //     Body = null;
+      //      location = position;
+        //    this.direction = direction;
+            startPos = position;
+
+            ApplyLinearImpulse(direction * 10000);
+        }
+        public override IEnumerable<Geometry> GetPrimitives() {
+            var list = base.GetPrimitives().ToList();
+
+            list.Add(new Line(startPos, Location) { Color = InternalColor.Blue });
+            return list;
+        }
         protected override string GetName() {
-            return "PROJECTILE: " + Owner.Name;
+            return "SLIME: " + Owner.Name;
+        }
+        public override IEnumerable<Item> GetItems() {
+            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "slime.png", 4, 2) };
+        }
+        protected internal override void Step() {
+
+            Body.Position += Direction*10;
+//            location += direction*30;
+            base.Step();
+            //Body.LinearVelocity = direction * 9999999999;
         }
     }
 
@@ -67,12 +101,18 @@ namespace GameCore {
             Body.Mass *= 2;
             Body.Restitution = 0.3f;
         }
+
+        public override int Resistance {
+            get {
+                return 80;
+            }
+        }
         protected override void CreateBody(float radius, Vector2 location) {
             Body = BodyFactory.CreateEllipse(World, radius * 0.5f, radius * 1f, 32, 1.2f, location);// CreateRectangle(World, radius , radius * 2, 1.6f, location, this);
             Body.BodyType = BodyType.Dynamic;
             //base.CreateBody(radius, location);
         }
-        protected override int Speed { get { return 200; } }
+        
         protected override int MaxLiveTime { get { return 1000; } }
         public override int Damage { get { return 3; } }
 
