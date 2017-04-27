@@ -184,8 +184,8 @@ namespace MonoGameDirectX {
 
         private void Render(GameTime gameTime) {
             GraphicsDevice.Viewport = defaultViewport;
-       //     GraphicsDevice.Clear(Color.White);
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
+          //  GraphicsDevice.Clear(Color.CornflowerBlue);
 
 
             switch(cameraMode) {

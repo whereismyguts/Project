@@ -45,11 +45,11 @@ namespace MonoGameDirectX {
             try {
                 texture = content.Load<Texture2D>(key);
             }
-            catch {
-                texture = dummyTexture;
+            catch(Exception e) {
+                textures[key] = dummyTexture;
                 return false;
             }
-           if(textures == null)
+            if(textures == null)
                 textures = new Dictionary<string, Texture2D>();
             textures[key] = texture;
 

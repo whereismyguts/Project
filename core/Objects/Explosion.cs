@@ -8,29 +8,29 @@ using System.Threading.Tasks;
 
 namespace GameCore {
 
-    class SlimeExplosion : Explosion {
-        public SlimeExplosion(World world, Vector2 position, float rotation, int radius ) : base(world, position, rotation, radius) {
+    class SlimeExplosion: Explosion {
+        public SlimeExplosion(World world, Vector2 position, float rotation, int radius) : base(world, position, rotation, radius) {
 
         }
 
         public override IEnumerable<Item> GetItems() {
-             return new Item[] { new WordSpriteItem(this,Vector2.Zero, (float)(-Math.PI/2), 
+            return new Item[] { new WordSpriteItem(this,Vector2.Zero, (float)(-Math.PI/2),
                  ObjectBounds.Size, new Vector2(ObjectBounds.Size.X/1.3f, ObjectBounds.Size.Y / 2) , "blob.png", 10, 1) };
         }
     }
 
-    class FireExplosion : Explosion {
-        public FireExplosion(World world, Vector2 position, int radius ) : base(world, position, Rnd.GetPeriod(), radius) {
+    class FireExplosion: Explosion {
+        public FireExplosion(World world, Vector2 position, int radius) : base(world, position, Rnd.GetPeriod(), radius) {
 
         }
 
         public override IEnumerable<Item> GetItems() {
-            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "exp2.png", 4 ,4) };
+            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "explosion-sprite.png", 5, 3) };
         }
     }
 
 
-    class Explosion : GameObject {
+    class Explosion: GameObject {
         int lifeTime = 0;
         Vector2 location;
         float rotation;
@@ -66,7 +66,7 @@ namespace GameCore {
         public override IEnumerable<Geometry> GetPrimitives() {
             yield return new WorldGeometry(Location, ObjectBounds.Size, true);
         }
-        
+
         protected override void CreateBody(float radius, Vector2 location) {
             // do nothing, because its not a physic body; perhaps later
         }

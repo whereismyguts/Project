@@ -26,27 +26,27 @@ namespace MonoGameDirectX {
         }
         internal static void LoadContent(ContentManager content, GraphicsDevice gd) {
             contentLoader = new ContentLoader(content, gd);
-            contentLoader.SetTexture("256tile.png");
-            contentLoader.SetTexture("flame_sprite.png");
-            contentLoader.SetTexture("player_1_straight_idle.gif");
-            contentLoader.SetTexture("planet.png");
-            contentLoader.SetTexture("emptyslot.png");
-            contentLoader.SetTexture("engine.png");
-            contentLoader.SetTexture("exp.png");
-            contentLoader.SetTexture("exp2.png");
-            contentLoader.SetTexture("explosion-sprite.png");
-            contentLoader.SetTexture("spaceship.png");
-            contentLoader.SetTexture("bullet.png");
-            contentLoader.SetTexture("slime.png");
-            contentLoader.SetTexture("gun.png");
-            contentLoader.SetTexture("eng_active.png");
-            contentLoader.SetTexture("eng.png");
-            contentLoader.SetTexture("hull.png");
-            contentLoader.SetTexture("retrogun.png");
-            contentLoader.SetTexture("retrogunfire.png");
-            contentLoader.SetTexture("circle.png");
-            contentLoader.SetTexture("earth.png");
-            contentLoader.SetTexture("rocket.png");
+            //contentLoader.SetTexture("256tile.png");
+            //contentLoader.SetTexture("flame_sprite.png");
+            //contentLoader.SetTexture("player_1_straight_idle.gif");
+            //contentLoader.SetTexture("planet.png");
+            //contentLoader.SetTexture("emptyslot.png");
+            //contentLoader.SetTexture("engine.png");
+            //contentLoader.SetTexture("exp.png");
+            //contentLoader.SetTexture("exp2.png");
+            //contentLoader.SetTexture("explosion-sprite.png");
+            //contentLoader.SetTexture("spaceship.png");
+            //contentLoader.SetTexture("bullet.png");
+            //contentLoader.SetTexture("slime.png");
+            //contentLoader.SetTexture("gun.png");
+            //contentLoader.SetTexture("eng_active.png");
+            //contentLoader.SetTexture("eng.png");
+            //contentLoader.SetTexture("hull.png");
+            //contentLoader.SetTexture("retrogun.png");
+            //contentLoader.SetTexture("retrogunfire.png");
+            //contentLoader.SetTexture("circle.png");
+            //contentLoader.SetTexture("earth.png");
+            //contentLoader.SetTexture("rocket.png");
         }
 
         internal static Color Color(InternalColor color) {
