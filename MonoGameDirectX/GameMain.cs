@@ -116,7 +116,7 @@ namespace MonoGameDirectX {
                     break;
                 case Keys.OemPlus:
                     zoom -= zoom / 2f;
-                    Debugger.Lines.Add("z: "+zoom.ToString());
+                    Debugger.Lines.Add("z: " + zoom.ToString());
                     break;
                 case Keys.OemMinus:
                     zoom += zoom / 2f;
@@ -173,20 +173,21 @@ namespace MonoGameDirectX {
 
         int cameraMode = 0;
 
-        protected override void Draw(GameTime gameTime) {
-            return;
-
-
-            Render(gameTime);
-
-            base.Draw(gameTime);
-        }
-
+        //protected override void Draw(GameTime gameTime) {
+        //   return;
+        //Render(gameTime);
+        //base.Draw(gameTime);
+        //}
         private void Render(GameTime gameTime) {
             GraphicsDevice.Viewport = defaultViewport;
             GraphicsDevice.Clear(Color.White);
-          //  GraphicsDevice.Clear(Color.CornflowerBlue);
+            //  GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            GraphicsDevice.Viewport = bottomViewport;
+            Renderer.RenderInterface(gameTime);
+
+            GraphicsDevice.Viewport = defaultViewport;
+            Renderer.RenderTotalOverlay(gameTime);
 
             switch(cameraMode) {
                 case 0: // overall 
@@ -238,8 +239,7 @@ namespace MonoGameDirectX {
                     break;
             }
 
-            // GraphicsDevice.Viewport = bottomViewport;
-            //Renderer.Render(gameTime);
+
 
         }
 
@@ -277,7 +277,7 @@ namespace MonoGameDirectX {
 
             SetKeys(startButton, quitButton);
 
-            Renderer.Cover = Renderer.CreateTexture(GraphicsDevice, ScreenWidth, ScreenHeight);
+            //    Renderer.Cover = TextureGenerator.CreateTexture(GraphicsDevice, ScreenWidth, ScreenHeight);
 
             base.Initialize();
         }
@@ -324,8 +324,8 @@ namespace MonoGameDirectX {
             leftViewport.Width /= 2;
             rightViewport.Width /= 2;
             rightViewport.X = leftViewport.Width;
-            bottomViewport.Y = bottomViewport.Height - 100;
-            bottomViewport.Height = 100;
+            bottomViewport.Y = bottomViewport.Height - 200;
+            bottomViewport.Height = 200;
 
             rightViewport.Height = bottomViewport.Y;
             leftViewport.Height = bottomViewport.Y;
@@ -354,7 +354,8 @@ namespace MonoGameDirectX {
         int delay { get { return 2; } }
         int time = 0;
         protected override void Update(GameTime gameTime) {
-          
+
+            updateTicks++;
 
             if(IsActive)
                 ProcessInput();

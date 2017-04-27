@@ -50,6 +50,7 @@
     <Compile Include="GameMain.cs" />
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\RenderObject.cs" />
+    <Compile Include="Renderer\TextureGenerator.cs" />
     <Compile Include="WinAdapter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,9 +126,9 @@
     <Content Include="Content\Arial.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Content\Font.xnb">
+    <Content Include="Content\Font.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="WMPLib">

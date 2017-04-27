@@ -9,7 +9,7 @@ namespace MonoGameDirectX {
     internal class RenderObject {
 
         public IRenderableObject GameObject { get; internal set; }
-        public Vector2 MiniMapLocation { get; internal set; }
+        //public Vector2 MiniMapLocation { get; internal set; }
 
         public RenderObject(IRenderableObject obj) {
             GameObject = obj;

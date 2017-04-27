@@ -15,7 +15,7 @@ namespace MonoGameDirectX {
         //    set { instance = value; }
         //}
 
-        static Rectangle miniMapBorder;
+
         // DrawPrimitives primitiveDrawer;
         static List<RenderObject> renderObjects;
 
@@ -112,18 +112,9 @@ namespace MonoGameDirectX {
             GraphicsDevice = graphicsDevice;
             Font = spriteFont;
             SpriteBatch = new SpriteBatch(graphicsDevice);
-
-            miniMapBorder = new Rectangle(ScreenWidth - 100, ScreenHeight - 100, 90, 90);
         }
 
-        static void DrawMiniMap() {
-            //DrawPrimitives.DrawRect(miniMapBorder, SpriteBatch, 3, Color.GhostWhite, Color.Green);
-            //foreach(RenderObject renderObject in renderObjects)
-            //    if(renderObject.MiniMapLocation != null) {
-            //        Vector2 objLocation = miniMapBorder.Center.ToVector2() + renderObject.MiniMapLocation;
-            //        DrawPrimitives.DrawCircle(objLocation, 3, SpriteBatch, Color.Black, miniMapBorder);
-            //    }
-        }
+
         static void DrawObjects(GameTime gameTime) {
             WinAdapter.UpdateRenderObjects(ref renderObjects);
             foreach(RenderObject renderObject in renderObjects) {
@@ -138,10 +129,10 @@ namespace MonoGameDirectX {
         }
 
         static void WriteDebugInfo() {
-            int lines = ScreenHeight / 30;
+            int lines = ScreenHeight / 20;
             int line = Debugger.Lines.Count - 1;
-            for(int i = ScreenHeight - 30; i > 10 && line >= 0; i -= 30) {
-                //   SpriteBatch.DrawString(Font, Debugger.Lines[line], new Microsoft.Xna.Framework.Vector2(0, i), new Color(Color.Black, 0.8f));
+            for(int y = ScreenHeight - 30; y > 9 && line >= 0; y -= 20) {
+                SpriteBatch.DrawString(Font, Debugger.Lines[line], new Microsoft.Xna.Framework.Vector2(10, y), new Color(Color.Black, 0.8f));
                 line--;
             }
         }
@@ -155,84 +146,89 @@ namespace MonoGameDirectX {
         }
 
 
-        public static Texture2D CreateTexture(GraphicsDevice device, int width, int height) {
-            //initialize a texture
 
-            var view = Viewport.Rectangle;
 
-            Texture2D texture = new Texture2D(device, width, height);
+        static int mapSize = 200;
+        static Rectangle MapBorder {
+            get { return new Rectangle(ScreenWidth / 2 - mapSize / 2, ScreenHeight / 2 - mapSize / 2 - 1, mapSize, mapSize); }
+        }
+        static void DrawMap() {
+            //DrawPrimitives.DrawCircle(MapBorder.Center.ToVector2(), mapSize/2, SpriteBatch,  Color.Black, MapBorder);
+            var back = TextureGenerator.Circle(GraphicsDevice, mapSize / 2, Color.Gray);
+            SpriteBatch.Draw(back, MapBorder.Center.ToVector2(), null, Color.White, 0f, new Vector2(mapSize / 2, mapSize / 2), 1, SpriteEffects.None, 0);
 
-            //the array holds the color for each pixel in the texture
 
-            Color[] data = new Color[width * height];
-            int x = 0, y = 0;
+            Rectangle rect = new Rectangle((-MapBorder.Size.ToVector2() / 2).ToPoint(), MapBorder.Size);
 
-            for(int pixel = 0; pixel < data.Count(); pixel++) {
 
-                if((x == view.Left || x == view.Right) && (y > view.Top && y < view.Bottom)
-                    ||
-                    (y == view.Top || y == view.Bottom) && (x > view.Left && x < view.Right))
-                    data[pixel] = Color.Black;
-                else
-                if(view.Contains(x, y))
-                    data[pixel] = Color.Transparent;
-                else data[pixel] = Color.White;
+            foreach(var obj in MainCore.Instance.Objects.Where(o => o is Ship || o is SpaceBody)) {
+                Vector2 objLocation = MapBorder.Center.ToVector2() + obj.Location / 5f;
+                if(!MapBorder.Contains(objLocation))
+                    continue;
 
-                x++;
-                if(x == width) {
-                    x = 0; y++;
+                if(obj is SpaceBody) {
+                    int radius = (int)(obj.Radius / 5f + 20) / 2;
+                    //      DrawPrimitives.DrawCircle(objLocation, radius, SpriteBatch, Color.Red, MapBorder);
+                    var tex = TextureGenerator.Circle(GraphicsDevice, radius, Color.LightGray);
+                    SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
+                    var shadow = TextureGenerator.CircleShadow(GraphicsDevice, radius, Color.DarkGray);
+                    SpriteBatch.Draw(shadow, objLocation, null, Color.White, 0, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
+                }
+
+                else {
+                    Ship ship = obj as Ship;
+                    var tex = TextureGenerator.Circle(GraphicsDevice, 4, ship.Fraction == 1 ? Color.Red : Color.Blue);
+                    SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(4, 4), 1, SpriteEffects.None, 0);
+
+                    Player pl = PlayerController.Players.FirstOrDefault(p => p.Ship == ship);
+
+                    if(pl != null) {
+                        SpriteBatch.DrawString(Font, "p" + pl.Index, objLocation, ship.Fraction == 1 ? Color.Red : Color.Blue);
+                    }
+
                 }
             }
+        }
 
-            texture.SetData(data);
-            return texture;
+        public static void RenderInterface(GameTime time) {
+            SpriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                SamplerState.PointClamp,
+                null, null, null, null);
+            DrawPrimitives.DrawRect(new Rectangle(1, 1, ScreenWidth - 2, ScreenHeight - 2), SpriteBatch, 3, Color.Black);
+
+            DrawMap();
+            SpriteBatch.End();
+        }
+
+        public static void RenderTotalOverlay(GameTime time) {
+            SpriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                SamplerState.PointClamp,
+                null, null, null, null);
+
+            DrawInterface(time);
+            WriteDebugInfo();
+            DrawCursor();
+
+            SpriteBatch.End();
         }
 
         public static void Render(GameTime gameTime) {
 
-
-
-
             //SpriteBatch.Begin();
             SpriteBatch.Begin(SpriteSortMode.Deferred,
-      BlendState.AlphaBlend,
-      SamplerState.PointClamp,
-      null, null, null, null);
-            //cells = new StationGenerator().Generate();
-            //if(GameState == GameState.Station) {
-            //    for(int i = 0; i < 400; i++)
-            //        for(int j = 0; j < 400; j++) {
-            //            Color c = Color.LightGray;
-            //            switch(cells[i, j]) {
-            //                case 1:
-            //                    c = Color.Red;
-            //                    break;
-            //                case 2:
-            //                    c = Color.Green;
-            //                    break;
-            //            }
-            //            DrawPrimitives.DrawRect(new Rectangle(i * 2, j * 2, 2, 2), spriteBatch, 1, c, c);
-            //            //DrawPrimitives.DrawPixel(new Vector2(i*2, j*2), spriteBatch, c);
-            //        }
-            //    spriteBatch.End();
-            //    return;
-            //}
+                BlendState.AlphaBlend,
+                SamplerState.PointClamp,
+                null, null, null, null);
 
             if(InterfaceController.CurrentState.InGame) {
                 DrawGrid();
                 if(debugMode == 0 || debugMode == 1)
                     DrawDebugInfo();
-
                 DrawObjects(gameTime);
             }
-
             DrawPrimitives.DrawRect(new Rectangle(1, 1, ScreenWidth - 2, ScreenHeight - 2), SpriteBatch, 3, Color.Black);
-
-            //  SpriteBatch.Draw(Cover, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
-
-            DrawInterface(gameTime);
-            WriteDebugInfo();
-            DrawCursor();
 
             SpriteBatch.End();
         }
