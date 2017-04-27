@@ -55,53 +55,69 @@ namespace MonoGameDirectX {
         class Particle {
             public int radius;
             public Vector2 location; // relative
-            public int time;
+            public float size;
             public Vector2 dir;
-            float speed;
+            public Color color;
+            public float speed;
 
-            public Particle(Vector2 location, int radius) {
+            public int delay;
+
+            public Particle(Vector2 location, int radius, Color color) {
                 this.location = location;
                 this.radius = radius;
+                this.color = color;
                 this.dir = Vector2.One.GetRotated(Rnd.GetPeriod());
-                speed = 10;
-                time = 0;
+                speed = Rnd.Get(11, 14);
+                size = Rnd.Get(8, 10);
             }
 
             internal Particle Clone() {
-                return new Particle(location, radius) { time = this.time, dir = this.dir, speed = this.speed };
+                return new Particle(location, radius, color) { size = this.size, dir = this.dir, speed = this.speed };
             }
 
-            internal void Step() {
-                time++;
-                if(speed > 0) {
-                    location += dir * speed;
-                    speed--;
+            internal void Step(Vector2 d) {
+                if(delay > 0) {
+                    delay--;
+                    return;
                 }
+
+                size *= 0.8f;
+                speed *= 0.6f;
+
+
+
+                location += dir * speed;
+
+
             }
         }
 
         internal static Texture2D Explosion(GraphicsDevice device, int size, Vector2 direction) {
 
-            int frames = 5;
+            int frames = 15;
+
+
 
             Texture2D texture = new Texture2D(device, frames * size, size);
 
             List<Particle> particles = new List<Particle>();
-            for(int i = 0; i < 10; i++) {
-                particles.Add(new Particle(Vector2.Zero, 1));
+            for(int i = 0; i < 20; i++) {
+                particles.Add(new Particle(Vector2.Zero, 1, Color.Red));
+                particles.Add(new Particle(Vector2.Zero, 1, Color.OrangeRed) { delay = 2 });
+                particles.Add(new Particle(Vector2.Zero, 1, Color.Orange) { delay = 4 });
             }
 
             List<Particle> total = new List<Particle>();
 
             for(int i = 0; i < frames; i++) {
-                Vector2 center = new Vector2(size / 2 + i * size);
+                Vector2 center = new Vector2(size / 2 + i * size, size / 2);
 
 
                 foreach(var p in particles) {
                     var t = p.Clone();
                     t.location += center;
                     total.Add(t);
-                    p.Step();
+                    p.Step(direction);
                 }
             }
 
@@ -117,8 +133,10 @@ namespace MonoGameDirectX {
 
                     Vector2 particlePoint = p.location;
                     Vector2 currentPoint = new Vector2(x, y);
-                    if(Vector2.Distance(particlePoint, currentPoint) < 5)
-                        data[pixel] = Color.Red;
+                    if(Vector2.Distance(particlePoint, currentPoint) < p.size) {
+                        data[pixel] = p.color;
+                        break;
+                    }
                 }
 
                 x++;

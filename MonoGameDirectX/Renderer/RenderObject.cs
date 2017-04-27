@@ -136,7 +136,7 @@ namespace MonoGameDirectX {
 
             Rectangle source = new Rectangle(frameIndexX * frameWidth, frameIndexY * frameHeight, frameWidth, frameHeight);
             spriteBatch.Draw(texture, DestRect, source, Color.White, rotation, origin, SpriteEffects.None, 0f);
-               spriteBatch.DrawString(Renderer.Font, frameIndexX + " : " + frameIndexY, (DestRect.Center).ToVector2(), Color.Red);
+           //    spriteBatch.DrawString(Renderer.Font, frameIndexX + " : " + frameIndexY, (DestRect.Center).ToVector2(), Color.Red);
 
             time += (float)gameTime.ElapsedGameTime.TotalSeconds;
 

@@ -5,6 +5,7 @@ using GameCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Threading;
 
 namespace MonoGameDirectX {
     public static class Renderer {
@@ -152,9 +153,29 @@ namespace MonoGameDirectX {
         static Rectangle MapBorder {
             get { return new Rectangle(ScreenWidth / 2 - mapSize / 2, ScreenHeight / 2 - mapSize / 2 - 1, mapSize, mapSize); }
         }
+        static int t = 10;
+        static int g = 0;
+        static Texture2D exp = null;
+        static int width = 0;
+
         static void DrawMap() {
-            var exp = TextureGenerator.Explosion(GraphicsDevice, 100, Vector2.Zero);
-            SpriteBatch.Draw(exp, Vector2.Zero);
+            // Thread.Sleep(50);
+
+            
+
+            if(exp == null || g >= 200) {
+                width = 128;
+                exp = TextureGenerator.Explosion(GraphicsDevice, width, Vector2.One.GetRotated(Rnd.GetPeriod()));
+                g = 0;
+            }
+                if(t > 19) 
+                t = 0;
+                
+            
+
+            SpriteBatch.Draw(exp, new Rectangle(0,0, width, width), new Rectangle(width * t, 0, width, width), Color.White, 0, Vector2.Zero, SpriteEffects.None, 0f);
+            t++; g++;
+            SpriteBatch.Draw(exp, new Vector2(0, width));
             return;
             //DrawPrimitives.DrawCircle(MapBorder.Center.ToVector2(), mapSize/2, SpriteBatch,  Color.Black, MapBorder);
             var back = TextureGenerator.Circle(GraphicsDevice, mapSize / 2, Color.Gray);
