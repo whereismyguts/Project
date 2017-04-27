@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using System.Collections.Generic;
+using GameCore;
 
 namespace MonoGameDirectX {
     public static class TextureGenerator {
@@ -22,8 +23,8 @@ namespace MonoGameDirectX {
             int diam = radius * 2;
 
             Texture2D texture = new Texture2D(device, diam, diam);
-            
-            Color[] data = new Color[diam*diam];
+
+            Color[] data = new Color[diam * diam];
             int x = 0, y = 0;
 
             Vector2 center = new Vector2(radius, radius);
@@ -46,8 +47,87 @@ namespace MonoGameDirectX {
 
             circles.Add(key, texture);
 
-            
 
+
+            return texture;
+        }
+
+        class Particle {
+            public int radius;
+            public Vector2 location; // relative
+            public int time;
+            public Vector2 dir;
+            float speed;
+
+            public Particle(Vector2 location, int radius) {
+                this.location = location;
+                this.radius = radius;
+                this.dir = Vector2.One.GetRotated(Rnd.GetPeriod());
+                speed = 10;
+                time = 0;
+            }
+
+            internal Particle Clone() {
+                return new Particle(location, radius) { time = this.time, dir = this.dir, speed = this.speed };
+            }
+
+            internal void Step() {
+                time++;
+                if(speed > 0) {
+                    location += dir * speed;
+                    speed--;
+                }
+            }
+        }
+
+        internal static Texture2D Explosion(GraphicsDevice device, int size, Vector2 direction) {
+
+            int frames = 5;
+
+            Texture2D texture = new Texture2D(device, frames * size, size);
+
+            List<Particle> particles = new List<Particle>();
+            for(int i = 0; i < 10; i++) {
+                particles.Add(new Particle(Vector2.Zero, 1));
+            }
+
+            List<Particle> total = new List<Particle>();
+
+            for(int i = 0; i < frames; i++) {
+                Vector2 center = new Vector2(size / 2 + i * size);
+
+
+                foreach(var p in particles) {
+                    var t = p.Clone();
+                    t.location += center;
+                    total.Add(t);
+                    p.Step();
+                }
+            }
+
+            Color[] data = new Color[size * frames * size];
+            int x = 0, y = 0;
+
+            for(int pixel = 0; pixel < data.Count(); pixel++)
+                data[pixel] = Color.Transparent;
+
+            for(int pixel = 0; pixel < data.Count(); pixel++) {
+
+                foreach(var p in total) {
+
+                    Vector2 particlePoint = p.location;
+                    Vector2 currentPoint = new Vector2(x, y);
+                    if(Vector2.Distance(particlePoint, currentPoint) < 5)
+                        data[pixel] = Color.Red;
+                }
+
+                x++;
+                if(x == size * frames) {
+                    x = 0; y++;
+                }
+            }
+
+            texture.SetData(data);
             return texture;
         }
 
@@ -71,7 +151,7 @@ namespace MonoGameDirectX {
             int x = 0, y = 0;
 
             Vector2 center = new Vector2(radius, radius);
-            Vector2 source = new Vector2(radius, -radius/2);
+            Vector2 source = new Vector2(radius, -radius / 2);
 
             for(int pixel = 0; pixel < data.Count(); pixel++) {
                 var dist = Vector2.Distance(center, new Vector2(x, y));
@@ -79,12 +159,12 @@ namespace MonoGameDirectX {
 
 
                     var lightDist = Vector2.Distance(source, new Vector2(x, y));
-                    if(lightDist>radius*2)
-                        data[pixel] = GameCore.Rnd.Get(0,lightDist)> lightDist /3.5? color: Color.Transparent;
+                    if(lightDist > radius * 2)
+                        data[pixel] = GameCore.Rnd.Get(0, lightDist) > lightDist / 3.5 ? color : Color.Transparent;
 
                 }
 
-                
+
                 else
                     data[pixel] = Color.Transparent;
 

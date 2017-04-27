@@ -186,9 +186,11 @@ namespace MonoGameDirectX {
             GraphicsDevice.Viewport = bottomViewport;
             Renderer.RenderInterface(gameTime);
 
+            return;
+
             GraphicsDevice.Viewport = defaultViewport;
             Renderer.RenderTotalOverlay(gameTime);
-
+         
             switch(cameraMode) {
                 case 0: // overall 
                     Viewport.PxlWidth = defaultViewport.Width;
@@ -354,8 +356,6 @@ namespace MonoGameDirectX {
         int delay { get { return 2; } }
         int time = 0;
         protected override void Update(GameTime gameTime) {
-
-            updateTicks++;
 
             if(IsActive)
                 ProcessInput();
