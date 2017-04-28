@@ -5,7 +5,7 @@ using GameCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Threading;
+using System.IO;
 
 namespace MonoGameDirectX {
     public static class Renderer {
@@ -149,34 +149,14 @@ namespace MonoGameDirectX {
 
 
 
-        static int mapSize = 200;
+        static int mapSize = 100;
         static Rectangle MapBorder {
             get { return new Rectangle(ScreenWidth / 2 - mapSize / 2, ScreenHeight / 2 - mapSize / 2 - 1, mapSize, mapSize); }
         }
-        static int t = 10;
-        static int g = 0;
-        static Texture2D exp = null;
-        static int width = 0;
 
         static void DrawMap() {
             // Thread.Sleep(50);
-
-            
-
-            if(exp == null || g >= 200) {
-                width = 128;
-                exp = TextureGenerator.Explosion(GraphicsDevice, width, Vector2.One.GetRotated(Rnd.GetPeriod()));
-                g = 0;
-            }
-                if(t > 19) 
-                t = 0;
-                
-            
-
-            SpriteBatch.Draw(exp, new Rectangle(0,0, width, width), new Rectangle(width * t, 0, width, width), Color.White, 0, Vector2.Zero, SpriteEffects.None, 0f);
-            t++; g++;
-            SpriteBatch.Draw(exp, new Vector2(0, width));
-            return;
+            //GenerateTexture();
             //DrawPrimitives.DrawCircle(MapBorder.Center.ToVector2(), mapSize/2, SpriteBatch,  Color.Black, MapBorder);
             var back = TextureGenerator.Circle(GraphicsDevice, mapSize / 2, Color.Gray);
             SpriteBatch.Draw(back, MapBorder.Center.ToVector2(), null, Color.White, 0f, new Vector2(mapSize / 2, mapSize / 2), 1, SpriteEffects.None, 0);
@@ -214,6 +194,20 @@ namespace MonoGameDirectX {
             }
         }
 
+        private static void GenerateTexture() {
+            //generate
+            var width = 128;
+            var exp = TextureGenerator.Explosion(GraphicsDevice, width, 2 * Vector2.One.GetRotated(Rnd.GetPeriod()));
+
+            // save
+            var destrect = new Rectangle(0, 0, width, width);
+            Stream stream = File.Create("explosion_generated.png");
+            exp.SaveAsPng(stream, exp.Width, exp.Height);
+
+            //draw
+            //SpriteBatch.Draw(exp, destrect, new Rectangle(width * t, 0, width, width), Color.White, 0, Vector2.Zero, SpriteEffects.None, 0f);
+        }
+
         public static void RenderInterface(GameTime time) {
             SpriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -222,6 +216,7 @@ namespace MonoGameDirectX {
             DrawPrimitives.DrawRect(new Rectangle(1, 1, ScreenWidth - 2, ScreenHeight - 2), SpriteBatch, 3, Color.Black);
 
             DrawMap();
+
             SpriteBatch.End();
         }
 
@@ -239,8 +234,6 @@ namespace MonoGameDirectX {
         }
 
         public static void Render(GameTime gameTime) {
-
-            //SpriteBatch.Begin();
             SpriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
                 SamplerState.PointClamp,

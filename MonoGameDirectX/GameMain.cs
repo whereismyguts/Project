@@ -17,6 +17,7 @@ namespace MonoGameDirectX {
         GraphicsDeviceManager graphics;
 
         Microsoft.Xna.Framework.Graphics.Viewport defaultViewport;
+        Microsoft.Xna.Framework.Graphics.Viewport mainViewport;
         Microsoft.Xna.Framework.Graphics.Viewport leftViewport;
         Microsoft.Xna.Framework.Graphics.Viewport rightViewport;
         Microsoft.Xna.Framework.Graphics.Viewport bottomViewport;
@@ -179,31 +180,31 @@ namespace MonoGameDirectX {
         //base.Draw(gameTime);
         //}
         private void Render(GameTime gameTime) {
-            GraphicsDevice.Viewport = defaultViewport;
+           // GraphicsDevice.Viewport = defaultViewport;
             GraphicsDevice.Clear(Color.White);
             //  GraphicsDevice.Clear(Color.CornflowerBlue);
 
             GraphicsDevice.Viewport = bottomViewport;
             Renderer.RenderInterface(gameTime);
 
-            return;
+            //return;
 
             GraphicsDevice.Viewport = defaultViewport;
             Renderer.RenderTotalOverlay(gameTime);
          
             switch(cameraMode) {
                 case 0: // overall 
-                    Viewport.PxlWidth = defaultViewport.Width;
-                    Viewport.PxlHeight = defaultViewport.Height;
+                    Viewport.PxlWidth = mainViewport.Width;
+                    Viewport.PxlHeight = mainViewport.Height;
 
                     Viewport.SmoothUpdate = true;
                     MainCore.Instance.ZoomToObjects();
 
-                    GraphicsDevice.Viewport = defaultViewport;
+                    GraphicsDevice.Viewport = mainViewport;
                     Renderer.Render(gameTime);
 
                     break;
-                case 1:
+                case 1: //splitscreen
                     if(PlayerController.Players.Count > 1) {
                         Viewport.PxlWidth = leftViewport.Width;
                         Viewport.PxlHeight = leftViewport.Height;
@@ -221,8 +222,8 @@ namespace MonoGameDirectX {
                     }
                     break;
                 case 2:
-                    Viewport.PxlWidth = defaultViewport.Width;
-                    Viewport.PxlHeight = defaultViewport.Height;
+                    Viewport.PxlWidth = mainViewport.Width;
+                    Viewport.PxlHeight = mainViewport.Height;
 
                     Viewport.SmoothUpdate = false;
 
@@ -236,7 +237,7 @@ namespace MonoGameDirectX {
 
                     Viewport.Centerpoint = objects[objIndex].Location;
 
-                    GraphicsDevice.Viewport = defaultViewport;
+                    GraphicsDevice.Viewport = mainViewport;
                     Renderer.Render(gameTime);
                     break;
             }
@@ -314,21 +315,18 @@ namespace MonoGameDirectX {
 
         private void ArrangeViewports() {
             defaultViewport = GraphicsDevice.Viewport;
+            mainViewport = defaultViewport;
             leftViewport = defaultViewport;
             rightViewport = defaultViewport;
             bottomViewport = defaultViewport;
 
-            mapViewport = defaultViewport;
-            mapViewport.X = leftViewport.Width / 2 - 50;
-            mapViewport.Width = 100;
-            mapViewport.Height = 100;
-
             leftViewport.Width /= 2;
             rightViewport.Width /= 2;
             rightViewport.X = leftViewport.Width;
-            bottomViewport.Y = bottomViewport.Height - 200;
-            bottomViewport.Height = 200;
+            bottomViewport.Y = bottomViewport.Height - 100;
+            bottomViewport.Height = 100;
 
+            mainViewport.Height = bottomViewport.Y; ;
             rightViewport.Height = bottomViewport.Y;
             leftViewport.Height = bottomViewport.Y;
         }

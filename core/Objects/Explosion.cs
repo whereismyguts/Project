@@ -25,7 +25,8 @@ namespace GameCore {
         }
 
         public override IEnumerable<Item> GetItems() {
-            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "explosion-sprite.png", 5, 3) };
+            //return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "explosion-sprite.png", 5, 3) };
+            return new Item[] { new WordSpriteItem(this, ObjectBounds.Size, ObjectBounds.Size / 2, "explosion_generated.png", 15, 1) };
         }
     }
 
