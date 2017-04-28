@@ -20,7 +20,7 @@ namespace GameCore {
             }
         }
         public int Health { get { return Hull.Health; } }
-        public InternalColor Color { get; } // TODO remove
+        public Color Color { get; } // TODO remove
         string name;
         public override string Name {
             get {
@@ -148,25 +148,5 @@ namespace GameCore {
         public Inventory Inventory { get; set; }
         protected internal ShipHull Hull { get; set; }
         #endregion
-    }
-
-    public struct InternalColor {
-
-        public int b;
-        public int g;
-        public int r;
-
-        public InternalColor(int r, int g, int b) {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-
-        public static InternalColor Black = new InternalColor() { r = 0, g = 0, b = 0 };
-        public static InternalColor Blue = new InternalColor() { r = 55, g = 0, b = 255 };
-        public static InternalColor Red = new InternalColor() { r = 255, g = 55, b = 0 };
-        public static InternalColor Green = new InternalColor() { r = 55, g = 255, b = 0 };
-        public static InternalColor Yellow = new InternalColor() { r = 255, g = 255, b = 0 };
-
     }
 }

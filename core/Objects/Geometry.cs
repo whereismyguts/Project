@@ -17,7 +17,7 @@ namespace GameCore {
         }
         public bool IsCircle;
         public int ZIndex { get; set; } = 1;
-        public InternalColor Color { get; set; } = InternalColor.Black;
+        public Color Color { get; set; } = Color.Black;
     }
     public class WorldGeometry: Geometry {
         public WorldGeometry(Vector2 location, Vector2 size, bool round = false) : base(location, size, round) {
@@ -47,7 +47,7 @@ namespace GameCore {
         }
     }
 
-    public class Line: Geometry { // decorator
+    public class Line: Geometry { 
         public Vector2 End { get; private set; }
         public Vector2 Start { get; private set; }
         public Line(Vector2 start, Vector2 end) : base(start, end - start, false) {

@@ -7,8 +7,8 @@ namespace GameCore {
     public static class Rnd {
         static Random rnd = new Random();
 
-        static internal InternalColor GetColor() {
-            return new InternalColor(rnd.Next(100, 255), rnd.Next(100, 255), rnd.Next(100, 255));
+        static internal Color GetColor() {
+            return new Color(rnd.Next(100, 255), rnd.Next(100, 255), rnd.Next(100, 255));
         }
 
         static public float GetPeriod() {

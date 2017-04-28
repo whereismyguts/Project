@@ -45,10 +45,6 @@ namespace MonoGameDirectX {
         }
 
         internal static void DrawGeometry(Geometry geom, SpriteBatch spriteBatch) {
-            Color color = WinAdapter.Color(geom.Color);
-
-
-
             if(geom is WorldShape) {
                 WorldShape shape = geom as WorldShape;
                 DrawPolygon(spriteBatch, shape.Points.ToArray(), shape.Points.Count, Color.Green, 1);
@@ -59,7 +55,7 @@ namespace MonoGameDirectX {
                 var line = geom as Line;
                 var p1 = MainCore.Instance.Viewport.World2ScreenPoint(line.Start);
                 var p2 = MainCore.Instance.Viewport.World2ScreenPoint(line.End);
-                DrawLine(p1, p2, spriteBatch, 1, color);
+                DrawLine(p1, p2, spriteBatch, 1, geom.Color);
                 return;
             }
 
@@ -69,7 +65,7 @@ namespace MonoGameDirectX {
             
 
             if(geom.IsCircle) {
-                DrawCircle(geom.ScreenLocation, geom.ScreenSize.X / 2f, spriteBatch, color);
+                DrawCircle(geom.ScreenLocation, geom.ScreenSize.X / 2f, spriteBatch, geom.Color);
                 return;
             }
 

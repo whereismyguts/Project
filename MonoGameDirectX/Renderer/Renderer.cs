@@ -47,7 +47,7 @@ namespace MonoGameDirectX {
                 DrawPrimitives.DrawLine(
                     shipBounds.Center,
                     (shipBounds + ship.Direction * 10).Center,
-                    SpriteBatch, 1, WinAdapter.Color(ship.Color));
+                    SpriteBatch, 1, ship.Color);
                 //if(ship.Velosity.Length > 0)
                 //    DrawPrimitives.DrawLine(
                 //    WinAdapter.CoordPoint2Vector(shipBounds.Center),

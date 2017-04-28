@@ -48,11 +48,6 @@ namespace MonoGameDirectX {
             //contentLoader.SetTexture("earth.png");
             //contentLoader.SetTexture("rocket.png");
         }
-
-        internal static Color Color(InternalColor color) {
-            return new Color(color.r, color.g, color.b);
-        }
-
         internal static void Unload() {
             contentLoader.Unload();
         }

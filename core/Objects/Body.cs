@@ -60,7 +60,7 @@ namespace GameCore {
 
                 byte color1 = (byte)Math.Abs(255 - theta / (Math.PI * 2) * 255 * 2);
 
-                sat.Add(new Line(p, p2) { ZIndex = down ? -10 : 10, Color = new InternalColor(color1, color1, color1) });
+                sat.Add(new Line(p, p2) { ZIndex = down ? -10 : 10, Color = new Color(color1, color1, color1) });
 
                 theta += step;
             }
