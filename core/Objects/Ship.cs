@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace GameCore {
     public class Ship: GameObject {
-
-        //  AIController controller;
         public event EventHandler OnDead;
-
+        string name;
         int fraction;
+        float angleSpeed = 0;
+
         public int Fraction {
             get { return fraction; }
             set {
@@ -20,8 +20,12 @@ namespace GameCore {
             }
         }
         public int Health { get { return Hull.Health; } }
-        public Color Color { get; } // TODO remove
-        string name;
+        public Color Color { get; }
+        #region inventory
+        public Inventory Inventory { get; set; }
+        protected internal ShipHull Hull { get; set; }
+        #endregion
+
         public override string Name {
             get {
                 return name + ", Fraction" + Fraction;
@@ -32,9 +36,6 @@ namespace GameCore {
                 return new Bounds(Location - Hull.Size / 2f, Location + Hull.Size / 2f); //TODO use origin, because ship posiotion may be no in center of the ship
             }
         }
-        //public CoordPoint Reactive { get { return -(direction * acceleration) * 50; } }
-
-        //public CoordPoint Velosity { get { return velosity; } }
 
         public Ship(World world, Vector2 location, int fraction = 1) : base(world, location, 5) {
             Fraction = fraction;
@@ -42,7 +43,7 @@ namespace GameCore {
             Inventory = new Inventory(Hull);
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
-            
+
             var w2 = Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
             var w1 = Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
             Inventory.Add(e1);
@@ -61,36 +62,43 @@ namespace GameCore {
 
             Body.OnCollision += CollideProcessing.OnCollision;
         }
-        protected internal override void GetDamage(int d) {
-            Hull.Health -= d;
-            if(Hull.Health <= 0)
-                Dead();
-        }
 
-        internal void Dead() {
-            if(OnDead != null)
-                OnDead(this, EventArgs.Empty);
-            //       new Explosion(World, Location);
-            ToRemove = true;
-        }
 
         public void Accselerate() {
             foreach(Slot slot in Hull.Slots)
                 if(slot.Type == SlotType.EngineSlot && !slot.IsEmpty)
                     slot.AttachedItem.Activate();
         }
+        internal void Dead() {
+            if(OnDead != null)
+                OnDead(this, EventArgs.Empty);
+            //       new Explosion(World, Location);
+            ToRemove = true;
+        }
+        internal void Fire() {
+            IEnumerable<WeaponBase> weapons = Hull.GetWeapons();
+            foreach(WeaponBase W in weapons)
+                W.Fire();
+        }
+        public void RotateL() {
+            angleSpeed -= .01f;
+        }
+        public void RotateR() {
+            angleSpeed += .01f;
+        }
 
         protected override string GetName() {
             return "SHIP " + Name;
         }
-
-        //public TrajectoryCalculator Calculator { get; set; }
-
+        protected internal override void GetDamage(int d) {
+            Hull.Health -= d;
+            if(Hull.Health <= 0)
+                Dead();
+        }
         protected override void CreateBody(float radius, Vector2 location) {
             Body = BodyFactory.CreateRectangle(World, radius * 2, radius * 2, 0.1f, location);
             Body.BodyType = BodyType.Dynamic;
         }
-
         protected internal override void Step() {
             foreach(Item item in Inventory.Container)
                 item.Step();
@@ -103,6 +111,11 @@ namespace GameCore {
             angleSpeed *= .9f;
             base.Step();
         }
+        public override IEnumerable<Item> GetItems() {
+            for(int i = 0; i < Hull.Slots.Count; i++)
+                yield return Hull.Slots[i].AttachedItem;
+            yield return Hull;
+        }
 
         //Vector2 GetAcceleration() {
         //    IEnumerable<DefaultEngine> engines = Hull.GetEngines();
@@ -111,42 +124,5 @@ namespace GameCore {
         //        sum += new Vector2(0, -1).GetRotated(engine.Rotation) * engine.GetAcceleration();
         //    return sum;
         //}
-
-        internal void Fire() {
-            IEnumerable<WeaponBase> weapons = Hull.GetWeapons();
-            foreach(WeaponBase W in weapons)
-                W.Fire();
-        }
-
-        public override IEnumerable<Item> GetItems() {
-            //if(GetScreenBounds().Size.X < 10) {
-            //    yield return new ScreenSpriteItem(Viewport.World2ScreenPoint(Location), new CoordPoint(20, 20), new CoordPoint(10, 10), new SpriteInfo("256tile.png"));
-            //}
-            //else
-            for(int i = 0; i < Hull.Slots.Count; i++)
-                yield return Hull.Slots[i].AttachedItem;
-            yield return Hull;
-        }
-
-        float angleSpeed = 0;
-
-        public void RotateL() {
-            angleSpeed -= .01f;
-        }
-        public void RotateR() {
-            angleSpeed += .01f;
-        }
-
-        //public void SwitchAI() {
-        //    if(controller != null)
-        //        controller = null;
-        //    else controller = new AIController(this, CurrentSystem.Objects[2], TaskType.Peersuit);
-        //}
-
-        #region inventory
-        //protected List<Item> ActiveItems { get { return new Item[](Hull.Slots.Select(p => p.AttachedItem).Where(i => i != null)) { Hull }; } }
-        public Inventory Inventory { get; set; }
-        protected internal ShipHull Hull { get; set; }
-        #endregion
     }
 }
