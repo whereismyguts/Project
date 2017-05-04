@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GameCore {
-    public abstract class GameObject: IRenderableObject {
+    public abstract class GameObject: IRenderableObject, IDisposable {
         static IEnumerable<Item> itemsEmpty = new Item[] { };
         static IEnumerable<Geometry> geometryEmpty = new Geometry[] { };
 
@@ -129,7 +129,7 @@ namespace GameCore {
 
                     //  Circle.ApplyAngularImpulse(10);
                 }
-            if(attraction.Length() != 0)
+            if(attraction != Vector2.Zero)
                 ApplyForce(attraction);
             //foreach(GameObject obj in MainCore.Instance.Objects)
             //    if(obj != this) {
@@ -160,16 +160,21 @@ namespace GameCore {
                     if(fix.Shape is PolygonShape)
                         yield return Body2PolygonShape(Body);
             }
-            
-                yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
-                yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
-            
+
+            yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
+            yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
+
             if(MainCore.Instance.HookedObject == this)
                 yield return new Line(Location, MainCore.Instance.Cursor);
         }
 
         protected internal virtual void GetDamage(int v) {
             // base: do nothing
+        }
+
+        public void Dispose() {
+            if(body != null)
+                body.Dispose();
         }
     }
     public static class CollideProcessing {
@@ -197,7 +202,7 @@ namespace GameCore {
                     (fixtureB.Body.UserData as ProjectileBase).ToRemove = true;
                 }
                 Vector2 point = projectile.Location + projectile.Body.ContactList.Contact.Manifold.Points[0].LocalPoint.GetRotated(projectile.Rotation);
-                projectile.CreateExplosion(relativeVelosity.Angle(), projectile.Damage*10);
+                projectile.CreateExplosion(relativeVelosity.Angle(), projectile.Damage * 10);
                 projectile.ToRemove = true;
                 obj.GetDamage((int)(projectile.Damage * relativeVelosity.Length() / 200));
             }

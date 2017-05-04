@@ -159,7 +159,7 @@ namespace MonoGameDirectX {
             //GenerateTexture();
             //DrawPrimitives.DrawCircle(MapBorder.Center.ToVector2(), mapSize/2, SpriteBatch,  Color.Black, MapBorder);
             var back = TextureGenerator.Circle(GraphicsDevice, mapSize / 2, Color.Gray);
-            SpriteBatch.Draw(back, MapBorder.Center.ToVector2(), null, Color.White, 0f, new Vector2(mapSize / 2, mapSize / 2), 1, SpriteEffects.None, 0);
+            SpriteBatch.Draw(back, MapBorder.Center.ToVector2(), null, Color.White, 0f, new Vector2(mapSize / 2f, mapSize / 2f), 1, SpriteEffects.None, 0);
 
 
             Rectangle rect = new Rectangle((-MapBorder.Size.ToVector2() / 2).ToPoint(), MapBorder.Size);

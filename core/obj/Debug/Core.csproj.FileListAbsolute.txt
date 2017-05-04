@@ -33,3 +33,8 @@ D:\karmanov\code\white\bin\Core.pdb
 D:\karmanov\code\white\core\obj\Debug\Core.dll
 D:\karmanov\code\white\core\obj\Debug\Core.pdb
 D:\karmanov\code\white\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
+D:\repositories\white-space\white-space\bin\Core.dll
+D:\repositories\white-space\white-space\bin\Core.pdb
+D:\repositories\white-space\white-space\core\obj\Debug\Core.csprojResolveAssemblyReference.cache
+D:\repositories\white-space\white-space\core\obj\Debug\Core.dll
+D:\repositories\white-space\white-space\core\obj\Debug\Core.pdb

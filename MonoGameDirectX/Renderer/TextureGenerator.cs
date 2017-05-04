@@ -93,7 +93,6 @@ namespace MonoGameDirectX {
             int component = 255 / 4;
             List<Particle> particles = new List<Particle>();
             for(int i = 0; i < 100; i++) {
-
                 for(int c = 0; c < 4; c++) {
                     int col = (c + 1) * component;
                     particles.Add(new Particle(Vector2.Zero, new Color(col - 10, col + 2, col - 10), (4 - c) * 5) { delay = c });
@@ -154,7 +153,7 @@ namespace MonoGameDirectX {
                         }
                 }
             }
-            
+
             texture.SetData(data);
             time = TimeSpan.FromTicks(DateTime.Now.Ticks - start).TotalMilliseconds.ToString("f3");
             return texture;

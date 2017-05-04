@@ -96,7 +96,7 @@ namespace MonoGameDirectX {
         void Update(Item item);
     }
 
-    class Sprite: IDrawMyself {
+    class Sprite: IDrawMyself, IDisposable {
         const float frameTime = 0.04f;
         public int ZIndex { get; set; } = 0;
         internal Rectangle DestRect { get; private set; }
@@ -210,6 +210,11 @@ namespace MonoGameDirectX {
 
         public void Update(Item item) {
             this.item = item;
+        }
+
+        public void Dispose() {
+            if(texture!=null)
+                texture.Dispose();
         }
 
         int framesX = 1;

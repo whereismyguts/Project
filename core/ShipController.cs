@@ -141,7 +141,7 @@ namespace GameCore {
 
         private Ship FindEnemy() {
             var e = MainCore.Instance.Ships.Where(s => s.Fraction != Owner.Fraction && !s.ToRemove).OrderBy(s => Vector2.Distance(s.Location, Owner.Location)).ToList();
-            return (e != null && e.Count > 0) ? e[Rnd.Get(0, e.Count - 1)] : null;
+            return (e.Count > 0) ? e[Rnd.Get(0, e.Count - 1)] : null;
         }
 
         private void FireIfCan() {

@@ -99,10 +99,12 @@ namespace MonoGameDirectX {
             switch(e.Keys) {
                 case Keys.F:
                     if(ctrlpressed)
-                        SwitchFullScreen(); break;
+                        SwitchFullScreen();
+                    break;
                 case Keys.D:
                     if(ctrlpressed)
-                        Renderer.SwitchDebugMode(); break;
+                        Renderer.SwitchDebugMode();
+                    break;
                 case Keys.LeftControl:
                     ctrlpressed = false; break;
                 case Keys.C:
@@ -180,7 +182,7 @@ namespace MonoGameDirectX {
         //base.Draw(gameTime);
         //}
         private void Render(GameTime gameTime) {
-           // GraphicsDevice.Viewport = defaultViewport;
+            // GraphicsDevice.Viewport = defaultViewport;
             GraphicsDevice.Clear(Color.White);
             //  GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -191,7 +193,7 @@ namespace MonoGameDirectX {
 
             GraphicsDevice.Viewport = defaultViewport;
             Renderer.RenderTotalOverlay(gameTime);
-         
+
             switch(cameraMode) {
                 case 0: // overall 
                     Viewport.PxlWidth = mainViewport.Width;
