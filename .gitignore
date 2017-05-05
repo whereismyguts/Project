@@ -1,4 +1,5 @@
-*.xml*.dll
+*.xml
+*.dll
 *.exe
 *.cache
 *.suo

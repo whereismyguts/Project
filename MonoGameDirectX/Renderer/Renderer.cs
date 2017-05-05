@@ -88,13 +88,13 @@ namespace MonoGameDirectX {
             }
             //var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
 
-            //foreach(var c in ShipController.Controllers) 
-            //    if(c != null && c is AutoControl) { 
-            //        DrawPrimitives.DrawLine(
-            //           WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint((c.Owner.Position))),
-            //           WinAdapter.CoordPoint2Vector(Viewport.World2ScreenPoint(((c as AutoControl).TargetLocation))),
-            //           spriteBatch, 1, Color.Blue);
-            //    }
+            foreach(var c in AIShipsController.Controllers)
+                if(c != null && c is DefaultAutoControl) {
+                    DrawPrimitives.DrawLine(
+                       Viewport.World2ScreenPoint((c.Owner.Location)),
+                       Viewport.World2ScreenPoint(((c as DefaultAutoControl).TargetLocation)),
+                       SpriteBatch, 1, Color.Blue);
+                }
 
             //DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, Color.Brown);
         }
@@ -171,7 +171,7 @@ namespace MonoGameDirectX {
                     continue;
 
                 if(obj is SpaceBody) {
-                    int radius = (int)(obj.Radius / 5f + 20) / 2;
+                    int radius = (int)(obj.Radius / 5f + 10) / 2;
                     //      DrawPrimitives.DrawCircle(objLocation, radius, SpriteBatch, Color.Red, MapBorder);
                     var tex = TextureGenerator.Circle(GraphicsDevice, radius, Color.LightGray);
                     SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(radius, radius), 1, SpriteEffects.None, 0);

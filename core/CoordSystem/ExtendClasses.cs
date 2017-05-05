@@ -5,7 +5,7 @@ using System.Linq;
 namespace GameCore {
     public static class Vector2Operations {
 
-        public static Vector2 GetRotated(this Vector2 v, float angle) {
+        public static Vector2 GetRotated(this Vector2 v, double angle) {
             var newX = (float)(v.X * Math.Cos(angle) - v.Y * Math.Sin(angle));
             var newY = (float)(v.X * Math.Sin(angle) + v.Y * Math.Cos(angle));
 

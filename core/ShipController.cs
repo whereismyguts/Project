@@ -63,7 +63,7 @@ namespace GameCore {
     public class DefaultAutoControl: AIController {
         public Vector2 TargetLocation { get; private set; }
 
-        public Ship ToKill { get; set; }
+        public Ship MoveGoal { get; set; }
 
         double acceptableAngle = 0.1;
         double dangerZoneMultiplier = 2.4;
@@ -105,7 +105,7 @@ namespace GameCore {
 
             //TargetLocation = leaveVector + normalVector + Owner.Position;
 
-            TargetLocation = Owner.Location + leaveVector;
+            TargetLocation = Owner.Location + leaveVector + Owner.Velosity * 4;
         }
         PlayerAction CheckWayToTarget() {
             if(TargetLocation == null)
@@ -119,10 +119,10 @@ namespace GameCore {
         internal override void Step() {
             GameObject danger = GetDangerZone();
 
-            if(ToKill == null || ToKill.ToRemove)
-                ToKill = FindEnemy();
-            if(Owner.Health <= 5 && ToKill != null && Vector2.Distance(Owner.Location, ToKill.Location) < ToKill.Radius * 2)
-                TaskLeaveDeathZone(ToKill);
+            if(MoveGoal == null || MoveGoal.ToRemove)
+                MoveGoal = FindEnemy();
+            if(Owner.Health <= 5 && MoveGoal != null && Vector2.Distance(Owner.Location, MoveGoal.Location) < MoveGoal.Radius * 2)
+                TaskLeaveDeathZone(MoveGoal);
 
             //    if(Owner.Velosity.Length() > Owner.Radius*10)
             //        TaskDecreaseSpeed();
@@ -132,7 +132,7 @@ namespace GameCore {
             else
                 TaskGoToGoal();
 
-            if(ToKill != null) {
+            if(MoveGoal != null) {
                 FireIfCan();
             }
 
@@ -145,7 +145,7 @@ namespace GameCore {
         }
 
         private void FireIfCan() {
-            if(IsLookingTo(Owner, ToKill, Math.PI / 8) && !IsIntersectSomething(ToKill.Location, Owner.Location))
+            if(IsLookingTo(Owner, MoveGoal, Math.PI / 8) && IsIntersectSomething(MoveGoal.Location, Owner.Location, 1).Count() == 0)
                 Owner.Fire();
         }
 
@@ -154,11 +154,10 @@ namespace GameCore {
             return angle <= a / 2f && angle >= -a / 2f;
         }
 
-        private bool IsIntersectSomething(Vector2 p1, Vector2 p2) {
+        private IEnumerable<GameObject> IsIntersectSomething(Vector2 p1, Vector2 p2, float rFactor) {
             foreach(var body in System.Objects(false, true))
-                if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Location.X, body.Location.Y, body.Radius))
-                    return true;
-            return false;
+                if(CommonSectionCircle(p1.X, p1.Y, p2.X, p2.Y, body.Location.X, body.Location.Y, body.Radius * rFactor))
+                    yield return body;
         }
 
         bool CommonSectionCircle(double x1, double y1, double x2, double y2, double xC, double yC, double R) {
@@ -186,8 +185,32 @@ namespace GameCore {
         }
 
         private void TaskGoToGoal() {
-            if(ToKill != null && Vector2.Distance(ToKill.Location, Owner.Location) > (ToKill.Radius + Owner.Radius) * 2)
-                TargetLocation = ToKill.Location;
+            if(MoveGoal == null)
+                return;
+
+            List<GameObject> objects = IsIntersectSomething(MoveGoal.Location, Owner.Location, 1.5f).ToList();
+
+            objects = objects.OrderByDescending(o => Vector2.DistanceSquared(Owner.Location, o.Location)).ToList();
+
+            if(objects.Count > 0) {
+                Vector2 fromplanet = Owner.Location - objects[0].Location;
+
+                Vector2 r1 = fromplanet.GetRotated(Math.PI / 2).UnaryVector() * objects[0].Radius * 1.5f + objects[0].Location;
+                Vector2 r2 = fromplanet.GetRotated(-Math.PI / 2).UnaryVector() * objects[0].Radius * 1.5f + objects[0].Location;
+
+                var dist1 = Vector2.DistanceSquared(MoveGoal.Location, r1);
+                var dist2 = Vector2.DistanceSquared(MoveGoal.Location, r2);
+
+                if(dist1 < dist2) {
+                    TargetLocation = r1;
+                }
+                else TargetLocation = r2;
+            }
+
+            else
+
+            if(MoveGoal != null && Vector2.Distance(MoveGoal.Location, Owner.Location) > (MoveGoal.Radius + Owner.Radius) * 2)
+                TargetLocation = MoveGoal.Location;
         }
 
         private void TaskDecreaseSpeed() {
