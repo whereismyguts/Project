@@ -92,7 +92,7 @@ namespace GameCore {
             geometry.Clear();
             //items.Add(item);
             //geometry.Add(new ScreenGeometry(item.ScreenLocation, item.ScreenSize) { ZIndex = -3, Origin = new Vector2() });
-            Debugger.Lines.Add("common interafce NOT updated");
+            Debugger.AddLine("common interafce NOT updated");
         }
 
         public IEnumerable<Item> GetItems() {

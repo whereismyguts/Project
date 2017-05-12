@@ -145,7 +145,7 @@ namespace GameCore {
                     world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / 30f)));
                 }
                 catch(Exception e) {
-                    Debugger.Lines.Add(e.Message);
+                    Debugger.AddLine(e.Message);
                 }
 
                 AIShipsController.Step();

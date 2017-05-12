@@ -106,7 +106,7 @@ namespace MonoGameDirectX {
                 debugMode++;
             else debugMode = 0;
 
-            Debugger.Lines.Add("debug mode: " + debugMode);
+           Debugger.AddLine("debug mode: " + debugMode);
         }
 
         internal static void Set(GraphicsDevice graphicsDevice, SpriteFont spriteFont) {
@@ -131,9 +131,9 @@ namespace MonoGameDirectX {
 
         static void WriteDebugInfo() {
             int lines = ScreenHeight / 20;
-            int line = Debugger.Lines.Count - 1;
+            int line = Debugger.LinesCount - 1;
             for(int y = ScreenHeight - 30; y > 9 && line >= 0; y -= 20) {
-                SpriteBatch.DrawString(Font, Debugger.Lines[line], new Microsoft.Xna.Framework.Vector2(10, y), new Color(Color.Black, 0.8f));
+                SpriteBatch.DrawString(Font, Debugger.GetLine(line), new Vector2(10, y), new Color(Color.Black, 0.8f));
                 line--;
             }
         }
@@ -227,7 +227,7 @@ namespace MonoGameDirectX {
                 null, null, null, null);
 
             DrawInterface(time);
-            WriteDebugInfo();
+          //  WriteDebugInfo();
             DrawCursor();
 
             SpriteBatch.End();

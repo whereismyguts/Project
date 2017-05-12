@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace MonoGameDirectX {
     /// <summary>
@@ -87,7 +89,7 @@ namespace MonoGameDirectX {
 
 
         void InterfaceController_OnKeysDown(object sender, KeysEventArgs e) {
-            //    Debugger.Lines.Add("key pressed: " + e.Keys + "; ");
+            //   Debugger.AddLine("key pressed: " + e.Keys + "; ");
             if(e.Keys == Keys.LeftControl)
                 ctrlpressed = true;
         }
@@ -95,7 +97,7 @@ namespace MonoGameDirectX {
         bool ctrlpressed = false;
 
         void InterfaceController_OnKeysUp(object sender, KeysEventArgs e) {
-            //    Debugger.Lines.Add("key released: " + e.Keys + "; ");
+            //   Debugger.AddLine("key released: " + e.Keys + "; ");
             switch(e.Keys) {
                 case Keys.F:
                     if(ctrlpressed)
@@ -119,11 +121,11 @@ namespace MonoGameDirectX {
                     break;
                 case Keys.OemPlus:
                     zoom -= zoom / 2f;
-                    Debugger.Lines.Add("z: " + zoom.ToString());
+                    Debugger.AddLine("z: " + zoom.ToString());
                     break;
                 case Keys.OemMinus:
                     zoom += zoom / 2f;
-                    Debugger.Lines.Add("z: " + zoom.ToString());
+                    Debugger.AddLine("z: " + zoom.ToString());
                     break;
                 case Keys.Space:
                     MainCore.Instance.Pause = !MainCore.Instance.Pause;
@@ -139,7 +141,7 @@ namespace MonoGameDirectX {
         }
 
         void InterfaceController_OnButtonsUp(object sender, ButtonsEventArgs e) {
-            //      Debugger.Lines.Add("button released: " + e.Buttons + "; ");
+            //     Debugger.AddLine("button released: " + e.Buttons + "; ");
         }
 
 
@@ -284,7 +286,39 @@ namespace MonoGameDirectX {
 
             //    Renderer.Cover = TextureGenerator.CreateTexture(GraphicsDevice, ScreenWidth, ScreenHeight);
 
+            Debugger.LineAdded += Debugger_LineAdded;
+            th = new System.Threading.Thread(delegate () {
+                OpenConsole();
+            });
+
+            th.Start();
+
             base.Initialize();
+        }
+
+        void Debugger_LineAdded(object sender, EventArgs e) {
+            Console.WriteLine(DateTime.Now.ToShortTimeString() + ": " + (sender as List<string>).LastOrDefault());
+        }
+
+        Thread th;
+        void OpenConsole() {
+            string[] logo = new string[] { "╦ ╦┬ ┬┬┌┬┐┌─┐  ╔═╗┌─┐┌─┐┌─┐┌─┐", "║║║├─┤│ │ ├┤   ╚═╗├─┘├─┤│  ├┤ ", "╚╩╝┴ ┴┴ ┴ └─┘  ╚═╝┴  ┴ ┴└─┘└─┘" };
+            foreach(string s in logo) {
+                Console.WriteLine(s);
+            }
+            for(;;) {
+                string command = Console.ReadLine();
+                if(command == "exit") {
+
+                    break;
+                }
+                if(command == "start") {
+
+                    InterfaceController.Click(PlayerAction.Yes, 1);
+                }
+                else
+                    Console.WriteLine("you say: " + command);
+            }
         }
 
         private static void SetKeys(Button startButton, Button quitButton) {
@@ -342,7 +376,7 @@ namespace MonoGameDirectX {
         }
 
         void ButtonClicked(object sender, EventArgs e) {
-            //      Debugger.Lines.Add((sender as Button).Text + " clicked");
+            //     Debugger.AddLine((sender as Button).Text + " clicked");
         }
 
         protected override void LoadContent() {
@@ -357,10 +391,12 @@ namespace MonoGameDirectX {
         int time = 0;
         protected override void Update(GameTime gameTime) {
 
+            if(!th.IsAlive) {
+                Exit();
+                th.Abort();
+            }
             if(IsActive)
                 ProcessInput();
-
-
             time++;
             if(time >= delay)
                 time = 0;

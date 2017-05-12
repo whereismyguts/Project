@@ -103,6 +103,10 @@ namespace GameCore {
         internal static void AddState(params UIState[] states) {
             MainCore.AddStates(states);
         }
+
+        internal static void Click(PlayerAction action, int p) {
+            CurrentState.DoAction(new ActorKeyPair(p, action), true);
+        }
     }
     public class KeysEventArgs: EventArgs {
         readonly Keys keys;

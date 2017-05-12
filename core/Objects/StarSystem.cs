@@ -32,7 +32,7 @@ namespace GameCore {
                 objects.RemoveAll(p => p.ToRemove);
             }
             catch(Exception e) {
-                Debugger.Lines.Add(e.Message);
+                Debugger.AddLine(e.Message);
             }
         }
         internal void CreatePlanets(World world, int planetsNumber = 3) {
