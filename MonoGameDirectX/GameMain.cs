@@ -194,7 +194,7 @@ namespace MonoGameDirectX {
             //return;
 
             GraphicsDevice.Viewport = defaultViewport;
-            Renderer.RenderTotalOverlay(gameTime);
+            Renderer.RenderTotalOverlay(gameTime, GraphicsDevice.Viewport.Bounds);
 
             switch(cameraMode) {
                 case 0: // overall 

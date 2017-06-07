@@ -10,12 +10,17 @@ namespace GameCore {
         int fireCoolDownMax;
         int fireCoolDown = 10;
 
+        public override SlotType Type {
+            get {
+                return SlotType.WeaponSlot;
+            }
+        }
         public override float Rotation {
             get {
                 return base.Rotation;
             }
         }
-        public WeaponBase() : base(new Vector2(1, 1), new Vector2(.5f, .5f)) {
+        public WeaponBase() : base(new Vector2(3, 3), new Vector2(1.5f, 1.5f)) {
             fireCoolDownMax = Rnd.Get(100, 150); //TODO: customizesize, origine & cooldowntime
         }
 
@@ -63,7 +68,13 @@ namespace GameCore {
             }
         }
 
-        public DefaultEngine() : base(new Vector2(.5f, .5f), new Vector2(0.25f, 0.25f)) {
+        public override SlotType Type {
+            get {
+                return SlotType.EngineSlot;
+            }
+        }
+
+        public DefaultEngine() : base(new Vector2(4f, 4f), new Vector2(2f, 2f)) {
 
         }
 

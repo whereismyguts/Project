@@ -18,6 +18,8 @@ namespace GameCore {
         public bool IsCircle;
         public int ZIndex { get; set; } = 1;
         public Color Color { get; set; } = Color.Black;
+        public string Text { get; set; } = string.Empty;
+        public Color TextColor { get; internal set; } = Color.Gray;
     }
     public class WorldGeometry: Geometry {
         public WorldGeometry(Vector2 location, Vector2 size, bool round = false) : base(location, size, round) {

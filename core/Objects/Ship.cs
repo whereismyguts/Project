@@ -44,19 +44,23 @@ namespace GameCore {
             var e1 = new DefaultEngine();
             var e2 = new DefaultEngine();
 
-            var w2 = Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
-            var w1 = Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
+            for(int i = 0; i < 5; i++) {
+                var w1 = Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
+                Inventory.Add(w1);
+            }
+
             Inventory.Add(e1);
             Inventory.Add(e2);
-            Inventory.Add(w1);
-            Inventory.Add(w2);
             //Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10,10)), Hull.Slots[0]);
             //Hull.Attach(new AttachedItem(new CoordPoint(20, 20), new CoordPoint(10, 10)), Hull.Slots[1]);
 
             Inventory.Attach(Hull.Slots[0], e1);
             Inventory.Attach(Hull.Slots[1], e2);
-            Inventory.Attach(Hull.Slots[2], w1);
-            Inventory.Attach(Hull.Slots[3], w2);
+
+            Inventory.Attach(Hull.Slots[2], Inventory.Container[0] as AttachedItem);
+            Inventory.Attach(Hull.Slots[3], Inventory.Container[1] as AttachedItem);
+
+            //Inventory.Attach(Hull.Slots[2], w1);
 
             Color = Rnd.GetColor();
 

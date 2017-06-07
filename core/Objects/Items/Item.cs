@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GameCore {
     public abstract class Item: Renderable {
@@ -43,19 +44,22 @@ namespace GameCore {
         public int Health { get; internal set; } = 10;
 
         public ShipHull(float diameter) : base(new Vector2(diameter, diameter), new Vector2(diameter / 2, diameter / 2)) {
-            slots.Add(new Slot(new Vector2(-.5f, .2f), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new Vector2(.5f, .2f), this, SlotType.EngineSlot));
-            slots.Add(new Slot(new Vector2(-.7f, -.8f), this, SlotType.WeaponSlot));
-            slots.Add(new Slot(new Vector2(.7f, -.8f), this, SlotType.WeaponSlot));
+            slots.Add(new Slot(new Vector2(-2f, 1.5f), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new Vector2(2f, 1.5f), this, SlotType.EngineSlot));
+            slots.Add(new Slot(new Vector2(-3f, -3f), this, SlotType.WeaponSlot));
+            slots.Add(new Slot(new Vector2(3f, -3f), this, SlotType.WeaponSlot));
         }
 
         public override void Activate() { }
         public override void Deactivate() { }
         public void Attach(AttachedItem item, Slot slot) {
-            if(!slot.IsEmpty)
-                slot.Detach();
-            slot.Attach(item);
-
+            if(item.Slot != null) {
+                item.Detach();
+                return;
+            }
+            var newSlot = slots.FirstOrDefault(s => s.IsEmpty && s.Type == item.Type);
+            if(newSlot != null)
+                newSlot.Attach(item);
         }
 
         internal IEnumerable<DefaultEngine> GetEngines() {
@@ -83,9 +87,14 @@ namespace GameCore {
         }
 
         protected internal virtual Slot Slot { get; set; }
+        public abstract  SlotType  Type { get; }
 
         public AttachedItem(Vector2 size, Vector2 origin) : base(size, origin) {
 
+        }
+        internal void Detach() {
+            Slot.Detach();
+            Slot = null;
         }
     }
 
@@ -107,11 +116,16 @@ namespace GameCore {
     public class EmptySlotItem: AttachedItem {
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("256tile.png", 1, 1, 1);
+                return new SpriteInfo("256tile.png", 1, 1, 1); //TODO return nothing
             }
         }
         public EmptySlotItem(Slot slot) : base(new Vector2(2, 2), new Vector2(1, 1)) {
             Slot = slot;
+        }
+        public override SlotType Type {
+            get {
+                throw new NotImplementedException();
+            }
         }
         public override void Activate() { }
         public override void Deactivate() { }

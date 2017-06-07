@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace GameCore {
     public class PlayerInterface: IRenderableObject {
@@ -12,64 +13,94 @@ namespace GameCore {
 
         public PlayerInterface(Player player) {
             this.player = player;
-            UpdateItems();
+            //Update();
             player.Ship.Inventory.Changed += InterfaceChanged;
             MainCore.Instance.Viewport.Changed += InterfaceChanged;
         }
 
         void InterfaceChanged(EventArgs args) {
-            RaiseChanged();
+            //RaiseChanged();
         }
 
         private void RaiseChanged() {
-            UpdateItems();
+            //Update();
             if(Changed != null)
                 Changed(new RenderObjectChangedEventArgs(this));
         }
 
-        void UpdateItems() {/*
-            Align align = player.Index == 1 ? Align.LeftBottom : Align.RightBottom;
-            ScreenSpriteItem hull = new ScreenSpriteItem(
-                align, player.Ship.Hull.Size / 20,
-                player.Ship.Hull.Origin / 20,
-                player.Ship.Hull.SpriteInfo);
-            items.Clear();
-            items.Add(hull);
 
-            var shipItems = player.Ship.GetItems().ToList();
+        List<Item> ShipItems { get { return player.Ship.Inventory.Container; } }
 
-            foreach(AttachedItem item in shipItems.Where(s => !(s is ShipHull))) {
-                items.Add(new ScreenSpriteItem(hull, item.Slot.RelativeLocation.GetRotated((float)Math.PI) / 20, item.Size / 20, item.Origin / 20, item.SpriteInfo));
-            }
-            //ColorCore color = player.Index == 1 ? ColorCore.Blue : ColorCore.Red;
-            //CoordPoint offset = player.Index == 1 ? new CoordPoint() : new CoordPoint(300, 0);
-
+        internal void Update(Rectangle viewport) {
             geometry.Clear();
-            geometry.Add(new ScreenGeometry(hull.ScreenLocation, hull.ScreenSize, 20) { ZIndex = -1 });
-            if(Focused)
-                geometry.Add(new ScreenGeometry(
-                items[selectedIndex].ScreenLocation,
-                items[selectedIndex].ScreenSize));
-                */
+            Vector2 size = new Vector2(180, 18);
+            float x = player.Index == 1 ? 10 : viewport.Width - size.X - 10;
+            float y = viewport.Height - 90;
+
+            if(!Focused) {
+                geometry.Add(new ScreenGeometry(new Vector2(x, y), new Vector2(size.X, 18 * 4)));
+                return;
+            }
+
+            for(int j = minItemPresented; j <= maxItemPresented; j++) {
+                AttachedItem item = ShipItems[j] as AttachedItem;
+                if(item == null) { }
+                var listItem = new ScreenGeometry(new Vector2(x, y), size) { Text = "[" + j + "]" + item.Name };
+                listItem.Color = j == selectedIndex ? Color.Red : Color.Black;
+                listItem.TextColor = item.Slot == null ? Color.Black : Color.Green;
+                geometry.Add(listItem);
+                y += 18;
+            }
         }
+
+        void UpdatePresentedItems() {
+            if(selectedIndex == 0) {
+                minItemPresented = selectedIndex;
+                maxItemPresented = selectedIndex + 3;
+                return;
+            }
+            if(selectedIndex == ShipItems.Count - 1) {
+                maxItemPresented = selectedIndex;
+                minItemPresented = selectedIndex - 3;
+                return;
+            }
+            if(selectedIndex < minItemPresented) {
+                minItemPresented--;
+                maxItemPresented--;
+            }
+            else
+            if(selectedIndex > maxItemPresented) {
+                minItemPresented++;
+                maxItemPresented++;
+            }
+        }
+
+        int minItemPresented = 0;
+        int maxItemPresented = 3;
 
         internal void SelectPrev() {
             if(selectedIndex > 0)
                 selectedIndex--;
-            else selectedIndex = items.Count - 1;
+            else selectedIndex = ShipItems.Count - 1;
             RaiseChanged();
+            UpdatePresentedItems();
         }
-
         internal void SelectNext() {
-            if(selectedIndex < items.Count - 1)
+            if(selectedIndex < ShipItems.Count - 1)
                 selectedIndex++;
             else
                 selectedIndex = 0;
             RaiseChanged();
+            UpdatePresentedItems();
         }
 
         internal void Select() {
-
+            var item = player.Ship.Inventory.Container[selectedIndex];
+            if(item is AttachedItem)
+                player.Ship.Inventory.Attach(item as AttachedItem);
+            else
+                item.Activate();
+            //ShipItems[selectedIndex].Activate();
         }
 
         internal void Focus() {

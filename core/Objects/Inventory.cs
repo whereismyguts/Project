@@ -9,13 +9,17 @@ namespace GameCore {
             this.inv = inv;
         }
     }
+
     public class Inventory {
         ShipHull hull;
 
         public List<Item> Container { get; set; } = new List<Item>();
         public Inventory(ShipHull hull) {
-
             this.hull = hull;
+            RaiseChanged();
+        }
+        public void Attach(AttachedItem item) {
+            hull.Attach(item, null);
             RaiseChanged();
         }
         public void Attach(Slot slot, AttachedItem item) {

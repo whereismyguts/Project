@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 
 namespace GameCore {
     public class PlayerController {
@@ -18,7 +19,10 @@ namespace GameCore {
 
         static CommonInterface commonInterface = new CommonInterface();
 
-        public static IEnumerable<IRenderableObject> GetInterfaceElements() {
+        public static IEnumerable<IRenderableObject> GetInterfaceElements(Rectangle viewport) {
+            commonInterface = new CommonInterface();
+            foreach(var p in Players)
+                p.Interface.Update(viewport);
 
             List<IRenderableObject> res = new List<IRenderableObject>();
             res.Add(commonInterface);
@@ -78,20 +82,11 @@ namespace GameCore {
 
         public CommonInterface() {
             Update();
-
-            MainCore.Instance.Viewport.Changed += Viewport_Changed;
         }
-
-        private void Viewport_Changed(ViewportChangedEventArgs args) {
-            Update();
-        }
-
         void Update() {
-            //ScreenSpriteItem item = new ScreenSpriteItem(Align.FillBottom, new Vector2(150, 150), new Vector2(), new SpriteInfo("256tile.png") { ZIndex = -2 });
             items.Clear();
             geometry.Clear();
-            //items.Add(item);
-            //geometry.Add(new ScreenGeometry(item.ScreenLocation, item.ScreenSize) { ZIndex = -3, Origin = new Vector2() });
+            geometry.Add(new ScreenGeometry(new Microsoft.Xna.Framework.Vector2(100, 100), new Microsoft.Xna.Framework.Vector2(50, 50)) { Text = "TEST222" });
             Debugger.AddLine("common interafce NOT updated");
         }
 

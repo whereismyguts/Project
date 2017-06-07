@@ -62,14 +62,14 @@ namespace MonoGameDirectX {
             var location = geom.ScreenLocation - geom.ScreenOrigin;
             var size = geom.ScreenSize;
 
-            
+
 
             if(geom.IsCircle) {
                 DrawCircle(geom.ScreenLocation, geom.ScreenSize.X / 2f, spriteBatch, geom.Color);
                 return;
             }
-
-        //    DrawRect(screenRect, spriteBatch, 1, Color.Black, new Color(color, 0.7f));
+            DrawRect(new Rectangle(geom.ScreenLocation.ToPoint(), geom.ScreenSize.ToPoint()), spriteBatch, 1, Color.Black, new Color(geom.Color, 0.5f));
+            spriteBatch.DrawString(Renderer.Font, geom.Text, geom.ScreenLocation + new Vector2(5, -5), geom.TextColor);
         }
 
 

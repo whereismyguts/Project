@@ -120,7 +120,6 @@ namespace MonoGameDirectX {
             WinAdapter.UpdateRenderObjects(ref renderObjects);
             foreach(RenderObject renderObject in renderObjects) {
                 //DONT remove!!
-
                 renderObject.Draw(SpriteBatch, gameTime);
                 //if(renderObject.GameObject is Body)
                 //    renderObject.Draw(SpriteBatch, gameTime);
@@ -138,10 +137,13 @@ namespace MonoGameDirectX {
             }
         }
 
-        static void DrawInterface(GameTime time) {
+        static void DrawInterface(GameTime time, Rectangle viewport) {
             // DrawPrimitives.DrawRect(new Rectangle(Viewport.Location.ToPoint(), Viewport.PxlSize.ToPoint()), SpriteBatch, 2, Color.Purple);
 
             InterfaceController.GetActualControls().ToList().ForEach(con => con.Draw(SpriteBatch, time));
+            var playerInterface = PlayerController.GetInterfaceElements(viewport);
+            foreach(IRenderableObject obj in playerInterface)
+                WinAdapter.CreateRenderObject(obj).Draw(SpriteBatch, time);
             //foreach(Control c in controls)
             //c.Draw(SpriteBatch, time);
         }
@@ -171,7 +173,7 @@ namespace MonoGameDirectX {
                     continue;
 
                 if(obj is SpaceBody) {
-                    int radius = (int)(obj.Radius / 5f + 10) / 2;
+                    int radius = (int)(obj.Radius / 5f);
                     //      DrawPrimitives.DrawCircle(objLocation, radius, SpriteBatch, Color.Red, MapBorder);
                     var tex = TextureGenerator.Circle(GraphicsDevice, radius, Color.LightGray);
                     SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
@@ -220,13 +222,13 @@ namespace MonoGameDirectX {
             SpriteBatch.End();
         }
 
-        public static void RenderTotalOverlay(GameTime time) {
+        public static void RenderTotalOverlay(GameTime time, Rectangle viewport) {
             SpriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
                 SamplerState.PointClamp,
                 null, null, null, null);
 
-            DrawInterface(time);
+            DrawInterface(time, viewport);
           //  WriteDebugInfo();
             DrawCursor();
 
