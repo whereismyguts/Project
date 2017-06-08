@@ -83,7 +83,7 @@ namespace GameCore {
         public override IEnumerable<Geometry> GetPrimitives() {
             var list = base.GetPrimitives().ToList();
 
-            list.Add(new Line(startPos, Location) { Color = Color.Blue });
+        //    list.Add(new Line(startPos, Location) { Color = Color.Blue });
             return list;
         }
         protected override string GetName() {

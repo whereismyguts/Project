@@ -41,7 +41,7 @@ namespace GameCore {
         public override float Rotation { get { return Owner.Rotation; } }
 
         public List<Slot> Slots { get { return slots; } }
-        public int Health { get; internal set; } = 10;
+        public int Health { get; internal set; } = 100;
 
         public ShipHull(float diameter) : base(new Vector2(diameter, diameter), new Vector2(diameter / 2, diameter / 2)) {
             slots.Add(new Slot(new Vector2(-2f, 1.5f), this, SlotType.EngineSlot));

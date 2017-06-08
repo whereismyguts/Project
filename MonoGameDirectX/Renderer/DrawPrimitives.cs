@@ -68,7 +68,7 @@ namespace MonoGameDirectX {
                 DrawCircle(geom.ScreenLocation, geom.ScreenSize.X / 2f, spriteBatch, geom.Color);
                 return;
             }
-            DrawRect(new Rectangle(geom.ScreenLocation.ToPoint(), geom.ScreenSize.ToPoint()), spriteBatch, 1, Color.Black, new Color(geom.Color, 0.5f));
+            DrawRect(new Rectangle(geom.ScreenLocation.ToPoint(), geom.ScreenSize.ToPoint()), spriteBatch, 1, Color.Black, new Color(geom.Color, 0.8f));
             spriteBatch.DrawString(Renderer.Font, geom.Text, geom.ScreenLocation + new Vector2(5, -5), geom.TextColor);
         }
 

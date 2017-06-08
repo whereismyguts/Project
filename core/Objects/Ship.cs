@@ -45,7 +45,7 @@ namespace GameCore {
             var e2 = new DefaultEngine();
 
             for(int i = 0; i < 5; i++) {
-                var w1 = Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
+                var w1 =  Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
                 Inventory.Add(w1);
             }
 
@@ -120,7 +120,15 @@ namespace GameCore {
                 yield return Hull.Slots[i].AttachedItem;
             yield return Hull;
         }
-
+        public override IEnumerable<Geometry> GetPrimitives() {
+            float colorFactor = Hull.Health / 100f;
+            Color color = new Color(1-colorFactor ,  colorFactor , 0);
+            return new Geometry[]{ new ScreenGeometry(
+                new Vector2(ScreenBounds.LeftTop.X, ScreenBounds.LeftTop.Y-5), 
+                new Vector2(ScreenBounds.RightBottom.X-ScreenBounds.LeftTop.X, 5)) { Color  = color}
+            //,            new ScreenGeometry(ScreenBounds.LeftTop,Vector2.Zero) { Text = Hull.Health.ToString() }
+            };
+        }
         //Vector2 GetAcceleration() {
         //    IEnumerable<DefaultEngine> engines = Hull.GetEngines();
         //    Vector2 sum = new Vector2();

@@ -87,7 +87,7 @@ namespace MonoGameDirectX {
                 SpriteBatch.DrawString(Font, MainCore.Instance.Cursor.X.ToString("f1") + ":" + MainCore.Instance.Cursor.Y.ToString("f1"), scrPoint, Color.Red);
             }
             //var rect = Viewport.World2ScreenBounds(new Bounds(-25000, -25000, 50000, 50000));
-
+            return;
             foreach(var c in AIShipsController.Controllers)
                 if(c != null && c is DefaultAutoControl) {
                     DrawPrimitives.DrawLine(
@@ -160,7 +160,7 @@ namespace MonoGameDirectX {
             // Thread.Sleep(50);
             //GenerateTexture();
             //DrawPrimitives.DrawCircle(MapBorder.Center.ToVector2(), mapSize/2, SpriteBatch,  Color.Black, MapBorder);
-            var back = TextureGenerator.Circle(GraphicsDevice, mapSize / 2, Color.Gray);
+            Texture2D back = TextureGenerator.Rectangle(GraphicsDevice, mapSize, Color.Gray, Color.DarkGray);// Circle(GraphicsDevice, mapSize / 2, Color.Gray);
             SpriteBatch.Draw(back, MapBorder.Center.ToVector2(), null, Color.White, 0f, new Vector2(mapSize / 2f, mapSize / 2f), 1, SpriteEffects.None, 0);
 
 

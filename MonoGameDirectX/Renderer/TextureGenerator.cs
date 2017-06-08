@@ -8,7 +8,7 @@ using GameCore;
 namespace MonoGameDirectX {
     public static class TextureGenerator {
 
-        static Dictionary<string, Texture2D> circles = new Dictionary<string, Texture2D>();
+        static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
 
         internal static Texture2D Circle(GraphicsDevice device, int radius, Color color) {
 
@@ -17,8 +17,8 @@ namespace MonoGameDirectX {
 
             string key = "" + radius + color.PackedValue;
 
-            if(circles.ContainsKey(key))
-                return circles[key];
+            if(textures.ContainsKey(key))
+                return textures[key];
 
             int diam = radius * 2;
 
@@ -45,7 +45,7 @@ namespace MonoGameDirectX {
 
             texture.SetData(data);
 
-            circles.Add(key, texture);
+            textures.Add(key, texture);
 
 
 
@@ -180,8 +180,8 @@ namespace MonoGameDirectX {
 
             string key = "s" + radius + color.PackedValue;
 
-            if(circles.ContainsKey(key))
-                return circles[key];
+            if(textures.ContainsKey(key))
+                return textures[key];
 
             int diam = radius * 2;
 
@@ -220,41 +220,87 @@ namespace MonoGameDirectX {
 
             texture.SetData(data);
 
-            circles.Add(key, texture);
+            textures.Add(key, texture);
+            return texture;
+        }
+
+        internal static Texture2D Rectangle(GraphicsDevice device, int mapSize, Color color1, Color color2) {
+            if(mapSize < 1)
+                mapSize = 1;
+
+            string key = "R" + mapSize + color1.PackedValue + color2.PackedValue;
+
+            if(textures.ContainsKey(key))
+                return textures[key];
+
+            Texture2D texture = new Texture2D(device, mapSize, mapSize);
+
+            Color[] data = new Color[mapSize * mapSize];
+            int x = 0, y = 0;
+
+
+            float cR = color1.R;
+            float cG = color1.G;
+            float cB = color1.B;
+
+            for(int pixel = 0; pixel < data.Count(); pixel++) {
+
+                
+
+
+                data[pixel] = new Color(cR, cG, cB);
+
+
+
+                x++;
+                if(x == mapSize) {
+                    x = 0; y++;
+
+
+                    cR = color1.R / 255f + (color2.R - color1.R) / 255f * (y * 1f / mapSize);
+                    cG = color1.G / 255f + (color2.G - color1.G) / 255f * (y * 1f / mapSize);
+                    cB = color1.B / 255f + (color2.B - color1.B) / 255f * (y * 1f / mapSize);
+                }
+            }
+
+            texture.SetData(data);
+
+            textures.Add(key, texture);
+
             return texture;
         }
         /*
 public static Texture2D CreateTexture(GraphicsDevice device, int width, int height) {
-   //initialize a texture
+//initialize a texture
 
-   var view = Viewport.Rectangle;
+var view = Viewport.Rectangle;
 
-   Texture2D texture = new Texture2D(device, width, height);
+Texture2D texture = new Texture2D(device, width, height);
 
-   //the array holds the color for each pixel in the texture
+//the array holds the color for each pixel in the texture
 
-   Color[] data = new Color[width * height];
-   int x = 0, y = 0;
+Color[] data = new Color[width * height];
+int x = 0, y = 0;
 
-   for(int pixel = 0; pixel < data.Count(); pixel++) {
+for(int pixel = 0; pixel < data.Count(); pixel++) {
 
-       if((x == view.Left || x == view.Right) && (y > view.Top && y < view.Bottom)
-           ||
-           (y == view.Top || y == view.Bottom) && (x > view.Left && x < view.Right))
-           data[pixel] = Color.Black;
-       else
-       if(view.Contains(x, y))
-           data[pixel] = Color.Transparent;
-       else data[pixel] = Color.White;
+if((x == view.Left || x == view.Right) && (y > view.Top && y < view.Bottom)
+  ||
+  (y == view.Top || y == view.Bottom) && (x > view.Left && x < view.Right))
+  data[pixel] = Color.Black;
+else
+if(view.Contains(x, y))
+  data[pixel] = Color.Transparent;
+else data[pixel] = Color.White;
 
-       x++;
-       if(x == width) {
-           x = 0; y++;
-       }
-   }
+x++;
+if(x == width) {
+  x = 0; y++;
+}
+}
 
-   texture.SetData(data);
-   return texture;
+texture.SetData(data);
+return texture;
 }
 */
     }

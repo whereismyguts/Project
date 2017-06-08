@@ -87,7 +87,7 @@ namespace GameCore {
             items.Clear();
             geometry.Clear();
             geometry.Add(new ScreenGeometry(new Microsoft.Xna.Framework.Vector2(100, 100), new Microsoft.Xna.Framework.Vector2(50, 50)) { Text = "TEST222" });
-            Debugger.AddLine("common interafce NOT updated");
+       //     Debugger.AddLine("common interafce NOT updated");
         }
 
         public IEnumerable<Item> GetItems() {

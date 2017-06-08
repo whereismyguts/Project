@@ -161,8 +161,8 @@ namespace GameCore {
                         yield return Body2PolygonShape(Body);
             }
 
-            yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
-            yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
+            //yield return new WorldGeometry(Location, new Vector2(Radius * 2, Radius * 2), true);
+            //yield return new Line(Location, Location + new Vector2(0, Radius).GetRotated(Rotation));
 
             if(MainCore.Instance.HookedObject == this)
                 yield return new Line(Location, MainCore.Instance.Cursor);

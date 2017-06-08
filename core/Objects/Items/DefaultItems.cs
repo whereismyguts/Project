@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GameCore {
     public abstract class WeaponBase: AttachedItem {
-        int fireCoolDownMax;
+        protected virtual int FireCoolDownMax { get; set; }
         int fireCoolDown = 10;
 
         public override SlotType Type {
@@ -21,7 +21,7 @@ namespace GameCore {
             }
         }
         public WeaponBase() : base(new Vector2(3, 3), new Vector2(1.5f, 1.5f)) {
-            fireCoolDownMax = Rnd.Get(100, 150); //TODO: customizesize, origine & cooldowntime
+            FireCoolDownMax = Rnd.Get(100, 150); //TODO: customize size, origine & cooldowntime
         }
 
         public override void Activate() {
@@ -29,13 +29,13 @@ namespace GameCore {
         public override void Deactivate() {
         }
         public override void Step() {
-            if(fireCoolDown < fireCoolDownMax)
+            if(fireCoolDown < FireCoolDownMax)
                 fireCoolDown++;
             base.Step();
         }
 
         internal void Fire() {
-            if(fireCoolDown >= fireCoolDownMax) {
+            if(fireCoolDown >= FireCoolDownMax) {
                 //var direction = Direction.GetRotated(Rnd.Get(-.1f, .1f));
                 CreateProjectile(Location.Add(Origin) + Slot.Hull.Owner.Direction * 10, Slot.Hull.Owner.Direction, Slot.Hull.Owner);
                 fireCoolDown = 0;

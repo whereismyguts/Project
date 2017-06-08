@@ -76,7 +76,7 @@ namespace GameCore {
         public Vector2 Location { get; set; }
         public Vector2 PxlSize { get { return new Vector2(pxlWidth, pxlHeight); } }
         public Rectangle Rectangle { get { return new Rectangle(Location.ToPoint(), PxlSize.ToPoint()); } }
-        public bool SmoothUpdate { get; set; } = false;
+        public bool SmoothUpdate { get; set; } = true;
 
         public Viewport(Vector2 location, Vector2 size) {
             this.pxlWidth = size.X;
