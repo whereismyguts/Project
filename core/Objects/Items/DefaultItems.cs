@@ -118,7 +118,7 @@ namespace GameCore {
     public class RocketLauncher: WeaponBase {
         public override SpriteInfo SpriteInfo {
             get {
-                return new SpriteInfo("gun.png");
+                return new SpriteInfo("gun.png", zIndex: 1);
             }
         }
         protected override ProjectileBase CreateProjectile(Vector2 location, Vector2 direction, Ship owner) {

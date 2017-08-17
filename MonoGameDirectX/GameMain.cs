@@ -176,7 +176,7 @@ namespace MonoGameDirectX {
         //int height = 0;
         //int mouseWheel = 0;
 
-        int cameraMode = 0;
+        int cameraMode = 1;
 
         //protected override void Draw(GameTime gameTime) {
         //   return;

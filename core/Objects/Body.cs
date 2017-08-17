@@ -111,7 +111,7 @@ namespace GameCore {
 
         public Planet(Vector2 location, float radius, World world)
             : base(location, radius, world) {
-            //Body.Mass *= 5;
+           // Body.Mass *= 5;
             SetOrbitaVelosity();
         }
 
@@ -119,8 +119,9 @@ namespace GameCore {
             Body.LinearVelocity = Vector2.Zero;
 
             var dir = Location.GetRotated((Rnd.Bool() ? 1 : -1) * (float)Math.PI / 2);
-            var speed = Mass * Rnd.Get(1, 10);
-            Body.ApplyLinearImpulse(dir * speed);
+            dir.Normalize();
+            var speed = Mass*1000;
+            Body.LinearVelocity = dir * speed;
             Body.ApplyAngularImpulse(Mass);
             name = NameGenerator.Generate(Rnd.Get(0, 3)); ;
         }
@@ -135,10 +136,10 @@ namespace GameCore {
             if(DistanceToSun < 180) {
                 ApplyForce((Location - RotateCenter.Location) * Mass / 2);
             }
-            //if(DistanceToSun > 1000 || DistanceToSun < 180) {
-            //    Body.Position = GetNewLocation(this);
-            //    SetOrbitaVelosity();
-            //}
+
+
+            ApplyForce(Body.LinearVelocity*50);
+
             base.Step();
         }
         //protected internal override void Step() {

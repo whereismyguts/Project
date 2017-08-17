@@ -45,7 +45,7 @@ namespace GameCore {
             for(int j = minItemPresented; j <= maxItemPresented; j++) {
                 AttachedItem item = ShipItems[j] as AttachedItem;
                 if(item == null) { }
-                var listItem = new ScreenGeometry(new Vector2(x, y), size) { Text = j + "." + item.Name };
+                var listItem = new ScreenGeometry(new Vector2(x, y), size) { Text =  item.Name };
                 listItem.Color = j == selectedIndex ? Color.Red : Color.Black;
                 listItem.TextColor = item.Slot == null ? Color.Black : Color.Green;
                 geometry.Add(listItem);

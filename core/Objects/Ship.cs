@@ -45,7 +45,7 @@ namespace GameCore {
             var e2 = new DefaultEngine();
 
             for(int i = 0; i < 5; i++) {
-                var w1 =  Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
+                var w1 = Rnd.Bool() ? (WeaponBase)new SlimeGun() : new RocketLauncher();
                 Inventory.Add(w1);
             }
 
@@ -66,6 +66,8 @@ namespace GameCore {
 
             Body.OnCollision += CollideProcessing.OnCollision;
         }
+
+
 
 
         public void Accselerate() {
@@ -112,6 +114,7 @@ namespace GameCore {
                 Body.AngularVelocity = 0;
             }
             Body.Rotation += angleSpeed;
+            Body.Position += Body.LinearVelocity/100f;
             angleSpeed *= .9f;
             base.Step();
         }
@@ -122,10 +125,20 @@ namespace GameCore {
         }
         public override IEnumerable<Geometry> GetPrimitives() {
             float colorFactor = Hull.Health / 100f;
-            Color color = new Color(1-colorFactor ,  colorFactor , 0);
-            return new Geometry[]{ new ScreenGeometry(
-                new Vector2(ScreenBounds.LeftTop.X, ScreenBounds.LeftTop.Y-5), 
-                new Vector2(ScreenBounds.RightBottom.X-ScreenBounds.LeftTop.X, 5)) { Color  = color}
+            Color color = new Color(1 - colorFactor, colorFactor, 0);
+            float height = Math.Max(.5f, Math.Min(5, ScreenBounds.Height));
+            float width = ScreenBounds.RightBottom.X - ScreenBounds.LeftTop.X;
+
+            if(width < 2 || height < 1 || Math.Abs(height-width) < 1)
+                return new Geometry[] { };
+            return new Geometry[]{
+                new ScreenGeometry(
+                    new Vector2(ScreenBounds.LeftTop.X, ScreenBounds.LeftTop.Y-height*2.3f),
+                    new Vector2(width, height)) { Color  = Fraction == 1 ? Color.Red : Color.Blue},
+
+                new ScreenGeometry(
+                    new Vector2(ScreenBounds.LeftTop.X, ScreenBounds.LeftTop.Y-height),
+                    new Vector2(width*colorFactor, height)) { Color  = color}
             //,            new ScreenGeometry(ScreenBounds.LeftTop,Vector2.Zero) { Text = Hull.Health.ToString() }
             };
         }

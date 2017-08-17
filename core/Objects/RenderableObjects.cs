@@ -127,6 +127,11 @@ namespace GameCore {
 
         public GameObject Owner { get; private set; }
 
+        public override string Name {
+            get {
+                return "world sprite item";
+            }
+        }
         Vector2 relLocation = Vector2.Zero;
         float relRotation = 0;
 

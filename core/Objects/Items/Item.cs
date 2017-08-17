@@ -8,7 +8,7 @@ namespace GameCore {
         public virtual void Step() {
 
         }
-        public virtual string Name { get { return "no-name item"; } }
+        public abstract string Name { get; }
 
         public abstract SpriteInfo SpriteInfo { get; }
         public abstract float Rotation { get; }
@@ -43,6 +43,11 @@ namespace GameCore {
         public List<Slot> Slots { get { return slots; } }
         public int Health { get; internal set; } = 100;
 
+        public override string Name {
+            get {
+                return "hull";
+            }
+        }
         public ShipHull(float diameter) : base(new Vector2(diameter, diameter), new Vector2(diameter / 2, diameter / 2)) {
             slots.Add(new Slot(new Vector2(-2f, 1.5f), this, SlotType.EngineSlot));
             slots.Add(new Slot(new Vector2(2f, 1.5f), this, SlotType.EngineSlot));
@@ -125,6 +130,11 @@ namespace GameCore {
         public override SlotType Type {
             get {
                 throw new NotImplementedException();
+            }
+        }
+        public override string Name {
+            get {
+                return "empty slot";
             }
         }
         public override void Activate() { }

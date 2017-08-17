@@ -151,7 +151,7 @@ namespace MonoGameDirectX {
 
 
 
-        static int mapSize = 100;
+        static int mapSize = 300;
         static Rectangle MapBorder {
             get { return new Rectangle(ScreenWidth / 2 - mapSize / 2, ScreenHeight / 2 - mapSize / 2 - 1, mapSize, mapSize); }
         }
@@ -160,7 +160,7 @@ namespace MonoGameDirectX {
             // Thread.Sleep(50);
             //GenerateTexture();
             //DrawPrimitives.DrawCircle(MapBorder.Center.ToVector2(), mapSize/2, SpriteBatch,  Color.Black, MapBorder);
-            Texture2D back = TextureGenerator.Rectangle(GraphicsDevice, mapSize, Color.Gray, Color.DarkGray);// Circle(GraphicsDevice, mapSize / 2, Color.Gray);
+            Texture2D back = TextureGenerator.Rectangle(GraphicsDevice, mapSize, Color.LightGray, Color.DarkSlateBlue);// Circle(GraphicsDevice, mapSize / 2, Color.Gray);
             SpriteBatch.Draw(back, MapBorder.Center.ToVector2(), null, Color.White, 0f, new Vector2(mapSize / 2f, mapSize / 2f), 1, SpriteEffects.None, 0);
 
 
@@ -168,28 +168,28 @@ namespace MonoGameDirectX {
 
 
             foreach(var obj in MainCore.Instance.Objects.Where(o => o is Ship || o is SpaceBody)) {
-                Vector2 objLocation = MapBorder.Center.ToVector2() + obj.Location / 5f;
+                Vector2 objLocation = MapBorder.Center.ToVector2() + obj.Location / 10f;
                 if(!MapBorder.Contains(objLocation))
                     continue;
 
                 if(obj is SpaceBody) {
-                    int radius = (int)(obj.Radius / 5f);
+                    int radius = (int)(obj.Radius / 10f);
                     //      DrawPrimitives.DrawCircle(objLocation, radius, SpriteBatch, Color.Red, MapBorder);
-                    var tex = TextureGenerator.Circle(GraphicsDevice, radius, Color.LightGray);
+                    var tex = TextureGenerator.Circle(GraphicsDevice, radius, Color.DarkSlateGray);
                     SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
-                    var shadow = TextureGenerator.CircleShadow(GraphicsDevice, radius, Color.DarkGray);
-                    SpriteBatch.Draw(shadow, objLocation, null, Color.White, 0, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
+               //     var shadow = TextureGenerator.CircleShadow(GraphicsDevice, radius, Color.DarkSlateGray);
+                 //   SpriteBatch.Draw(shadow, objLocation, null, Color.White, 0, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
                 }
 
                 else {
                     Ship ship = obj as Ship;
-                    var tex = TextureGenerator.Circle(GraphicsDevice, 4, ship.Fraction == 1 ? Color.Red : Color.Blue);
-                    SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(4, 4), 1, SpriteEffects.None, 0);
+                    var tex = TextureGenerator.Circle(GraphicsDevice, 4, ship.Fraction == 1 ? Color.IndianRed : Color.CornflowerBlue);
+                    SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(3, 3), 1, SpriteEffects.None, 0);
 
                     Player pl = PlayerController.Players.FirstOrDefault(p => p.Ship == ship);
 
                     if(pl != null) {
-                        SpriteBatch.DrawString(Font, "p" + pl.Index, objLocation, ship.Fraction == 1 ? Color.Red : Color.Blue);
+                        SpriteBatch.DrawString(Font, "p" + pl.Index, objLocation, ship.Fraction == 1 ? Color.IndianRed : Color.CornflowerBlue);
                     }
 
                 }

@@ -182,11 +182,7 @@ namespace MonoGameDirectX {
 
             if(textures.ContainsKey(key))
                 return textures[key];
-
             int diam = radius * 2;
-
-
-
 
             Texture2D texture = new Texture2D(device, diam, diam);
 
@@ -203,23 +199,19 @@ namespace MonoGameDirectX {
 
                     var lightDist = Vector2.Distance(source, new Vector2(x, y));
                     if(lightDist > radius * 2)
-                        data[pixel] = GameCore.Rnd.Get(0, lightDist) > lightDist / 3.5 ? color : Color.Transparent;
-
+                        if(GameCore.Rnd.Get(0, lightDist) > 20)
+                            data[pixel] = color;
+                        else
+                            data[pixel] = Color.Transparent;
                 }
-
-
                 else
                     data[pixel] = Color.Transparent;
-
                 x++;
                 if(x == diam) {
                     x = 0; y++;
                 }
             }
-
-
             texture.SetData(data);
-
             textures.Add(key, texture);
             return texture;
         }
@@ -238,25 +230,15 @@ namespace MonoGameDirectX {
             Color[] data = new Color[mapSize * mapSize];
             int x = 0, y = 0;
 
-
             float cR = color1.R;
             float cG = color1.G;
             float cB = color1.B;
 
             for(int pixel = 0; pixel < data.Count(); pixel++) {
-
-                
-
-
                 data[pixel] = new Color(cR, cG, cB);
-
-
-
                 x++;
                 if(x == mapSize) {
                     x = 0; y++;
-
-
                     cR = color1.R / 255f + (color2.R - color1.R) / 255f * (y * 1f / mapSize);
                     cG = color1.G / 255f + (color2.G - color1.G) / 255f * (y * 1f / mapSize);
                     cB = color1.B / 255f + (color2.B - color1.B) / 255f * (y * 1f / mapSize);
@@ -264,9 +246,7 @@ namespace MonoGameDirectX {
             }
 
             texture.SetData(data);
-
             textures.Add(key, texture);
-
             return texture;
         }
         /*
