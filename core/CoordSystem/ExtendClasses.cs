@@ -6,8 +6,11 @@ namespace GameCore {
     public static class Vector2Operations {
 
         public static Vector2 GetRotated(this Vector2 v, double angle) {
-            var newX = (float)(v.X * Math.Cos(angle) - v.Y * Math.Sin(angle));
-            var newY = (float)(v.X * Math.Sin(angle) + v.Y * Math.Cos(angle));
+            var sin = Math.Sin(angle);
+            var cos = Math.Cos(angle);
+
+            var newX = (float)(v.X * cos - v.Y * sin);
+            var newY = (float)(v.X * sin + v.Y * cos);
 
             return new Vector2(newX, newY);
         }
