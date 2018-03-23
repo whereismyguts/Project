@@ -110,7 +110,7 @@ namespace GameCore {
                 item.Step();
             //var acc = GetAcceleration() * 0.5f;
             //Circle.ApplyLinearImpulse(acc);
-            if(angleSpeed > 0.001) {
+            if(Math.Abs( angleSpeed ) > 0.001) {
                 Body.AngularVelocity = 0;
             }
             Body.Rotation += angleSpeed;
