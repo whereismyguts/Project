@@ -99,7 +99,7 @@ namespace MonoGameDirectX {
             //DrawPrimitives.DrawCircle(WinAdapter.CoordPoint2Vector(rect.Center), rect.Width / 2, SpriteBatch, Color.Brown);
         }
 
-        static int debugMode = 2;
+        static int debugMode = 1;
         internal static void SwitchDebugMode() {
 
             if(debugMode < 2)
@@ -156,6 +156,8 @@ namespace MonoGameDirectX {
             get { return new Rectangle(ScreenWidth / 2 - mapSize / 2, ScreenHeight / 2 - mapSize / 2 - 1, mapSize, mapSize); }
         }
 
+
+        static float mapCoeff = .1f;
         static void DrawMap() {
             // Thread.Sleep(50);
             //GenerateTexture();
@@ -163,20 +165,29 @@ namespace MonoGameDirectX {
             Texture2D back = TextureGenerator.Rectangle(GraphicsDevice, mapSize, Color.LightGray, Color.DarkSlateBlue);// Circle(GraphicsDevice, mapSize / 2, Color.Gray);
             SpriteBatch.Draw(back, MapBorder.Center.ToVector2(), null, Color.White, 0f, new Vector2(mapSize / 2f, mapSize / 2f), 1, SpriteEffects.None, 0);
 
+            
+            // Rectangle rect = new Rectangle((-MapBorder.Size.ToVector2() / 2).ToPoint(), MapBorder.Size);
 
-            Rectangle rect = new Rectangle((-MapBorder.Size.ToVector2() / 2).ToPoint(), MapBorder.Size);
+            var bounds = Viewport.Bounds *mapCoeff + MapBorder.Center.ToVector2();
+            DrawPrimitives.DrawRect(WinAdapter.Bounds2Rectangle(bounds), SpriteBatch, 1, Color.Black);
 
-
+            float maxX = float.MinValue, maxY = float.MinValue, minX = float.MaxValue, minY = float.MaxValue;
             foreach(var obj in MainCore.Instance.Objects.Where(o => o is Ship || o is SpaceBody)) {
-                Vector2 objLocation = MapBorder.Center.ToVector2() + obj.Location / 10f;
-                if(!MapBorder.Contains(objLocation))
+                
+                maxX = Math.Max(obj.Location.X , maxX);
+                maxY = Math.Max(obj.Location.Y, maxY);
+                minX = Math.Min(obj.Location.X, minX);
+                minY = Math.Min(obj.Location.Y, minY);
+
+                Vector2 mapObjLocation = MapBorder.Center.ToVector2() + obj.Location * mapCoeff;
+                if(!MapBorder.Contains(mapObjLocation))
                     continue;
 
                 if(obj is SpaceBody) {
-                    int radius = (int)(obj.Radius / 10f);
+                    int radius = (int)(obj.Radius * mapCoeff);
                     //      DrawPrimitives.DrawCircle(objLocation, radius, SpriteBatch, Color.Red, MapBorder);
                     var tex = TextureGenerator.Circle(GraphicsDevice, radius, Color.DarkSlateGray);
-                    SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
+                    SpriteBatch.Draw(tex, mapObjLocation, null, Color.White, 0f, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
                //     var shadow = TextureGenerator.CircleShadow(GraphicsDevice, radius, Color.DarkSlateGray);
                  //   SpriteBatch.Draw(shadow, objLocation, null, Color.White, 0, new Vector2(radius, radius), 1, SpriteEffects.None, 0);
                 }
@@ -184,16 +195,20 @@ namespace MonoGameDirectX {
                 else {
                     Ship ship = obj as Ship;
                     var tex = TextureGenerator.Circle(GraphicsDevice, 4, ship.Fraction == 1 ? Color.IndianRed : Color.CornflowerBlue);
-                    SpriteBatch.Draw(tex, objLocation, null, Color.White, 0f, new Vector2(3, 3), 1, SpriteEffects.None, 0);
+                    SpriteBatch.Draw(tex, mapObjLocation, null, Color.White, 0f, new Vector2(3, 3), 1, SpriteEffects.None, 0);
 
                     Player pl = PlayerController.Players.FirstOrDefault(p => p.Ship == ship);
 
                     if(pl != null) {
-                        SpriteBatch.DrawString(Font, "p" + pl.Index, objLocation, ship.Fraction == 1 ? Color.IndianRed : Color.CornflowerBlue);
+                        SpriteBatch.DrawString(Font, "p" + pl.Index, mapObjLocation, ship.Fraction == 1 ? Color.IndianRed : Color.CornflowerBlue);
                     }
 
                 }
             }
+
+            mapCoeff = 100 / Math.Max(maxX - minX, maxY - minY);
+            
+
         }
 
         private static void GenerateTexture() {
@@ -263,7 +278,7 @@ namespace MonoGameDirectX {
                 var p1 = Viewport.World2ScreenPoint(x1, y1);
                 var p2 = Viewport.World2ScreenPoint(x2, y2);
 
-                DrawPrimitives.DrawLine(p1, p2, SpriteBatch, 1, Color.Gray);
+                DrawPrimitives.DrawLine(p1, p2, SpriteBatch, 1, Color.LightSlateGray);
 
                 x1 = -gridSize; x2 = gridSize; y1 = i; y2 = i;
 

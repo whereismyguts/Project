@@ -4,6 +4,7 @@
 *.cache
 *.suo
 *.pdb
+*.user
 */obj/
 */core/obj/
 */bin/

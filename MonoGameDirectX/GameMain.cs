@@ -108,10 +108,11 @@ namespace MonoGameDirectX {
                         Renderer.SwitchDebugMode();
                     break;
                 case Keys.LeftControl:
-                    ctrlpressed = false; break;
+                    ctrlpressed = false;
+                    break;
                 case Keys.C:
                     if(ctrlpressed)
-                        SwitchCameraMOde();
+                        SwitchCameraMode();
                     break;
 
                 case Keys.O:
@@ -133,7 +134,7 @@ namespace MonoGameDirectX {
             }
         }
 
-        void SwitchCameraMOde() {
+        void SwitchCameraMode() {
             if(cameraMode > 1)
                 cameraMode = 0;
             else cameraMode++;
@@ -209,7 +210,19 @@ namespace MonoGameDirectX {
 
                     break;
                 case 1: //splitscreen
-                    if(PlayerController.Players.Count > 1) {
+                    if (PlayerController.Players.Count > 1) {
+                        Viewport.PxlWidth = mainViewport.Width;
+                        Viewport.PxlHeight = mainViewport.Height;
+
+                        var s = PlayerController.Players[0].Ship;
+                        var l = s.Location;
+                        var v = 200;
+
+                        Viewport.SetWorldBounds(l.X - v, l.Y - v, l.X + v, l.Y + v);
+                        //Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
+                        Renderer.Render(gameTime);
+                    }
+                    else if (PlayerController.Players.Count > 1) {
                         Viewport.PxlWidth = leftViewport.Width;
                         Viewport.PxlHeight = leftViewport.Height;
 
@@ -245,9 +258,6 @@ namespace MonoGameDirectX {
                     Renderer.Render(gameTime);
                     break;
             }
-
-
-
         }
 
         float zoom = 1;
@@ -276,8 +286,6 @@ namespace MonoGameDirectX {
             var quitButton = new Button(100, 200, 200, 40, "quit");
 
             startButton.ButtonClick += ButtonClicked;
-            //b2.ButtonClick += ButtonClicked;
-            //b3.ButtonClick += ButtonClicked;
             quitButton.ButtonClick += ButtonClicked;
             startButton.ButtonClick += StartButton_ButtonClick;
             quitButton.ButtonClick += QuitButton_ButtonClick;
@@ -372,7 +380,7 @@ namespace MonoGameDirectX {
         }
 
         private void StartButton_ButtonClick(object sender, EventArgs e) {
-            MainCore.SwitchState();
+            //MainCore.SwitchState();
         }
 
         void ButtonClicked(object sender, EventArgs e) {

@@ -150,7 +150,7 @@ namespace GameCore {
                 lockTime--;
         }
 
-        internal void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset = 0) {
+        public void SetWorldBounds(float left, float top, float right, float bottom, int clipOffset = 0) {
             //  Scale = 1;
             // Centerpoint = Vector2.Zero;
             // return;
