@@ -38,7 +38,7 @@ namespace MonoGameDirectX {
 
         public static WMPLib.WindowsMediaPlayer player = new WMPLib.WindowsMediaPlayer();
 
-        public static void PlayMusicFromURL(string url) {
+        public static void PlayMusicFromURL (string url) {
             player.URL = url;
 
             player.settings.volume = 100;
@@ -46,14 +46,14 @@ namespace MonoGameDirectX {
             player.controls.play();
         }
 
-        public GameMain() {
+        public GameMain () {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             //PlayMusicFromURL("SpaceOddity.mp3");
             //PlayMusicFromURL("http://s1.castserver.net:8006");
         }
 
-        void ProcessInput() {
+        void ProcessInput () {
             var mouseState = Mouse.GetState();
             var keyState = Keyboard.GetState();
             var pressedKeys = keyState.GetPressedKeys();
@@ -88,36 +88,36 @@ namespace MonoGameDirectX {
 
 
 
-        void InterfaceController_OnKeysDown(object sender, KeysEventArgs e) {
+        void InterfaceController_OnKeysDown (object sender, KeysEventArgs e) {
             //   Debugger.AddLine("key pressed: " + e.Keys + "; ");
-            if(e.Keys == Keys.LeftControl)
+            if (e.Keys == Keys.LeftControl)
                 ctrlpressed = true;
         }
 
         bool ctrlpressed = false;
 
-        void InterfaceController_OnKeysUp(object sender, KeysEventArgs e) {
+        void InterfaceController_OnKeysUp (object sender, KeysEventArgs e) {
             //   Debugger.AddLine("key released: " + e.Keys + "; ");
-            switch(e.Keys) {
+            switch (e.Keys) {
                 case Keys.F:
-                    if(ctrlpressed)
+                    if (ctrlpressed)
                         SwitchFullScreen();
                     break;
                 case Keys.D:
-                    if(ctrlpressed)
+                    if (ctrlpressed)
                         Renderer.SwitchDebugMode();
                     break;
                 case Keys.LeftControl:
                     ctrlpressed = false;
                     break;
                 case Keys.C:
-                    if(ctrlpressed)
+                    if (ctrlpressed)
                         SwitchCameraMode();
                     break;
 
                 case Keys.O:
                     objIndex++;
-                    if(objIndex > MainCore.Instance.Objects.Count - 1)
+                    if (objIndex > MainCore.Instance.Objects.Count - 1)
                         objIndex = 0;
                     break;
                 case Keys.OemPlus:
@@ -134,23 +134,23 @@ namespace MonoGameDirectX {
             }
         }
 
-        void SwitchCameraMode() {
-            if(cameraMode > 1)
+        void SwitchCameraMode () {
+            if (cameraMode > 1)
                 cameraMode = 0;
             else cameraMode++;
 
         }
 
-        void InterfaceController_OnButtonsUp(object sender, ButtonsEventArgs e) {
+        void InterfaceController_OnButtonsUp (object sender, ButtonsEventArgs e) {
             //     Debugger.AddLine("button released: " + e.Buttons + "; ");
         }
 
 
-        void SwitchFullScreen() {
+        void SwitchFullScreen () {
             try {
                 graphics.IsFullScreen = !graphics.IsFullScreen;
 
-                if(!graphics.IsFullScreen) {
+                if (!graphics.IsFullScreen) {
                     width = graphics.PreferredBackBufferWidth;
                     height = graphics.PreferredBackBufferHeight;
                 }
@@ -184,7 +184,10 @@ namespace MonoGameDirectX {
         //Render(gameTime);
         //base.Draw(gameTime);
         //}
-        private void Render(GameTime gameTime) {
+        bool miss = true;
+
+        private void Render (GameTime gameTime) {
+
             // GraphicsDevice.Viewport = defaultViewport;
             GraphicsDevice.Clear(Color.White);
             //  GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -197,7 +200,7 @@ namespace MonoGameDirectX {
             GraphicsDevice.Viewport = defaultViewport;
             Renderer.RenderTotalOverlay(gameTime, GraphicsDevice.Viewport.Bounds);
 
-            switch(cameraMode) {
+            switch (cameraMode) {
                 case 0: // overall 
                     Viewport.PxlWidth = mainViewport.Width;
                     Viewport.PxlHeight = mainViewport.Height;
@@ -209,32 +212,31 @@ namespace MonoGameDirectX {
                     Renderer.Render(gameTime);
 
                     break;
-                case 1: //splitscreen
-                    if (PlayerController.Players.Count > 1) {
+                case 1:
+
+                    //if (PlayerController.Players.Count > 1) {  //splitscreen
+                    //    Viewport.PxlWidth = mainViewport.Width;
+                    //    Viewport.PxlHeight = mainViewport.Height;
+
+                    //    var s = PlayerController.Players[0].Ship;
+                    //    var l = s.Location;
+                    //    var v = 200;
+
+                    //    Viewport.SetWorldBounds(l.X - v, l.Y - v, l.X + v, l.Y + v);
+                    //    //Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
+                    //    Renderer.Render(gameTime);
+                    //}
+
+                    // one player
+                    if (PlayerController.Player != null) {
                         Viewport.PxlWidth = mainViewport.Width;
                         Viewport.PxlHeight = mainViewport.Height;
-
-                        var s = PlayerController.Players[0].Ship;
-                        var l = s.Location;
-                        var v = 200;
-
-                        Viewport.SetWorldBounds(l.X - v, l.Y - v, l.X + v, l.Y + v);
-                        //Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
-                        Renderer.Render(gameTime);
-                    }
-                    else if (PlayerController.Players.Count > 1) {
-                        Viewport.PxlWidth = leftViewport.Width;
-                        Viewport.PxlHeight = leftViewport.Height;
 
                         Viewport.Scale = zoom;
                         Viewport.SmoothUpdate = false;
 
-                        Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
-                        GraphicsDevice.Viewport = leftViewport;
-                        Renderer.Render(gameTime);
-
-                        Viewport.Centerpoint = PlayerController.Players[1].Ship.Location;
-                        GraphicsDevice.Viewport = rightViewport;
+                        Viewport.Centerpoint = PlayerController.Player.Ship.Location;
+                        GraphicsDevice.Viewport = mainViewport;
                         Renderer.Render(gameTime);
                     }
                     break;
@@ -248,7 +250,7 @@ namespace MonoGameDirectX {
 
                     var objects = MainCore.Instance.Objects;
 
-                    if(objIndex >= objects.Count)
+                    if (objIndex >= objects.Count)
                         objIndex = objects.Count - 1;
                     //   var index = Math.Min(objects.Count-1, objIndex);
 
@@ -263,7 +265,7 @@ namespace MonoGameDirectX {
         float zoom = 1;
         int objIndex = 0;
 
-        protected override void Initialize() {
+        protected override void Initialize () {
             //Renderer.Set(GraphicsDevice, Content.Load<SpriteFont>("Arial"));
             Renderer.Set(GraphicsDevice, Content.Load<SpriteFont>("Font"));
             //Renderer.SpriteBatch = new SpriteBatch(GraphicsDevice);
@@ -285,6 +287,8 @@ namespace MonoGameDirectX {
             //var b3 = new Button(100, 150, 200, 40, "b3");
             var quitButton = new Button(100, 200, 200, 40, "quit");
 
+            
+
             startButton.ButtonClick += ButtonClicked;
             quitButton.ButtonClick += ButtonClicked;
             startButton.ButtonClick += StartButton_ButtonClick;
@@ -304,23 +308,23 @@ namespace MonoGameDirectX {
             base.Initialize();
         }
 
-        void Debugger_LineAdded(object sender, EventArgs e) {
+        void Debugger_LineAdded (object sender, EventArgs e) {
             Console.WriteLine(DateTime.Now.ToShortTimeString() + ": " + (sender as List<string>).LastOrDefault());
         }
 
         Thread th;
-        void OpenConsole() {
+        void OpenConsole () {
             string[] logo = new string[] { "╦ ╦┬ ┬┬┌┬┐┌─┐  ╔═╗┌─┐┌─┐┌─┐┌─┐", "║║║├─┤│ │ ├┤   ╚═╗├─┘├─┤│  ├┤ ", "╚╩╝┴ ┴┴ ┴ └─┘  ╚═╝┴  ┴ ┴└─┘└─┘" };
-            foreach(string s in logo) {
+            foreach (string s in logo) {
                 Console.WriteLine(s);
             }
-            for(;;) {
+            for (;;) {
                 string command = Console.ReadLine();
-                if(command == "exit") {
+                if (command == "exit") {
 
                     break;
                 }
-                if(command == "start") {
+                if (command == "start") {
 
                     InterfaceController.Click(PlayerAction.Yes, 1);
                 }
@@ -329,25 +333,28 @@ namespace MonoGameDirectX {
             }
         }
 
-        private static void SetKeys(Button startButton, Button quitButton) {
+        private static void SetKeys (Button startButton, Button quitButton) {
             InterfaceController.AddControl(0, startButton);
             //InterfaceController.AddControl(0, b2);
             //InterfaceController.AddControl(0, b3);
             InterfaceController.AddControl(0, quitButton);
+            InterfaceController.AddControl(0, new Slider(new Rectangle(100, 100, 200, 20)));
+            InterfaceController.AddControl(1, new Button(100, 100, 50, 50, "test") { Tag = PlayerAction.Up}, 1);
+
 
             InterfaceController.AddKeyBinding(Keys.Up, 1, PlayerAction.Up);
             InterfaceController.AddKeyBinding(Keys.Down, 1, PlayerAction.Down);
             InterfaceController.AddKeyBinding(Keys.Left, 1, PlayerAction.Left);
             InterfaceController.AddKeyBinding(Keys.Right, 1, PlayerAction.Right);
-            InterfaceController.AddKeyBinding(Keys.NumPad1, 1, PlayerAction.Yes);
-            InterfaceController.AddKeyBinding(Keys.NumPad0, 1, PlayerAction.Tab);
+            InterfaceController.AddKeyBinding(Keys.Z, 1, PlayerAction.Yes);
+            InterfaceController.AddKeyBinding(Keys.Tab, 1, PlayerAction.Tab);
 
-            InterfaceController.AddKeyBinding(Keys.W, 2, PlayerAction.Up);
-            InterfaceController.AddKeyBinding(Keys.S, 2, PlayerAction.Down);
-            InterfaceController.AddKeyBinding(Keys.A, 2, PlayerAction.Left);
-            InterfaceController.AddKeyBinding(Keys.D, 2, PlayerAction.Right);
-            InterfaceController.AddKeyBinding(Keys.Z, 2, PlayerAction.Yes);
-            InterfaceController.AddKeyBinding(Keys.X, 2, PlayerAction.Tab);
+            //InterfaceController.AddKeyBinding(Keys.W, 2, PlayerAction.Up);
+            //InterfaceController.AddKeyBinding(Keys.S, 2, PlayerAction.Down);
+            //InterfaceController.AddKeyBinding(Keys.A, 2, PlayerAction.Left);
+            //InterfaceController.AddKeyBinding(Keys.D, 2, PlayerAction.Right);
+            //InterfaceController.AddKeyBinding(Keys.Z, 2, PlayerAction.Yes);
+            //InterfaceController.AddKeyBinding(Keys.X, 2, PlayerAction.Tab);
 
             InterfaceController.AddButtonBinding(Buttons.LeftThumbstickUp, 2, PlayerAction.Up);
             InterfaceController.AddButtonBinding(Buttons.LeftThumbstickDown, 2, PlayerAction.Down);
@@ -357,7 +364,7 @@ namespace MonoGameDirectX {
             InterfaceController.AddButtonBinding(Buttons.B, 2, PlayerAction.Tab);
         }
 
-        private void ArrangeViewports() {
+        private void ArrangeViewports () {
             defaultViewport = GraphicsDevice.Viewport;
             mainViewport = defaultViewport;
             leftViewport = defaultViewport;
@@ -375,48 +382,46 @@ namespace MonoGameDirectX {
             leftViewport.Height = bottomViewport.Y;
         }
 
-        private void QuitButton_ButtonClick(object sender, EventArgs e) {
+        private void QuitButton_ButtonClick (object sender, EventArgs e) {
             Exit();
         }
 
-        private void StartButton_ButtonClick(object sender, EventArgs e) {
-            //MainCore.SwitchState();
+        private void StartButton_ButtonClick (object sender, EventArgs e) {
+            MainCore.SwitchState();
         }
 
-        void ButtonClicked(object sender, EventArgs e) {
+        void ButtonClicked (object sender, EventArgs e) {
             //     Debugger.AddLine((sender as Button).Text + " clicked");
         }
 
-        protected override void LoadContent() {
+        protected override void LoadContent () {
             WinAdapter.LoadContent(Content, GraphicsDevice);
         }
-        protected override void UnloadContent() {
+        protected override void UnloadContent () {
             WinAdapter.Unload();
             Content.Unload();
             // TODO: Unload any non ContentManager content here
         }
         int delay { get { return 2; } }
         int time = 0;
-        protected override void Update(GameTime gameTime) {
+        protected override void Update (GameTime gameTime) {
 
-            if(!th.IsAlive) {
+            if (!th.IsAlive) {
                 Exit();
                 th.Abort();
             }
-            if(IsActive)
+            if (IsActive)
                 ProcessInput();
             time++;
-            if(time >= delay)
+            if (time >= delay)
                 time = 0;
             else return;
 
             Instance.Step(gameTime);
             //    State = GameState.Space;
             //renderer.TraectoryPath = Player.Calculator.Calculate();
+
             base.Update(gameTime);
-
-
-
             Render(gameTime);
         }
     }

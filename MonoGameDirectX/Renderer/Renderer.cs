@@ -141,11 +141,10 @@ namespace MonoGameDirectX {
             // DrawPrimitives.DrawRect(new Rectangle(Viewport.Location.ToPoint(), Viewport.PxlSize.ToPoint()), SpriteBatch, 2, Color.Purple);
 
             InterfaceController.GetActualControls().ToList().ForEach(con => con.Draw(SpriteBatch, time));
-            var playerInterface = PlayerController.GetInterfaceElements(viewport);
-            foreach(IRenderableObject obj in playerInterface)
-                WinAdapter.CreateRenderObject(obj).Draw(SpriteBatch, time);
-            //foreach(Control c in controls)
-            //c.Draw(SpriteBatch, time);
+            //var playerInterface = PlayerController. GetInterfaceElements(viewport);
+            //foreach(IRenderableObject obj in playerInterface)
+            //    WinAdapter.CreateRenderObject(obj).Draw(SpriteBatch, time);
+            
         }
 
 
@@ -197,10 +196,8 @@ namespace MonoGameDirectX {
                     var tex = TextureGenerator.Circle(GraphicsDevice, 4, ship.Fraction == 1 ? Color.IndianRed : Color.CornflowerBlue);
                     SpriteBatch.Draw(tex, mapObjLocation, null, Color.White, 0f, new Vector2(3, 3), 1, SpriteEffects.None, 0);
 
-                    Player pl = PlayerController.Players.FirstOrDefault(p => p.Ship == ship);
-
-                    if(pl != null) {
-                        SpriteBatch.DrawString(Font, "p" + pl.Index, mapObjLocation, ship.Fraction == 1 ? Color.IndianRed : Color.CornflowerBlue);
+                    if(PlayerController.Player.Ship == ship) {
+                        SpriteBatch.DrawString(Font, "p" + PlayerController.Player.Index, mapObjLocation, ship.Fraction == 1 ? Color.IndianRed : Color.CornflowerBlue);
                     }
 
                 }

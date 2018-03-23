@@ -1,4 +1,5 @@
 ﻿using GameCore;
+
 using Microsoft.Xna.Framework.Input;
 using MonoGameDirectX;
 using System;
@@ -13,6 +14,7 @@ namespace GameCore {
         public static event ButtonsEventHandler OnButtonsDown;
         public static List<Keys> KeysDown { get; private set; } = new List<Keys>();
         public static List<Buttons> ButtonsDown { get; private set; } = new List<Buttons>();
+        public static List<MouseActionInfo> MouseActions { get; private set; } = new List<MouseActionInfo>();
 
         public static UIState CurrentState {
             get { return MainCore.Instance.CurrentState; }
@@ -40,16 +42,38 @@ namespace GameCore {
                 }
             MainCore.Instance.Cursor = MainCore.Instance.Viewport.Screen2WorldPoint(mouse.X, mouse.Y);
 
-            if(!mousePrevPressed && mouse.LeftButton == ButtonState.Pressed)
-                MainCore.Instance.MousePressed();
-            if(mousePrevPressed && mouse.LeftButton == ButtonState.Released)
-                MainCore.Instance.MouseReleased();
+
+
+            if (!mousePrevPressed && mouse.LeftButton == ButtonState.Pressed) {
+                MouseActionInfo info = new MouseActionInfo(mouse.X, mouse.Y, MouseAction.Down);
+                MouseActions.Add(info);
+            }
+
+            if (mousePrevPressed && mouse.LeftButton == ButtonState.Released) {
+                MouseActionInfo info = new MouseActionInfo(mouse.X, mouse.Y, MouseAction.Up);
+                MouseActions.Add(info);
+            }
+
+            
+
+
+            var currentPos = new IntPoint(mouse.X, mouse.Y);
+
+            if (mousePrevPos != currentPos)
+                MouseActions.Add(new MouseActionInfo(mouse.X, mouse.Y, MouseAction.Move));
+
+            mousePrevPos = currentPos;
+            //if(!mousePrevPressed && mouse.LeftButton == ButtonState.Pressed)
+            //    MainCore.Instance.MousePressed();
+            //if(mousePrevPressed && mouse.LeftButton == ButtonState.Released)
+            //    MainCore.Instance.MouseReleased();
 
             mousePrevPressed = mouse.LeftButton == ButtonState.Pressed;
             DoActions();
         }
 
         static bool mousePrevPressed = false;
+        static IntPoint mousePrevPos;
 
         public static void ProcessInput(IEnumerable<Buttons> newKeys) {
             List<Buttons> toRemove = new List<Buttons>();
@@ -74,8 +98,9 @@ namespace GameCore {
             DoActions();
         }
 
-        static Dictionary<int, ActorKeyPair> KeyActions = new Dictionary<int, ActorKeyPair>();
-        static Dictionary<int, ActorKeyPair> ButtonActions = new Dictionary<int, ActorKeyPair>();
+        static Dictionary<int, ActorKeyPair> KeyActions = new Dictionary<int, ActorKeyPair>(); //keyboard
+        static Dictionary<int, ActorKeyPair> ButtonActions = new Dictionary<int, ActorKeyPair>(); //gamepad
+        
 
         static void DoActions() {
             foreach(var keys in KeysDown) {
@@ -83,6 +108,12 @@ namespace GameCore {
                 if(KeyActions.ContainsKey(key))
                     CurrentState.DoAction(KeyActions[key], false);
             }
+
+            while (MouseActions.Count > 0) {
+                CurrentState.DoMouseAction(MouseActions[0]);
+                MouseActions.RemoveAt(0);
+            }
+            
         }
         internal static void AddControl(int state, Control control, int actor = 0) {
             MainCore.AddControl(state, control, actor);

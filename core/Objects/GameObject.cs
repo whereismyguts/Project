@@ -79,7 +79,7 @@ namespace GameCore {
             bool correctPosition = false;
             Vector2 location = Vector2.Zero;
             while(!correctPosition) {
-                location = new Vector2(Rnd.Get(-600, 600), Rnd.Get(-600, 600));
+                location = new Vector2(Rnd.Get(-600, 600), Rnd.Get(-600, 600)); // TODO: replace with const or compute values
                 correctPosition = true;
                 foreach(GameObject obj in CurrentSystem.Objects(false))
                     if(obj != thisObject && obj.ObjectBounds.Contains(location)) {

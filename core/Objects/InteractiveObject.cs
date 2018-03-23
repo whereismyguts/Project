@@ -10,7 +10,7 @@ namespace GameCore {
         public virtual bool IsHighlighted {
             get { return isHighlighted; }
             set {
-                if(isHighlighted == value)
+                if (isHighlighted == value)
                     return;
                 isHighlighted = value;
             }
@@ -18,33 +18,65 @@ namespace GameCore {
         public virtual bool IsSelected {
             get { return isSelected; }
             set {
-                if(isSelected == value)
+                if (isSelected == value)
                     return;
                 isSelected = value;
             }
         }
 
+        public PlayerAction Tag { get; set; }
+
         protected event EventHandler Click;
         protected event EventHandler Hover;
         protected event EventHandler KeyPress;
+        protected event EventHandler Up;
+        protected event EventHandler Down;
 
-        protected virtual internal void DoClick(object tag) {
-            if(Click != null)
-                Click(tag, EventArgs.Empty);
-        }
-        protected internal virtual void HandleMouseHover(object position) {
-            if(Hover != null)
+
+        protected internal virtual void HandleMouseHover (object position) {
+            if (Hover != null)
                 Hover(position, EventArgs.Empty);
         }
-        protected internal virtual void HandleKeyPress(object key) {
-            if(IsSelected && KeyPress != null)
+        protected internal virtual void HandleKeyPress (object key) {
+            if (IsSelected && KeyPress != null)
                 KeyPress((int)key, EventArgs.Empty);
         }
 
-        public abstract bool Contains(object position);
 
-        void IControl.DoClick(object tag) {
-            DoClick(tag);
+
+        //void IControl.RaiseClick (object tag) {
+        //    RaiseClick(tag);
+        //}
+
+        public abstract bool Contains (object position);
+        public abstract bool Contains (float X, float Y);
+
+        public virtual void RaiseMouseClick (object tag) {
+            if (Click != null)
+                Click(tag, EventArgs.Empty);
+        }
+
+        
+
+        public void RaiseMouseMove (object tag) {
+            if(Hover !=null)
+                Hover(tag, EventArgs.Empty);
+        }
+
+        bool pressed = false;
+
+        public void RaiseMouseUp (object tag) {
+            if (pressed)
+                RaiseMouseClick(tag);
+            pressed = false;
+            if (Up != null)
+                Up(tag, EventArgs.Empty);
+        }
+
+        public void RaiseMouseDown (object tag) {
+            pressed = true;
+            if (Down != null)
+                Down(tag, EventArgs.Empty);
         }
     }
 }

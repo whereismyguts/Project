@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,28 +11,33 @@ namespace GameCore {
     public interface ICommandsBehavior {
         //void Up(int actor);
         //void Tab(int actor);
-        void Act(ActorKeyPair pair, bool clickedOnce);
+        void ActByKey (ActorKeyPair pair, bool clickedOnce);
+        void ActByMouse (MouseActionInfo pair, bool clickedOnce);
     }
     public class MenuBehavior: ICommandsBehavior {
-        
-        public void Act(ActorKeyPair pair, bool clickedOnce) {
-         if(clickedOnce)
-            switch(pair.Action) {
-                case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
-                case PlayerAction.Up: MainCore.Instance.CurrentState.Select(false, pair.Actor); break;
-                case PlayerAction.Tab: MainCore.SwitchState(); break;
-                case PlayerAction.Yes: MainCore.Instance.CurrentState.DoSelected(pair.Actor); break;
-            }
+
+        public void ActByKey (ActorKeyPair pair, bool clickedOnce) {
+            if (clickedOnce)
+                switch (pair.Action) {
+                    case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
+                    case PlayerAction.Up: MainCore.Instance.CurrentState.Select(false, pair.Actor); break;
+                    case PlayerAction.Tab: MainCore.SwitchState(); break;
+                    case PlayerAction.Yes: MainCore.Instance.CurrentState.DoSelected(pair.Actor); break;
+                }
         }
 
+        public void ActByMouse (MouseActionInfo eventInfo, bool clickedOnce) {
 
+            //MainCore.Instance.CurrentState.DoMouseAction(eventInfo, true);
+
+        }
     }
     //public class InventoryBehavior: ICommandsBehavior {
     //}
     public class GameBehavior: ICommandsBehavior {
-        public void Act(ActorKeyPair pair, bool clickedOnce) {
+        public void ActByKey (ActorKeyPair pair, bool clickedOnce) {
 
-            PlayerController.Execute(pair, clickedOnce);
+            PlayerController.ExecuteKey(pair, clickedOnce);
             return;
             //switch(pair.Action) {
             //    case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
@@ -39,6 +45,10 @@ namespace GameCore {
             //    case PlayerAction.Tab: MainCore.SwitchState(); break;
             //    case PlayerAction.Yes: MainCore.Instance.CurrentState.DoSelected(pair.Actor); break;
             //}
+        }
+
+        public void ActByMouse (MouseActionInfo mouseInfo, bool clickedOnce) {
+            PlayerController.ExecuteCursor(mouseInfo, clickedOnce);
         }
     }
 
@@ -50,25 +60,49 @@ namespace GameCore {
         protected ICommandsBehavior Behavior { get; set; }
         public abstract List<IControl> Controls { get; }
 
-        public void DoAction(ActorKeyPair pair, bool clickedOnce) {
-            Behavior.Act(pair, clickedOnce);
+        public void DoAction (ActorKeyPair pair, bool clickedOnce) {
+            Behavior.ActByKey(pair, clickedOnce);
         }
 
-        public abstract void AddControl(IControl control, int actor);
+        public abstract void AddControl (IControl control, int actor);
 
         //public abstract void SelectPrev(int actor);
         //public abstract void SelectNext(int actor);
-        public abstract void Select(bool next, int actor);
-        public abstract void DoSelected(int actor);
+        public abstract void Select (bool next, int actor);
+        public abstract void DoSelected (int actor);
 
-        protected void SelectBase(List<IControl> list, bool next, ref int selectedIndex) {
-            if(next) {
-                if(selectedIndex < list.Count - 1)
+        public virtual void DoMouseAction (MouseActionInfo eventInfo) {
+            foreach (IControl control in Controls) {
+
+                if (eventInfo.Action == MouseAction.Up)
+                    control.RaiseMouseUp(null);
+
+                if (control.Contains(eventInfo.X, eventInfo.Y)) {
+
+                    if (eventInfo.Action == MouseAction.Down) {
+                        control.RaiseMouseDown(null);
+                        Behavior.ActByMouse(eventInfo, true);
+                    }
+
+                    if (eventInfo.Action == MouseAction.Move) {
+                        control.RaiseMouseMove(null);
+                        //Behavior.ActByMouse(eventInfo, true);
+                    }
+
+
+                }
+
+            }
+        }
+
+        protected void SelectBase (List<IControl> list, bool next, ref int selectedIndex) {
+            if (next) {
+                if (selectedIndex < list.Count - 1)
                     selectedIndex++;
                 else selectedIndex = 0;
             }
             else {
-                if(selectedIndex > 0)
+                if (selectedIndex > 0)
                     selectedIndex--;
                 else selectedIndex = list.Count - 1;
             }
@@ -76,7 +110,7 @@ namespace GameCore {
     }
 
     public class MenuState: UIState {
-        public MenuState() {
+        public MenuState () {
             Behavior = new MenuBehavior();
             menuControls = new List<IControl>(); // set menu items
         }
@@ -92,7 +126,7 @@ namespace GameCore {
 
         public override List<IControl> Controls {
             get {
-                for(int i = 0; i < menuControls.Count; i++) {
+                for (int i = 0; i < menuControls.Count; i++) {
                     menuControls[i].IsSelected = selectedIndex == i;
                 }
                 return menuControls;
@@ -100,32 +134,31 @@ namespace GameCore {
         }
 
 
-        public override void AddControl(IControl control, int actor) {
+        public override void AddControl (IControl control, int actor) {
             menuControls.Add(control);
         }
 
-        public override void Select(bool next, int actor) {
+        public override void Select (bool next, int actor) {
             // anybody can select menu items
             SelectBase(menuControls, next, ref selectedIndex);
         }
 
-
-
-        public override void DoSelected(int actor) {
-            menuControls[selectedIndex].DoClick(actor);
+        public override void DoSelected (int actor) {
+            menuControls[selectedIndex].RaiseMouseUp(actor);
         }
     }
 
     public class GameState: UIState {
-        public GameState() {
+        public GameState () {
             Behavior = new GameBehavior();
         }
 
         public override List<IControl> Controls {
             get {
-                return p1Controls.Union(p2Controls).Union(commonControls).ToList();
+                return p1Controls;
             }
         }
+
 
         List<IControl> p1Controls = new List<IControl>();
         List<IControl> p2Controls = new List<IControl>();
@@ -136,8 +169,8 @@ namespace GameCore {
 
         public override int Id { get { return 1; } }
 
-        public override void AddControl(IControl control, int actor) {
-            switch(actor) {
+        public override void AddControl (IControl control, int actor) {
+            switch (actor) {
                 case 1:
                     p1Controls.Add(control);
                     break;
@@ -150,22 +183,15 @@ namespace GameCore {
             }
         }
 
-        public override void DoSelected(int actor) {
-            switch(actor) {
-                case 1:
-                    p1Controls[p1SelectIndex].DoClick(actor);
-                    break;
-                case 2:
-                    p2Controls[p2SelectIndex].DoClick(actor);
-                    break;
-                default:
-                    commonControls[commonSelectIndex].DoClick(actor);
-                    break;
-            }
+        public override void DoSelected (int actor) {
+            if (actor == 1)
+                    p1Controls[p1SelectIndex].RaiseMouseUp(actor);
+
+
         }
 
-        public override void Select(bool next, int actor) {
-            switch(actor) {
+        public override void Select (bool next, int actor) {
+            switch (actor) {
                 case 1:
                     SelectBase(p1Controls, next, ref p1SelectIndex);
                     break;
@@ -198,32 +224,60 @@ namespace GameCore {
     //    }
     //}
 
+    public struct MouseActionInfo {
+
+        public float X { get; set; }
+        public float Y { get; set; }
+        public MouseAction Action { get; set; }
+
+        public MouseActionInfo (float x, float y, MouseAction action) {
+            X = x; Y = y; Action = action;
+        }
+    }
+
+    public enum MouseAction {
+        Up = 0,
+        Down = 1,
+        Move = 2
+    }
+
     public struct ActorKeyPair {
         //        public int Key { get; set; }
         public int Actor { get; set; }
         public PlayerAction Action { get; set; }
 
-        public ActorKeyPair(int actor, PlayerAction action) {
+        public ActorKeyPair (int actor, PlayerAction action) {
             Actor = actor; Action = action;
         }
     }
 
     public interface IControl {
         bool IsSelected { get; set; }
-        void DoClick(object tag);
+        PlayerAction Tag { get; set; }
+
+        bool Contains (object position);
+        bool Contains (float X, float Y);
+        void RaiseMouseUp (object tag);
+        void RaiseMouseDown (object tag);
+        void RaiseMouseMove (object tag);
+
     }
 
-    public class InventoryItemControl: IControl {
-        Item item;
+    //public class InventoryItemControl: IControl {
+    //    Item item;
 
-        public InventoryItemControl(Item item) {
-            this.item = item;
-        }
+    //    public InventoryItemControl (Item item) {
+    //        this.item = item;
+    //    }
 
-        public bool IsSelected { get; set; }
+    //    public bool IsSelected { get; set; }
 
-        public void DoClick(object tag) {
+    //    public bool Contains (object position) {
+    //        throw new NotImplementedException();
+    //    }
 
-        }
-    }
+    //    public void DoClick (object tag) {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 }

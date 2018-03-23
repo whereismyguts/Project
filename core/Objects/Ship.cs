@@ -70,7 +70,7 @@ namespace GameCore {
 
 
 
-        public void Accselerate() {
+        internal void Accselerate() {
             foreach(Slot slot in Hull.Slots)
                 if(slot.Type == SlotType.EngineSlot && !slot.IsEmpty)
                     slot.AttachedItem.Activate();

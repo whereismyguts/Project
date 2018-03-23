@@ -15,18 +15,22 @@ namespace MonoGameDirectX {
         public virtual Color ActualFillColor { get { return FillColor; } }
         public Rectangle Rectangle { get; protected set; }
 
-        public Control(Rectangle rect) {
+        public Control (Rectangle rect) {
             Rectangle = rect;
             FillColor = Color.Transparent;
             BorderColor = Color.Black;
         }
 
-        internal virtual void Draw(SpriteBatch spriteBatch, GameTime time) {
+        internal virtual void Draw (SpriteBatch spriteBatch, GameTime time) {
             DrawPrimitives.DrawRect(Rectangle, spriteBatch, 1, ActualBorderColor, ActualFillColor);
         }
 
-        public override bool Contains(object position) {
-            return Rectangle.Contains((Point)position);
+        public override bool Contains (object position) {
+            return Rectangle.Contains((Vector2)position);
+        }
+
+        public override bool Contains (float X, float Y) {
+            return Rectangle.Contains(X, Y);
         }
     }
     public enum Align { Left, Center, Right, Top, Bottom }
@@ -34,12 +38,12 @@ namespace MonoGameDirectX {
         public StringBuilder Text { get; set; }
         public Color TextColor { get; internal set; }
         public Align TextAlign { get; set; } = Align.Center;
-        public Label(int x, int y, int w, int h, string text) : base(new Rectangle(x, y, w, h)) {
+        public Label (int x, int y, int w, int h, string text) : base(new Rectangle(x, y, w, h)) {
             Text = new StringBuilder(text);
             TextColor = Color.Black;
         }
 
-        protected virtual void TextDraw(SpriteBatch spriteBatch, string text) {
+        protected virtual void TextDraw (SpriteBatch spriteBatch, string text) {
             Vector2 textSize = Renderer.Font.MeasureString(text);
             Vector2 panSize = Rectangle.Size.ToVector2();
             Vector2 alignVector = TextAlign == Align.Left ? new Vector2(5, (panSize.Y - textSize.Y) / 2) : (panSize - textSize) / 2;
@@ -47,19 +51,19 @@ namespace MonoGameDirectX {
             spriteBatch.DrawString(Renderer.Font, text, textLocation, TextColor);
         }
 
-        internal override void Draw(SpriteBatch spriteBatch, GameTime time) {
+        internal override void Draw (SpriteBatch spriteBatch, GameTime time) {
             base.Draw(spriteBatch, time);
             TextDraw(spriteBatch, Text.ToString());
         }
     }
     public class TextBox: Label {
         int caret = 0;
-        public TextBox(int x, int y, int w, int h, string text) : base(x, y, w, h, text) {
+        public TextBox (int x, int y, int w, int h, string text) : base(x, y, w, h, text) {
             TextAlign = Align.Left;
             KeyPress += TextBox_KeyPress;
             caret = text.Length;
             int c = 'a';
-            for(int i = 65; i <= 90; i++) {
+            for (int i = 65; i <= 90; i++) {
                 letters.Add(i, (char)c);
                 c++;
             }
@@ -93,18 +97,18 @@ namespace MonoGameDirectX {
         //Z = 90,
 
 
-        protected override void TextDraw(SpriteBatch spriteBatch, string text) {
+        protected override void TextDraw (SpriteBatch spriteBatch, string text) {
 
-            if(IsSelected) {
+            if (IsSelected) {
                 text = text.ToString().Insert(caret, "|");
             }
             base.TextDraw(spriteBatch, text.ToUpper());
 
         }
 
-        private void TextBox_KeyPress(object key, EventArgs e) {
+        private void TextBox_KeyPress (object key, EventArgs e) {
             int k = (int)key;
-            switch(k) {
+            switch (k) {
                 case 39:
                     caret++;
                     break;
@@ -119,13 +123,13 @@ namespace MonoGameDirectX {
                     break;
 
             }
-            if(k >= 65 && k <= 90) {
+            if (k >= 65 && k <= 90) {
                 AppendText(k);
                 caret++;
             }
-            if(caret > Text.Length)
+            if (caret > Text.Length)
                 caret = Text.Length;
-            if(caret < 0)
+            if (caret < 0)
                 caret = 0;
             System.Diagnostics.Debug.WriteLine(key);
         }
@@ -134,17 +138,17 @@ namespace MonoGameDirectX {
 
         Dictionary<int, char> letters = new Dictionary<int, char>();
 
-        private void AppendText(int k) {
+        private void AppendText (int k) {
             Text.Insert(caret, letters[k]);
         }
-        void RemoveCurrentSymbol() {
-            if(caret > 0) {
+        void RemoveCurrentSymbol () {
+            if (caret > 0) {
                 Text.Remove(caret - 1, 1);
                 caret--;
             }
         }
-        void DeleteCurrentSymbol() {
-            if(caret < Text.Length) {
+        void DeleteCurrentSymbol () {
+            if (caret < Text.Length) {
                 Text.Remove(caret, 1);
             }
         }
@@ -170,14 +174,14 @@ namespace MonoGameDirectX {
             }
         }
         public object Tag { get; set; }
-        public Button(int x, int y, int w, int h, string text) : base(x, y, w, h, text) {
+        public Button (int x, int y, int w, int h, string text) : base(x, y, w, h, text) {
         }
 
         public event EventHandler ButtonClick;
 
-        protected override void DoClick(object tag) {
+        public override void RaiseMouseClick (object tag) {
             ButtonClick?.Invoke(this, EventArgs.Empty);
-            base.DoClick(tag);
+            base.RaiseMouseClick(tag);
         }
     }
     public class ListBox: Control {
@@ -189,14 +193,14 @@ namespace MonoGameDirectX {
             }
 
             set {
-                if(!value)
-                    for(int i = 0; i < buttons.Count; i++)
+                if (!value)
+                    for (int i = 0; i < buttons.Count; i++)
                         buttons[i].IsHighlighted = false;
                 base.IsHighlighted = value;
             }
         }
 
-        public ListBox(Point location, params object[] objects) : base(new Rectangle()) {
+        public ListBox (Point location, params object[] objects) : base(new Rectangle()) {
 
             this.location = location;
             Update(objects);
@@ -207,18 +211,18 @@ namespace MonoGameDirectX {
 
         public event EventHandler ItemClick;
 
-        private void ListBox_Click(object position, EventArgs e) {
-            for(int i = 0; i < buttons.Count; i++)
-                if(buttons[i].Contains((Point)position))
-                    if(ItemClick != null)
+        private void ListBox_Click (object position, EventArgs e) {
+            for (int i = 0; i < buttons.Count; i++)
+                if (buttons[i].Contains((Point)position))
+                    if (ItemClick != null)
                         ItemClick(buttons[i], EventArgs.Empty);
         }
 
-        internal void Update(object[] objects) {
+        internal void Update (object[] objects) {
             int w = 0;
             int h = 0;
             int hStep = 0;
-            for(int i = 0; i < objects.Length; i++) {
+            for (int i = 0; i < objects.Length; i++) {
                 Vector2 size = Renderer.Font.MeasureString(objects[i].ToString());
                 w = Math.Max((int)size.X + 10, w);
                 hStep = Math.Max((int)size.Y + 10, hStep);
@@ -226,31 +230,80 @@ namespace MonoGameDirectX {
                 Rectangle = new Rectangle(location, new Point(w, h));
             }
             buttons.Clear();
-            for(int i = 0; i < objects.Length; i++) {
+            for (int i = 0; i < objects.Length; i++) {
                 Button b = new Button(location.X, location.Y + hStep * i, w, hStep, objects[i].ToString()) { Tag = objects[i] };
                 buttons.Add(b);
             }
         }
 
-        protected override void HandleMouseHover(object position) {
-            for(int i = 0; i < buttons.Count; i++)
+        protected override void HandleMouseHover (object position) {
+            for (int i = 0; i < buttons.Count; i++)
                 buttons[i].IsHighlighted = buttons[i].Contains((Point)position) && IsHighlighted;
 
         }
 
-        internal override void Draw(SpriteBatch spriteBatch, GameTime time) {
+        internal override void Draw (SpriteBatch spriteBatch, GameTime time) {
             base.Draw(spriteBatch, time);
-            for(int i = 0; i < buttons.Count; i++)
+            for (int i = 0; i < buttons.Count; i++)
                 buttons[i].Draw(spriteBatch, time);
         }
 
-        public override bool Contains(object position) {
-            for(int i = 0; i < buttons.Count; i++)
-                if(buttons[i].Contains((Point)position))
+        public override bool Contains (object position) {
+            for (int i = 0; i < buttons.Count; i++)
+                if (buttons[i].Contains((Point)position))
                     return true;
             return false;
         }
     }
+
+    public class Slider: Control {
+
+        int min = 0, max = 100;
+        int current = 50;
+        int sliderWidth = 10;
+        int sliderHeight = 20;
+        int Current {
+            get { return current; }
+            set { current = Math.Min(Math.Max(min, value), max); }
+        }
+
+        public Slider (Rectangle rect) : base(rect) {
+
+            Hover += Slider_Hover;
+            Down += Slider_Down;
+            Up += Slider_Up;
+            Click += Slider_Click;
+        }
+
+        private void Slider_Click (object sender, EventArgs e) {
+            color = Color.Violet;
+        }
+
+        private void Slider_Up (object sender, EventArgs e) {
+           // color = Color.Green; 
+        }
+
+        private void Slider_Down (object sender, EventArgs e) {
+       //     color = Color.Red;
+        }
+
+        Color color = Color.Red;
+
+
+        private void Slider_Hover (object sender, EventArgs e) {
+            //color = Color.Yellow;
+        }
+
+        internal override void Draw (SpriteBatch spriteBatch, GameTime time) {
+            base.Draw(spriteBatch, time);
+
+            int x = (int)(Rectangle.Width / max * current + Rectangle.X);
+            var rect = new Rectangle(x - sliderWidth / 2, Rectangle.Center.Y - sliderHeight / 2, sliderWidth, sliderHeight);
+
+            DrawPrimitives.DrawRect(rect, spriteBatch, 1, Color.Black, color);
+        }
+    }
+
     //public class ImageBox: Control {
     //    public ImageBox(Rectangle rect) : base(rect) {
     //        sprite = new Sprite(new SpriteInfo(), rect);

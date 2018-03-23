@@ -103,14 +103,9 @@ namespace GameCore {
         }
 
         void CreatePlayers() {
-            PlayerController.Clear();
-            Player p1 = new Player(new Ship(world, GameObject.GetNewLocation(null), 1), 1);
-            PlayerController.AddPlayer(p1);
-            Player p2 = new Player(new Ship(world, GameObject.GetNewLocation(null), 2), 2);
-            PlayerController.AddPlayer(p2);
-
-            ships.Add(p1.Ship);
-            ships.Add(p2.Ship);
+            var pShip = new Ship(world, GameObject.GetNewLocation(null), 1);
+            PlayerController.Player = new Player(pShip, 1);
+            ships.Add(pShip);
 
             for(int i = 0; i < 6; i++) {
                 var ship = new Ship(world, GameObject.GetNewLocation(null), i % 2 == 0 ? 1 : 2);
