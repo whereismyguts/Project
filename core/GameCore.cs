@@ -21,8 +21,8 @@ namespace GameCore {
 
         static MainCore instance;
 
-        static List<UIState> states = new List<UIState>();
-        static int state;
+        static Dictionary<UIStates, UIState> states = new Dictionary<UIStates, UIState>();
+        static UIStates stateId;
 
         public StarSystem System;
         public static MainCore Instance {
@@ -37,19 +37,18 @@ namespace GameCore {
 
         public List<Ship> Ships { get { return ships; } }
 
+        public UIStates CurrentStateId { get { return stateId; } }
+
         public UIState CurrentState {
-            get { return states[state]; }
+            get { return states[stateId]; }
         }
 
-        public static void SwitchState() {
-            if(state < states.Count - 1)
-                state++;
-            else
-                state = 0;
+        public static void SwitchState(UIStates state) {
+                stateId = state;
         }
 
-        public static void AddControl(int state, IControl control, int actor) {
-            states.First(st => st.Id == state).AddControl(control, actor);
+        public static void AddControl(UIStates stateId, IControl control) {
+            states[stateId].AddControl(control);
         }
 
         //public int State {
@@ -85,7 +84,8 @@ namespace GameCore {
         }
 
         public static void AddStates(UIState[] newstates) {
-            states.AddRange(newstates);
+            foreach(var state in newstates)
+                states[state.StateId] = state;
         }
 
         //public event StateEventHandler StateChanged;

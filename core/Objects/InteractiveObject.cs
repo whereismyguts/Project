@@ -32,22 +32,6 @@ namespace GameCore {
         protected event EventHandler Up;
         protected event EventHandler Down;
 
-
-        protected internal virtual void HandleMouseHover (object position) {
-            if (Hover != null)
-                Hover(position, EventArgs.Empty);
-        }
-        protected internal virtual void HandleKeyPress (object key) {
-            if (IsSelected && KeyPress != null)
-                KeyPress((int)key, EventArgs.Empty);
-        }
-
-
-
-        //void IControl.RaiseClick (object tag) {
-        //    RaiseClick(tag);
-        //}
-
         public abstract bool Contains (object position);
         public abstract bool Contains (float X, float Y);
 
@@ -56,11 +40,11 @@ namespace GameCore {
                 Click(tag, EventArgs.Empty);
         }
 
-        
-
-        public void RaiseMouseMove (object tag) {
-            if(Hover !=null)
-                Hover(tag, EventArgs.Empty);
+        public void RaiseMouseMove (object position) {
+            MouseActionInfo info = (MouseActionInfo)position;
+            isHighlighted = Contains(info.X, info.Y);
+            if (Hover !=null)
+                Hover(position, EventArgs.Empty);
         }
 
         bool pressed = false;

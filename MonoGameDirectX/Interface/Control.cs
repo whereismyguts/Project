@@ -18,7 +18,7 @@ namespace MonoGameDirectX {
         public Control (Rectangle rect) {
             Rectangle = rect;
             FillColor = Color.Transparent;
-            BorderColor = Color.Black;
+            BorderColor = Color.Gray;
         }
 
         internal virtual void Draw (SpriteBatch spriteBatch, GameTime time) {
@@ -165,12 +165,12 @@ namespace MonoGameDirectX {
     public class Button: Label {
         public override Color ActualBorderColor {
             get {
-                return IsSelected ? Color.AntiqueWhite : IsHighlighted ? Color.FloralWhite : BorderColor;
+                return IsSelected ? Color.Black : BorderColor;
             }
         }
         public override Color ActualFillColor {
             get {
-                return IsSelected ? Color.DarkGray : IsHighlighted ? Color.LightGray : FillColor;
+                return IsHighlighted ? Color.DarkGray : IsSelected ? Color.LightGray : FillColor;
             }
         }
         public object Tag { get; set; }
@@ -236,12 +236,6 @@ namespace MonoGameDirectX {
             }
         }
 
-        protected override void HandleMouseHover (object position) {
-            for (int i = 0; i < buttons.Count; i++)
-                buttons[i].IsHighlighted = buttons[i].Contains((Point)position) && IsHighlighted;
-
-        }
-
         internal override void Draw (SpriteBatch spriteBatch, GameTime time) {
             base.Draw(spriteBatch, time);
             for (int i = 0; i < buttons.Count; i++)
@@ -258,33 +252,34 @@ namespace MonoGameDirectX {
 
     public class Slider: Control {
 
-        int min = 0, max = 100;
+        int min = 0, max = 1500;
         int current = 50;
         int sliderWidth = 10;
         int sliderHeight = 20;
+        bool pressed = false;
         int Current {
             get { return current; }
             set { current = Math.Min(Math.Max(min, value), max); }
         }
 
-        public Slider (Rectangle rect) : base(rect) {
-
+        public Slider (Rectangle rect, int min, int max) : base(rect) {
             Hover += Slider_Hover;
             Down += Slider_Down;
             Up += Slider_Up;
-            Click += Slider_Click;
+            sliderHeight = rect.Height;
+            this.min = min;
+            this.max = max;
         }
 
-        private void Slider_Click (object sender, EventArgs e) {
-            color = Color.Violet;
-        }
 
         private void Slider_Up (object sender, EventArgs e) {
-           // color = Color.Green; 
+            // color = Color.Green; 
+            pressed = false;
         }
 
         private void Slider_Down (object sender, EventArgs e) {
-       //     color = Color.Red;
+            //     color = Color.Red;
+            pressed = true;
         }
 
         Color color = Color.Red;
@@ -292,15 +287,31 @@ namespace MonoGameDirectX {
 
         private void Slider_Hover (object sender, EventArgs e) {
             //color = Color.Yellow;
+            if (pressed) {
+                MouseActionInfo info = (MouseActionInfo)sender;
+
+                var value = (info.X - Rectangle.Left) / Rectangle.Width;
+
+                var result = min +  (max - min) * value  ;
+
+                Current = (int)Math.Ceiling( result);
+            }
         }
 
         internal override void Draw (SpriteBatch spriteBatch, GameTime time) {
-            base.Draw(spriteBatch, time);
-
-            int x = (int)(Rectangle.Width / max * current + Rectangle.X);
+            
+            var value = (Rectangle.Width - sliderWidth) * 1.0 / (max - min);
+            int x = sliderWidth/2+ (int)(value * current - value*min    + Rectangle.X);
+            int w = (int)(value * current-value * min);
             var rect = new Rectangle(x - sliderWidth / 2, Rectangle.Center.Y - sliderHeight / 2, sliderWidth, sliderHeight);
+            var rect2 = new Rectangle(Rectangle.Left, Rectangle.Center.Y - sliderHeight / 2, w, sliderHeight);
 
+
+            DrawPrimitives.DrawRect(rect2, spriteBatch, 1, Color.GreenYellow, Color.GreenYellow);
+            base.Draw(spriteBatch, time);
             DrawPrimitives.DrawRect(rect, spriteBatch, 1, Color.Black, color);
+            spriteBatch.DrawString(Renderer.Font, current.ToString(), Rectangle.Location.ToVector2(), Color.Black);
+
         }
     }
 

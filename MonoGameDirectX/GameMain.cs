@@ -188,78 +188,51 @@ namespace MonoGameDirectX {
 
         private void Render (GameTime gameTime) {
 
-            // GraphicsDevice.Viewport = defaultViewport;
             GraphicsDevice.Clear(Color.White);
-            //  GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            GraphicsDevice.Viewport = bottomViewport;
-            Renderer.RenderInterface(gameTime);
+            Renderer.Start();
 
-            //return;
+            if (Instance.CurrentStateId == UIStates.Menu) {
+                GraphicsDevice.Viewport = defaultViewport;
 
-            GraphicsDevice.Viewport = defaultViewport;
-            Renderer.RenderTotalOverlay(gameTime, GraphicsDevice.Viewport.Bounds);
-
-            switch (cameraMode) {
-                case 0: // overall 
-                    Viewport.PxlWidth = mainViewport.Width;
-                    Viewport.PxlHeight = mainViewport.Height;
-
-                    Viewport.SmoothUpdate = true;
-                    MainCore.Instance.ZoomToObjects();
-
-                    GraphicsDevice.Viewport = mainViewport;
-                    Renderer.Render(gameTime);
-
-                    break;
-                case 1:
-
-                    //if (PlayerController.Players.Count > 1) {  //splitscreen
-                    //    Viewport.PxlWidth = mainViewport.Width;
-                    //    Viewport.PxlHeight = mainViewport.Height;
-
-                    //    var s = PlayerController.Players[0].Ship;
-                    //    var l = s.Location;
-                    //    var v = 200;
-
-                    //    Viewport.SetWorldBounds(l.X - v, l.Y - v, l.X + v, l.Y + v);
-                    //    //Viewport.Centerpoint = PlayerController.Players[0].Ship.Location;
-                    //    Renderer.Render(gameTime);
-                    //}
-
-                    // one player
-                    if (PlayerController.Player != null) {
-                        Viewport.PxlWidth = mainViewport.Width;
-                        Viewport.PxlHeight = mainViewport.Height;
-
-                        Viewport.Scale = zoom;
-                        Viewport.SmoothUpdate = false;
-
-                        Viewport.Centerpoint = PlayerController.Player.Ship.Location;
-                        GraphicsDevice.Viewport = mainViewport;
-                        Renderer.Render(gameTime);
-                    }
-                    break;
-                case 2:
-                    Viewport.PxlWidth = mainViewport.Width;
-                    Viewport.PxlHeight = mainViewport.Height;
-
-                    Viewport.SmoothUpdate = false;
-
-                    Viewport.Scale = zoom;
-
-                    var objects = MainCore.Instance.Objects;
-
-                    if (objIndex >= objects.Count)
-                        objIndex = objects.Count - 1;
-                    //   var index = Math.Min(objects.Count-1, objIndex);
-
-                    Viewport.Centerpoint = objects[objIndex].Location;
-
-                    GraphicsDevice.Viewport = mainViewport;
-                    Renderer.Render(gameTime);
-                    break;
+                Renderer.RenderGameObjects(gameTime);
+                Renderer.RenderTotalOverlay(gameTime, GraphicsDevice.Viewport.Bounds);
+                Renderer.DrawCursor();
             }
+
+            if (Instance.CurrentStateId == UIStates.Game) {
+
+                GraphicsDevice.Viewport = mainViewport;
+
+                Viewport.PxlWidth = mainViewport.Width;
+                Viewport.PxlHeight = mainViewport.Height;
+                Viewport.Scale = zoom;
+                Viewport.SmoothUpdate = false;
+                Viewport.Centerpoint = PlayerController.Player.Ship.Location;
+                //MainCore.Instance.ZoomToObjects();
+
+
+                Renderer.RenderGameObjects(gameTime);
+
+
+                Renderer.End();
+                Renderer.Start();
+
+                GraphicsDevice.Viewport = bottomViewport;
+
+                Renderer.RenderMap(gameTime);
+
+
+
+                Renderer.End();
+                Renderer.Start();
+                GraphicsDevice.Viewport = defaultViewport;
+                Renderer.RenderTotalOverlay(gameTime, GraphicsDevice.Viewport.Bounds);
+                Renderer.DrawCursor();
+            }
+
+            Renderer.End();
+            return;
         }
 
         float zoom = 1;
@@ -287,7 +260,7 @@ namespace MonoGameDirectX {
             //var b3 = new Button(100, 150, 200, 40, "b3");
             var quitButton = new Button(100, 200, 200, 40, "quit");
 
-            
+
 
             startButton.ButtonClick += ButtonClicked;
             quitButton.ButtonClick += ButtonClicked;
@@ -334,12 +307,12 @@ namespace MonoGameDirectX {
         }
 
         private static void SetKeys (Button startButton, Button quitButton) {
-            InterfaceController.AddControl(0, startButton);
-            //InterfaceController.AddControl(0, b2);
-            //InterfaceController.AddControl(0, b3);
-            InterfaceController.AddControl(0, quitButton);
-            InterfaceController.AddControl(0, new Slider(new Rectangle(100, 100, 200, 20)));
-            InterfaceController.AddControl(1, new Button(100, 100, 50, 50, "test") { Tag = PlayerAction.Up}, 1);
+            InterfaceController.AddControl(UIStates.Menu, startButton);
+            InterfaceController.AddControl(UIStates.Menu, quitButton);
+
+            InterfaceController.AddControl(UIStates.Game, new Slider(new Rectangle(10, 10, 200, 30), 0, 1000));
+            InterfaceController.AddControl(UIStates.Game, new Slider(new Rectangle(10, 50, 200, 30), -180, 180));
+            InterfaceController.AddControl(UIStates.Game, new Button(100, 100, 50, 50, "test") { Tag = PlayerAction.Up });
 
 
             InterfaceController.AddKeyBinding(Keys.Up, 1, PlayerAction.Up);
@@ -387,7 +360,7 @@ namespace MonoGameDirectX {
         }
 
         private void StartButton_ButtonClick (object sender, EventArgs e) {
-            MainCore.SwitchState();
+            MainCore.SwitchState(UIStates.Game);
         }
 
         void ButtonClicked (object sender, EventArgs e) {

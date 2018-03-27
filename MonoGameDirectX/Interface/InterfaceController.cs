@@ -54,9 +54,6 @@ namespace GameCore {
                 MouseActions.Add(info);
             }
 
-            
-
-
             var currentPos = new IntPoint(mouse.X, mouse.Y);
 
             if (mousePrevPos != currentPos)
@@ -115,8 +112,8 @@ namespace GameCore {
             }
             
         }
-        internal static void AddControl(int state, Control control, int actor = 0) {
-            MainCore.AddControl(state, control, actor);
+        internal static void AddControl(UIStates state, Control control) {
+            MainCore.AddControl(state, control);
         }
 
         internal static IEnumerable<Control> GetActualControls() {

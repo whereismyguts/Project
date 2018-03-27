@@ -21,7 +21,7 @@ namespace GameCore {
                 switch (pair.Action) {
                     case PlayerAction.Down: MainCore.Instance.CurrentState.Select(true, pair.Actor); break;
                     case PlayerAction.Up: MainCore.Instance.CurrentState.Select(false, pair.Actor); break;
-                    case PlayerAction.Tab: MainCore.SwitchState(); break;
+                    //case PlayerAction.Tab: MainCore.SwitchState(); break;
                     case PlayerAction.Yes: MainCore.Instance.CurrentState.DoSelected(pair.Actor); break;
                 }
         }
@@ -53,18 +53,24 @@ namespace GameCore {
     }
 
 
+    public enum UIStates {
+        Menu = 0,
+        Game = 1
+    }
+
     public abstract class UIState {
         public abstract int Id { get; }
 
-        public virtual bool InGame { get { return true; } }
+        public bool InGame { get { return StateId == UIStates.Game; } }
         protected ICommandsBehavior Behavior { get; set; }
         public abstract List<IControl> Controls { get; }
+        public abstract UIStates StateId { get; }
 
         public void DoAction (ActorKeyPair pair, bool clickedOnce) {
             Behavior.ActByKey(pair, clickedOnce);
         }
 
-        public abstract void AddControl (IControl control, int actor);
+        public abstract void AddControl (IControl control);
 
         //public abstract void SelectPrev(int actor);
         //public abstract void SelectNext(int actor);
@@ -74,24 +80,20 @@ namespace GameCore {
         public virtual void DoMouseAction (MouseActionInfo eventInfo) {
             foreach (IControl control in Controls) {
 
+                // fire everytime, not just on the control:
                 if (eventInfo.Action == MouseAction.Up)
-                    control.RaiseMouseUp(null);
-
-                if (control.Contains(eventInfo.X, eventInfo.Y)) {
-
-                    if (eventInfo.Action == MouseAction.Down) {
-                        control.RaiseMouseDown(null);
-                        Behavior.ActByMouse(eventInfo, true);
-                    }
-
-                    if (eventInfo.Action == MouseAction.Move) {
-                        control.RaiseMouseMove(null);
-                        //Behavior.ActByMouse(eventInfo, true);
-                    }
-
-
+                    control.RaiseMouseUp(eventInfo);
+                if (eventInfo.Action == MouseAction.Move) {
+                    control.RaiseMouseMove(eventInfo);
+                    //Behavior.ActByMouse(eventInfo, true);
                 }
 
+                if (control.Contains(eventInfo.X, eventInfo.Y)) {
+                    if (eventInfo.Action == MouseAction.Down) {
+                        control.RaiseMouseDown(eventInfo);
+                        Behavior.ActByMouse(eventInfo, true);
+                    }
+                }
             }
         }
 
@@ -114,11 +116,7 @@ namespace GameCore {
             Behavior = new MenuBehavior();
             menuControls = new List<IControl>(); // set menu items
         }
-        public override bool InGame {
-            get {
-                return false;
-            }
-        }
+        
         List<IControl> menuControls = new List<IControl>();
         int selectedIndex = 0;
 
@@ -126,21 +124,24 @@ namespace GameCore {
 
         public override List<IControl> Controls {
             get {
-                for (int i = 0; i < menuControls.Count; i++) {
-                    menuControls[i].IsSelected = selectedIndex == i;
-                }
+
                 return menuControls;
             }
         }
 
+        public override UIStates StateId { get { return UIStates.Menu; } }
 
-        public override void AddControl (IControl control, int actor) {
+        public override void AddControl (IControl control) {
             menuControls.Add(control);
         }
 
         public override void Select (bool next, int actor) {
             // anybody can select menu items
             SelectBase(menuControls, next, ref selectedIndex);
+
+            for (int i = 0; i < menuControls.Count; i++) {
+                menuControls[i].IsSelected = selectedIndex == i;
+            }
         }
 
         public override void DoSelected (int actor) {
@@ -155,53 +156,23 @@ namespace GameCore {
 
         public override List<IControl> Controls {
             get {
-                return p1Controls;
+                return controls;
             }
         }
-
-
-        List<IControl> p1Controls = new List<IControl>();
-        List<IControl> p2Controls = new List<IControl>();
-        List<IControl> commonControls = new List<IControl>();
-        int p1SelectIndex = 0;
-        int p2SelectIndex = 0;
-        int commonSelectIndex = 0;
+        List<IControl> controls = new List<IControl>();
 
         public override int Id { get { return 1; } }
 
-        public override void AddControl (IControl control, int actor) {
-            switch (actor) {
-                case 1:
-                    p1Controls.Add(control);
-                    break;
-                case 2:
-                    p2Controls.Add(control);
-                    break;
-                default:
-                    commonControls.Add(control);
-                    break;
-            }
-        }
+        public override UIStates StateId { get { return UIStates.Game; } }
 
-        public override void DoSelected (int actor) {
-            if (actor == 1)
-                    p1Controls[p1SelectIndex].RaiseMouseUp(actor);
-
-
+        public override void AddControl (IControl control) {
+            controls.Add(control);
         }
 
         public override void Select (bool next, int actor) {
-            switch (actor) {
-                case 1:
-                    SelectBase(p1Controls, next, ref p1SelectIndex);
-                    break;
-                case 2:
-                    SelectBase(p2Controls, next, ref p2SelectIndex);
-                    break;
-                default:
-                    SelectBase(commonControls, next, ref commonSelectIndex);
-                    break;
-            }
+        }
+
+        public override void DoSelected (int actor) {
         }
     }
 
